@@ -258,7 +258,7 @@ function show_raid_poll($raid) {
 			if ($name=='') $name = $vv['user_id'];
 			$msg .= ' - '.$name.' ';
 			if ($vv['arrived']) {
-				$msg .= '[arrived] ';
+				$msg .= '[arrived '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
 			} else if ($vv['cancel']) {
 				$msg .= '[cancel] ';
 			} else {
@@ -279,6 +279,39 @@ function show_raid_poll($raid) {
 	return $msg;
 }
 
+function show_raid_poll_small($raid) {
+	$time_left = floor($raid['t_left']/60);
+	$time_left = floor($time_left/60).':'.str_pad($time_left%60,2,'0',STR_PAD_LEFT).' left';
+
+	$msg = '<b>'.ucfirst($raid['pokemon']).'</b> '.$time_left.' <b>'.$raid['gym_name'].'</b>'.CR;
+	if ($raid['address']) {
+		$addr = explode(',',$raid['address'],4);
+		array_pop($addr);
+		$addr = implode(',',$addr);
+		$msg .= '<i>'.$addr.'</i>'.CR2;
+	}
+	
+	$query = 'SELECT team, COUNT(*) AS cnt, SUM(extra_people) AS extra FROM attendance WHERE raid_id='.$raid['id'].' AND (cancel=0 OR cancel IS NULL) AND (raid_done=0 OR raid_done IS NULL) GROUP BY team';
+	$rs = my_query($query);
+	$data = array();
+	
+	$total = 0;
+	$sep = '';
+	while ($row = $rs->fetch_assoc()) {
+		$sum = $row['cnt']+$row['extra'];
+		if ($sum==0) continue;
+		$msg .= $sep.$GLOBALS['teams'][$row['team']].' '.$sum;
+		$sep = ' | ';
+		$total += $sum;
+	}
+	if (!$total) {
+		$msg .= ' No participants'.CR;
+	} else {
+		$msg .= ' = <b>'.$total.'</b>'.CR;
+	}
+
+	return $msg;
+}
 
 function raid_list($update) {
 	/* INLINE - LIST POLLS */
