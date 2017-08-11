@@ -69,6 +69,10 @@
 		include_once('modules/raid_create.php');
 		exit();
 		
+	} else if (isset($update['message']['new_chat_member'])) { 
+		include_once('modules/join.php');
+		exit();
+		
 	} else if (isset($update['message'])) {
 		if (substr($update['message']['text'],0,1) == '/') {
 			$command = strtolower(str_replace('/','',str_replace(BOT_NAME,'',explode(' ',$update['message']['text'])[0])));

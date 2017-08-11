@@ -177,7 +177,7 @@ function send_response_vote($update, $data, $new=false) {
 			$loc = send_location('none',$update['callback_query']['message']['chat']['id'],$raid['lat'], $raid['lon']);
 			debug_log('location:');
 			debug_log($loc);
-			send_message('none',$update['callback_query']['message']['chat']['id'],$msg."\n", $keys, ['reply_to_message_id'=>$loc['result']['message_id']]);
+			$msg = send_message('none',$update['callback_query']['message']['chat']['id'],$msg."\n", $keys, ['reply_to_message_id'=>$loc['result']['message_id']]);
 			answerCallbackQuery($update['callback_query']['id'],$msg);
 		} else {
 			edit_message($update, $msg, $keys);
