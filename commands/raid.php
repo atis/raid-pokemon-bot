@@ -9,8 +9,6 @@
 		exit;
 	}
 
-	$query = 'UPDATE raids SET gym_name="'.$db->real_escape_string($gym_name).'" WHERE user_id='.$update['message']['from']['id'].' ORDER BY id DESC LIMIT 1';
-	//my_query($query);
 	$lat = floatval($data[1]);
 	$lon = floatval($data[2]);
 
@@ -20,13 +18,20 @@
 	$tz = get_timezone($lat, $lon);
 	$addr = get_address($lat, $lon);
 
+	$end_time = 'DATE_ADD(first_seen, INTERVAL '.$data[3].' MINUTE)';
+	if (strpos($data[3],':')) {
+		$dt = new DateTime($data[3]);
+		$dt->setTimeZone(new DateTimeZone($tz));
+		$end_time = '"'.$dt->format('Y-m-d H:i:s').'"';
+	}
+
 	$q = 'INSERT INTO raids SET 
 		pokemon="'.$db->real_escape_string($data[0]).'",
 		user_id='.$update['message']['from']['id'].', 
 		lat="'.$lat.'", 
 		lon="'.$lon.'",
 		first_seen=NOW(),
-		end_time=DATE_ADD(first_seen, INTERVAL '.$data[3].' MINUTE),
+		end_time='.$end_time.',
 		gym_name="'.$db->real_escape_string($data[4]).'"
 	';
 
