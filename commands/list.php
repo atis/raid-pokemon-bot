@@ -6,7 +6,7 @@
 	$rs = my_query($q);
 	$row = $rs->fetch_assoc();
 	if (!$row) {
-		sendMessage('none',$update['message']['from']['id'],'Can\'t determine your location, please participate in at least 1 raid');
+		sendMessage($update['message']['from']['id'],'Can\'t determine your location, please participate in at least 1 raid');
 		exit;
 	}
 
@@ -23,7 +23,7 @@
 			'text' => 'Expand', 'callback_data' => $raid['id'].':vote_refresh:0',
 		]]];
 		$msg = show_raid_poll_small($raid);
-		send_message('none',$update['message']['from']['id'],$msg, $keys, 
+		send_message($update['message']['from']['id'],$msg, $keys,
 			['reply_markup' => ['selective'=>true, 'one_time_keyboard'=>true]]
 		);
 	}

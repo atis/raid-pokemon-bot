@@ -2,13 +2,13 @@
 
 	$gym_data = trim(substr($update['message']['text'],5));
 
-	$data = explode(',',$gym_data,5);
+	$data = explode(',',$gym_data,6);
 
-	if (count($data)<5) {
-		send_message('none',$update['message']['chat']['id'],'Invalid input',[]);
+	if (count($data)<6) {
+		send_message($update['message']['chat']['id'],'Invalid input',[]);
 		exit;
 	}
-
+	$query = 'UPDATE raids SET gym_name="'.$db->real_escape_string($gym_name).'" WHERE user_id='.$update['message']['from']['id'].' ORDER BY id DESC LIMIT 1';
 	$lat = floatval($data[1]);
 	$lon = floatval($data[2]);
 
@@ -18,21 +18,15 @@
 	$tz = get_timezone($lat, $lon);
 	$addr = get_address($lat, $lon);
 
-	$end_time = 'DATE_ADD(first_seen, INTERVAL '.$data[3].' MINUTE)';
-	if (strpos($data[3],':')) {
-		$dt = new DateTime($data[3]);
-		$dt->setTimeZone(new DateTimeZone($tz));
-		$end_time = '"'.$dt->format('Y-m-d H:i:s').'"';
-	}
-
 	$q = 'INSERT INTO raids SET 
 		pokemon="'.$db->real_escape_string($data[0]).'",
 		user_id='.$update['message']['from']['id'].', 
 		lat="'.$lat.'", 
 		lon="'.$lon.'",
 		first_seen=NOW(),
-		end_time='.$end_time.',
-		gym_name="'.$db->real_escape_string($data[4]).'"
+		end_time=DATE_ADD(first_seen, INTERVAL '.$data[3].' MINUTE),
+		gym_team="'.$db->real_escape_string($data[4]).'",
+		gym_name="'.$db->real_escape_string($data[5]).'"
 	';
 
 	if ($tz!==false) {
@@ -64,13 +58,13 @@
 			'text'=>'Share','switch_inline_query'=>strval($id),
 		]]];
 	
-		send_message('none',$update['message']['chat']['id'],$text, $keys);
+		send_message($update['message']['chat']['id'],$text, $keys);
 
 	} else {
 		$reply_to = $update['message']['chat']['id'];
 		if ($update['message']['reply_to_message']['message_id']) $reply_to = $update['message']['reply_to_message']['message_id'];
 
-		send_message('none',$update['message']['chat']['id'],$text, $keys, 
+		send_message($update['message']['chat']['id'],$text, $keys,
 			['reply_to_message_id'=>$reply_to, 'reply_markup' => ['selective'=>true, 'one_time_keyboard'=>true]]
 		);
 	}

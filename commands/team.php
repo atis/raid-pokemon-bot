@@ -18,9 +18,9 @@
 		$query = 'UPDATE raids SET gym_team="'.$teams[$gym_team].'" WHERE user_id='.$update['message']['from']['id'].' ORDER BY id DESC LIMIT 1';
 		my_query($query);
 	
-		sendMessage('none',$update['message']['chat']['id'],'Gym team set to '.ucfirst($teams[$gym_team]));
+		sendMessage($update['message']['chat']['id'],'Gym team set to '.ucfirst($teams[$gym_team]));
 	} else {
-		sendMessage('none',$update['message']['chat']['id'],'Invalid team name - type Mystic, Valor, Instinct or Blue, Red, Yellow');
+		sendMessage($update['message']['chat']['id'],'Invalid team name - type Mystic, Valor, Instinct or Blue, Red, Yellow');
 	}
 	
 	

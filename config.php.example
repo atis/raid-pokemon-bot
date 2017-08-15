@@ -1,0 +1,9 @@
+<?php
+define('TZ_API_KEY',        'GOOGLE_API_KEY');
+
+define('CONFIG_LOGFILE',    '/var/log/tg-bots/dev-raid-bot.log');
+define('CONFIG_HASH',       ' = hash(sha_512,tg_bot_key) ');
+
+define('MAINTAINER',        '@your_tg_username');
+define('MAINTAINER_ID',     'your_tg_integer');
+define('BOT_NAME',          '@RaidPokemonBot');

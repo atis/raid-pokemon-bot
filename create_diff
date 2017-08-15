@@ -1,9 +1,0 @@
-#!/bin/bash
-
-PROJ=_pogo-raid-bot
-
-git diff --ignore-space-change -U10 --no-prefix > $PROJ.diff
-git status > $PROJ.files.diff
-chmod 0666 $PROJ.diff
-chmod 0666 $PROJ.files.diff
-/usr/bin/mcedit $PROJ.diff

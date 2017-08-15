@@ -1,90 +1,142 @@
 <?php 
+// Set error reporting.
+error_reporting(E_ALL ^ E_NOTICE);
 
-	error_reporting(E_ALL ^ E_NOTICE);
-	
-	
-	$start = microtime(true);
-	require_once('config.php');
-	require_once('debug.php');
-	require_once('constants.php');
-	require_once('functions.php');
-	require_once('logic.php');
-	require_once('geo_api.php');
+// Get current unix timestamp as float.
+$start = microtime(true);
 
-	$apikey = $_GET['apikey'];
+// Include files.
+require_once('config.php');
+require_once('debug.php');
+require_once('constants.php');
+require_once('functions.php');
+require_once('logic.php');
+require_once('geo_api.php');
 
-	if (hash('sha512',$apikey) == CONFIG_HASH) {
-		define('API_KEY',$apikey);
-		$botsplit = explode(':',$apikey);
-		define('BOT_ID',$botsplit[0]);
-		define('BOT_KEY',$botsplit[1]);
-	} else {
-		sendMessageEcho('none',MAINTAINER_ID,$_SERVER['REMOTE_ADDR'].' '.$_SERVER['HTTP_X_FORWARDED_FOR'].' '.$apikey);
-		exit('Nop');
-	}
+// Get api key from get parameters.
+$apiKey = $_GET['apikey'];
 
-	$content = file_get_contents('php://input');
+// Check if hashed api key is matching config.
+if (hash('sha512', $apiKey) == CONFIG_HASH) {
+    // Split the api key.
+    $splitKey = explode(':', $apiKey);
 
-	$update = json_decode($content, true);
-	if (!$update) { 
-		debug_log($content, '!');
-	} else { 
-		debug_log($update,'<');
-	}
+    // Set constants.
+    define('API_KEY',   $apiKey);
+    define('BOT_ID',    $splitKey[0]);
+    define('BOT_KEY',   $splitKey[1]);
 
-	$command = NULL;
+// Api key is wrong!
+} else {
+    // Echo data.
+    sendMessageEcho(MAINTAINER_ID, $_SERVER['REMOTE_ADDR'] . ' ' . $_SERVER['HTTP_X_FORWARDED_FOR'] . ' ' . $apiKey);
+    // And exit script.
+    exit();
+}
 
-	$db = new mysqli('localhost',BOT_ID,BOT_KEY,BOT_ID);
-	if ($db->connect_errno) {
-		debug_log("Failed to connect to Database!".$db->connect_error(), '!');
-		sendMessage('none',$update['message']['chat']['id'],"Failed to connect to Database!\nPlease contact ".MAINTAINER." and forward this message...\n");
-	}
+// Get content from POST data.
+$content = file_get_contents('php://input');
 
-	update_user($update);
-	if (isset($update['callback_query'])) {
-		if ($update['callback_query']['data']) {
-			$d = explode(':', $update['callback_query']['data']);
-			$data['id'] = $d[0];
-			$data['action'] = $d[1];
-			$data['arg'] = $d[2];
-		}
-		debug_log('DATA=');
-		debug_log($data);
+// Decode the json string.
+$update = json_decode($content, true);
 
-		$module = 'modules/'.basename($data['action']).'.php';
-		debug_log($module);
-		if (file_exists($module)) {
-			include_once($module);
-			exit;
-		} else {
-			debug_log('No action');
-		}
+// Update var is false.
+if (!$update) {
+    // Write to log.
+    debug_log($content, '!');
 
+} else {
+    // Write to log.
+    debug_log($update,'<');
+}
 
-	} else if (isset($update['inline_query'])){
-		/* INLINE - LIST POLLS */
-		raid_list($update);
-		exit;
-	} else if (isset($update['message']['location'])) { 
-		include_once('modules/raid_create.php');
-		exit();
-		
-	} else if (isset($update['message']['new_chat_member'])) { 
-		include_once('modules/join.php');
-		exit();
-		
-	} else if (isset($update['message'])) {
-		if (substr($update['message']['text'],0,1) == '/') {
-			$command = strtolower(str_replace('/','',str_replace(BOT_NAME,'',explode(' ',$update['message']['text'])[0])));
-			$module = 'commands/'.basename($command).'.php';
-			debug_log($module);
+// Init command.
+$command = NULL;
 
-			if (file_exists($module)) {
-				include_once($module);
-				exit;
-			}
+// Establish mysql connection.
+$db = new mysqli('localhost', BOT_ID, BOT_KEY, BOT_ID);
 
-			sendMessage('none',$update['message']['chat']['id'],'<b>Please send location to start Raid announce</b> ');
-		}
-	}
+// Error connecting to db.
+if ($db->connect_errno) {
+    // Write connection error to log.
+    debug_log("Failed to connect to Database!" . $db->connect_error(), '!');
+    // Echo data.
+    sendMessage($update['message']['chat']['id'], "Failed to connect to Database!\nPlease contact " . MAINTAINER . " and forward this message...\n");
+}
+
+// Update the user.
+update_user($update);
+
+// Callback query received.
+if (isset($update['callback_query'])) {
+    // Init empty data array.
+    $data = array();
+
+    // Callback data found.
+    if ($update['callback_query']['data']) {
+        // Split callback data and assign to data array.
+        $splitData = explode(':', $update['callback_query']['data']);
+        $data['id']     = $splitData[0];
+        $data['action'] = $splitData[1];
+        $data['arg']    = $splitData[2];
+    }
+
+    // Write data to log.
+    debug_log('DATA=');
+    debug_log($data);
+
+    // Set module path by sent action name.
+    $module = 'modules/' . basename($data['action']) . '.php';
+
+    // Write module to log.
+    debug_log($module);
+
+    // Check if the module file exists.
+    if (file_exists($module)) {
+        // Dynamically include module file and exit.
+        include_once($module);
+        exit();
+
+    // Module file is missing.
+    } else {
+        // Write to log.
+        debug_log('No action');
+    }
+
+// Inline query received.
+} else if (isset($update['inline_query'])) {
+    // List polls and exit.
+    raid_list($update);
+    exit();
+
+// Location received.
+} else if (isset($update['message']['location'])) {
+    // Create raid and exit.
+    include_once('modules/raid_create.php');
+    exit();
+
+// Message is required to check for commands.
+} else if (isset($update['message'])) {
+    // Check message text for a leading slash.
+    if (substr($update['message']['text'], 0, 1) == '/') {
+        // Get command name.
+        $com = strtolower(str_replace('/', '', str_replace(BOT_NAME, '', explode(' ', $update['message']['text'])[0])));
+
+        // Set command path.
+        $command = 'commands/' . basename($com) . '.php';
+
+        // Write to log.
+        debug_log($command);
+
+        // Check if command file exits.
+        if (file_exists($command)) {
+            // Dynamically include command file and exit.
+            include_once($command);
+            exit();
+        }
+
+        // Echo bot response.
+        sendMessage($update['message']['chat']['id'], '<b>Please send location to start Raid announce</b>');
+    }
+}
 

@@ -1,29 +1,43 @@
-<?php 
-
+<?php
+/**
+ * Raid access check.
+ * @param $update
+ * @param $data
+ * @return bool
+ */
 function raid_access_check($update, $data) {
-	$rs = my_query('SELECT * FROM raids WHERE id='.$data['id'].'');
+	$rs = my_query("SELECT * FROM raids WHERE id = {$data['id']}");
 	$raid = $rs->fetch_assoc();
-	if ($update['callback_query']['from']['id']!=$raid['user_id']) {
-		$query = 'SELECT COUNT(*) FROM users WHERE user_id='.$update['callback_query']['from']['id'].' AND moderator=1';
+
+	if ($update['callback_query']['from']['id'] != $raid['user_id']) {
+		$query = "SELECT COUNT(*) FROM users WHERE user_id={$update['callback_query']['from']['id']} AND moderator=1";
 		$rs = my_query($query);
 		$row = $rs->fetch_row();
-		if ($row['0']) return true;
 
-		$callback_response = 'You are not allowed to edit this raid';
-		answerCallbackQuery($update['callback_query']['id'],$callback_response);
-		exit;
+		if (empty($row['0'])) {
+            $callback_response = 'You are not allowed to edit this raid';
+            answerCallbackQuery($update['callback_query']['id'], $callback_response);
+            exit;
+        }
 	}
 }
 
-
+/**
+ * Inline key array.
+ * @param $buttons
+ * @param $columns
+ * @return array
+ */
 function inline_key_array($buttons, $columns) {
 	$result = array();
 	$col = 0;
 	$row = 0;
+
 	foreach ($buttons as $v) {
 		$result[$row][$col] = $v;
 		$col++;
-		if ($col>=$columns) {
+
+		if ($col >= $columns) {
 			$row++;
 			$col=0;
 		}
@@ -31,198 +45,357 @@ function inline_key_array($buttons, $columns) {
 	return $result;
 }
 
+/**
+ * Raid edit start keys.
+ * @param $id
+ * @return array
+ */
 function raid_edit_start_keys($id) {
-		$keys = 
-		[[[
-				'text' => 'Legendary Raid *****','callback_data' => $id.':edit:type_5',
-		]],[[
-				'text' => '4 Star Raid ****', 'callback_data' => $id.':edit:type_4',
-			],[
-				'text' => '3 Star Raid ***', 'callback_data' => $id.':edit:type_3',
-		]],[[
-				'text' => '2 Star Raid **', 'callback_data' => $id.':edit:type_2',
-			],[
-				'text' => '1 Star Raid *', 'callback_data' => $id.':edit:type_1',
-		]]];
+		$keys = [
+            [
+                [
+                    'text'          => 'Legendary Raid *****',
+                    'callback_data' => $id . ':edit:type_5'
+                ]
+            ],
+            [
+                [
+                    'text'          => '4 Star Raid ****',
+                    'callback_data' => $id . ':edit:type_4'
+                ],
+                [
+                    'text'          => '3 Star Raid ***',
+                    'callback_data' => $id . ':edit:type_3'
+                ]
+            ],
+            [
+                [
+                    'text'          => '2 Star Raid **',
+                    'callback_data' => $id . ':edit:type_2'
+                ],
+                [
+                    'text'          => '1 Star Raid *',
+                    'callback_data' => $id . ':edit:type_1'
+                ]
+            ]
+        ];
+
 		return $keys;
 }
 
+/**
+ * Keys raid people.
+ * @param $data
+ * @return array
+ */
 function keys_raid_people($data) {
-		if (!is_array($data)) $data=array('id'=>$data);
 
-			$keys = [[
-				'text' => '+1', 'callback_data' => $data['id'].':vote:1',
-					],[
-				'text' => '+2', 'callback_data' => $data['id'].':vote:2'
-					],[
-				'text' => '+3', 'callback_data' => $data['id'].':vote:3'
-					],[
-				'text' => '+4', 'callback_data' => $data['id'].':vote:4'
-					],[
-				'text' => '+5', 'callback_data' => $data['id'].':vote:5'
-			]];
-			return $keys;
+		if (!is_array($data)) {
+            $data = array('id' => $data);
+        }
+
+        $keys = [
+            [
+                'text'          => '+1',
+                'callback_data' => $data['id'] . ':vote:1'
+            ],
+            [
+                'text'          => '+2',
+                'callback_data' => $data['id'] . ':vote:2'
+            ],
+            [
+                'text'          => '+3',
+                'callback_data' => $data['id'] . ':vote:3'
+            ],
+            [
+                'text'          => '+4',
+                'callback_data' => $data['id'] . ':vote:4'
+            ],
+            [
+                'text'          => '+5',
+                'callback_data' => $data['id'] . ':vote:5'
+            ]
+        ];
+
+        return $keys;
 }
 
+/**
+ * Keys vote.
+ * @param $raid
+ * @return array
+ */
 function keys_vote($raid) {
-		$keys_team = [];
-		$keys_time = [];
+        // Init keys time array.
+		$keys_time  = [];
 
-		$end_time = $raid['ts_end'];
-		$now = $raid['ts_now'];
+		$end_time   = $raid['ts_end'];
+		$now        = $raid['ts_now'];
 
-		$keys = [[[
-			'text' => '+1', 'callback_data' => $raid['id'].':vote:1',
-				],[
-			'text' => '+2', 'callback_data' => $raid['id'].':vote:2'
-				],[
-			'text' => '+3', 'callback_data' => $raid['id'].':vote:3'
-				],[
-			'text' => '+4', 'callback_data' => $raid['id'].':vote:4'
-				],[
-			'text' => '+5', 'callback_data' => $raid['id'].':vote:5'
-		]],[[
-			'text' => TEAM_B.' Mystic', 'callback_data' => $raid['id'].':vote_team:mystic',
-				],[
-			'text' => TEAM_R.' Valor', 'callback_data' => $raid['id'].':vote_team:valor',
-				],[
-			'text' => TEAM_Y.' Instinct', 'callback_data' => $raid['id'].':vote_team:instinct',
-		]]];
+		$keys = [
+            [
+                [
+			        'text'          => 'alleine',
+                    'callback_data' => $raid['id'] . ':vote:1'
+				],
+                [
+			        'text'          => '+1',
+                    'callback_data' => $raid['id'] . ':vote:2'
+				],
+                [
+			        'text'          => '+2',
+                    'callback_data' => $raid['id'] . ':vote:3'
+				],
+                [
+			        'text'          => '+3',
+                    'callback_data' => $raid['id'] . ':vote:4'
+				],
+                [
+			        'text'          => '+4',
+                    'callback_data' => $raid['id'] . ':vote:5'
+		        ]
+            ],
+            [
+                [
+			        'text'          => TEAM_B . ' Mystic',
+                    'callback_data' => $raid['id'] . ':vote_team:mystic'
+				],
+                [
+			        'text'          => TEAM_R . ' Valor',
+                    'callback_data' => $raid['id'] . ':vote_team:valor'
+				],
+                [
+			        'text'          => TEAM_Y . ' Instinct',
+                    'callback_data' => $raid['id'] . ':vote_team:instinct'
+		        ]
+            ]
+        ];
 
-		if ($end_time<$now) {
-			$keys[] = [array('text'=>'Raid Finished','callback_data'=>$raid['id'].':vote_time:'.(ceil(time()/300)*300))];
+		if ($end_time < $now) {
+			$keys[] = [
+                array(
+                    'text'          =>'Raid beendet.',
+                    'callback_data' => $raid['id'] . ':vote_time:' . (ceil(time()/900)*900)
+                )
+            ];
+
 		} else {
 			$col = 1;
-			for ($i=ceil($now/300)*300; $i<=($end_time-300); $i=$i+300) {
-				if ($col++>=5) {
+			for ($i=ceil($now/900)*900; $i<=($end_time-900); $i=$i+900) {			
+
+				if ($col++ >= 4) {
 					$keys[] = $keys_time;
 					$keys_time = [];
 					$col = 1;
 				}
-				$keys_time[] = array('text' => unix2tz($i,$raid['timezone']), 'callback_data' => $raid['id'].':vote_time:'.$i);
+
+				$keys_time[] = array(
+                    'text'          => unix2tz($i, $raid['timezone']),
+                    'callback_data' => $raid['id'] . ':vote_time:' . $i
+                );
 			}
+
 			$keys[] = $keys_time;
 		}
 
 
 		$keys[] = [
-			['text' => EMOJI_REFRESH, 'callback_data' => $raid['id'].':vote_refresh:0'],
-			['text' => 'Arrived', 'callback_data' => $raid['id'].':vote_arrived:0'],
-			['text' => 'Done', 'callback_data' => $raid['id'].':vote_done:0'],
-			['text' => 'Won\'t come', 'callback_data' => $raid['id'].':vote_cancel:0'],
+			[
+                'text'          => EMOJI_REFRESH,
+                'callback_data' => $raid['id'] . ':vote_refresh:0'
+            ],
+			[
+                'text'          => 'Bin da',
+                'callback_data' => $raid['id'] . ':vote_arrived:0'
+            ],
+			[
+                'text'          => 'Fertig',
+                'callback_data' => $raid['id'] . ':vote_done:0'
+            ],
+			[
+                'text'          => 'Absage',
+                'callback_data' => $raid['id'] . ':vote_cancel:0'
+            ],
 		];
-		if ($end_time<$now) {
-			$keys = [[['text'=>'Raid Finished','callback_data'=>$raid['id'].':vote_refresh:0']]];
+
+		if ($end_time < $now) {
+			$keys = [
+                [
+                    [
+                        'text'          => 'Raid beendet',
+                        'callback_data' => $raid['id'] . ':vote_refresh:0'
+                    ]
+                ]
+            ];
 		}
 	return $keys;
 }
 
-
+/**
+ * Update user.
+ * @param $update
+ * @return bool|mysqli_result
+ */
 function update_user($update) {
-		global $db;
-		
-		$name = '';
-		$sep = '';
+    global $db;
 
-		if ($update['message']) {
-			$msg = $update['message']['from'];
-		}
+    $name = '';
+    $sep = '';
 
-		if ($update['callback_query']) {
-			$msg = $update['callback_query']['from'];
-		}
+    if ($update['message']) {
+        $msg = $update['message']['from'];
+    }
 
-		if ($update['inline_query']) {
-			$msg = $update['inline_query']['from'];
-		}
+    if ($update['callback_query']) {
+        $msg = $update['callback_query']['from'];
+    }
 
-		$id = $msg['id'];
-		if (!$id) {
-			debug_log('No id','!');
-			debug_log($update,'!');
-			return false;
-		}
+    if ($update['inline_query']) {
+        $msg = $update['inline_query']['from'];
+    }
 
+    if (!empty($msg['id'])) {
+        $id = $msg['id'];
 
-		if ($msg['first_name']) {
-			$name = $msg['first_name'];
-			$sep = ' ';
-		}
-		if ($msg['last_name']) $name .= $sep.$msg['last_name'];
+    } else {
+        debug_log('No id', '!');
+        debug_log($update, '!');
+        return false;
+    }
 
-		
-		$request = my_query('INSERT INTO users SET 
-			user_id='.$id.', 
-			nick="'.$db->real_escape_string($msg['username']).'", 
-			name="'.$db->real_escape_string($name).'"
-		ON DUPLICATE KEY UPDATE
-			nick="'.$db->real_escape_string($msg['username']).'", 
-			name="'.$db->real_escape_string($name).'"
-		');
-		return $request;
+    if ($msg['first_name']) {
+        $name = $msg['first_name'];
+        $sep = ' ';
+    }
+
+    if ($msg['last_name']) {
+        $name .= $sep . $msg['last_name'];
+    }
+
+    $request = my_query(
+        "
+        INSERT INTO users
+        SET         user_id = {$id},
+                    nick    = '{$db->real_escape_string($msg['username'])}',
+                    name    = '{$db->real_escape_string($name)}'
+        ON DUPLICATE KEY
+        UPDATE      nick    = '{$db->real_escape_string($msg['username'])}',
+                    name    = '{$db->real_escape_string($name)}'
+        "
+    );
+
+    return $request;
 }
 
-function send_response_vote($update, $data, $new=false) {
-		$rs = my_query('SELECT *, 
-			UNIX_TIMESTAMP(end_time) AS ts_end, 
-			UNIX_TIMESTAMP(NOW()) as ts_now, 
-			UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW()) AS t_left 
-		FROM raids WHERE id='.$data['id'].'');
-		$raid = $rs->fetch_assoc();
+/**
+ * Send response vote.
+ * @param $update
+ * @param $data
+ * @param bool $new
+ */
+function send_response_vote($update, $data, $new = false) {
+    $rs = my_query(
+        "
+        SELECT  *,
+                UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+        FROM    raids
+          WHERE id = {$data['id']}
+        "
+    );
 
-		$msg = show_raid_poll($raid);
-		$keys = keys_vote($raid);
+    $raid = $rs->fetch_assoc();
 
-		if ($new) {
-			$loc = send_location('none',$update['callback_query']['message']['chat']['id'],$raid['lat'], $raid['lon']);
-			debug_log('location:');
-			debug_log($loc);
-			$msg = send_message('none',$update['callback_query']['message']['chat']['id'],$msg."\n", $keys, ['reply_to_message_id'=>$loc['result']['message_id']]);
-			answerCallbackQuery($update['callback_query']['id'],$msg);
-		} else {
-			edit_message($update, $msg, $keys);
-			$msg = 'Raid attendance updated';
-			answerCallbackQuery($update['callback_query']['id'],$msg);
-		}
-		exit;
+    $msg = show_raid_poll($raid);
+    $keys = keys_vote($raid);
+
+    // Write to log.
+    debug_log($keys);
+
+    if ($new) {
+        $loc = send_location($update['callback_query']['message']['chat']['id'], $raid['lat'], $raid['lon']);
+
+        debug_log('location:');
+        debug_log($loc);
+
+        send_message($update['callback_query']['message']['chat']['id'], $msg . "\n", $keys, ['reply_to_message_id' => $loc['result']['message_id']]);
+        answerCallbackQuery($update['callback_query']['id'],$msg);
+
+    } else {
+        edit_message($update, $msg, $keys);
+        $msg = 'Abstimmung aktualisiert';
+        answerCallbackQuery($update['callback_query']['id'], $msg);
+    }
+
+    exit;
 }
 
-
+/**
+ * @param $unix
+ * @param $tz
+ * @param string $format
+ * @return bool|string
+ */
 function unix2tz($unix, $tz, $format = 'H:i') {
-	if (!$unix) return false;
-	$dt = new DateTime('@'.$unix);
+	if (!$unix) {
+        return false;
+    }
+
+	$dt = new DateTime('@' . $unix);
 	$dt->setTimeZone(new DateTimeZone($tz));
 	return $dt->format($format);
 }
 
+/**
+ * Show raid poll.
+ * @param $raid
+ * @return string
+ */
 function show_raid_poll($raid) {
 	$time_left = floor($raid['t_left']/60);
-	$time_left = floor($time_left/60).':'.str_pad($time_left%60,2,'0',STR_PAD_LEFT).' left';
+	$time_left = floor($time_left/60) . ':' . str_pad($time_left%60,2, '0', STR_PAD_LEFT) . 'h übrig ';
 
+    // Init empty message string.
 	$msg = '';
+
 	if ($raid['gym_name'] || $raid['gym_team']) {
-		$msg .= 'Gym: <b>'.$raid['gym_name'].'</b>';
-		if ($raid['gym_team']) $msg .= ' '.$GLOBALS['teams'][$raid['gym_team']].' '.ucfirst($raid['gym_team']);
+		$msg .= 'Arena: <b>' . $raid['gym_name'] . '</b>';
+		if ($raid['gym_team']) {
+            $msg .= ' ' . $GLOBALS['teams'][$raid['gym_team']] . ' ' . ucfirst($raid['gym_team']);
+        }
 		$msg .= CR;
 	}
+
 	if ($raid['address']) {
-		$addr = explode(',',$raid['address'],4);
+		$addr = explode(',', $raid['address'], 4);
 		array_pop($addr);
-		$addr = implode(',',$addr);
-		$msg .= '<i>'.$addr.'</i>'.CR2;
+		$addr = implode(',', $addr);
+		$msg .= 'Adresse: <a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . CR . '">' . $addr . '</a>' . CR2;
 	}
-	$msg .= '#Raid <b>'.ucfirst($raid['pokemon']).'</b>'.CR2;
-	//$msg .= CR;
-	if ($time_left<0) {
-		$msg .= 'Raid Finished'.CR2;
+	$msg .= 'Raid Boss: <b>' . ucfirst($raid['pokemon']) . '</b>' . CR2;
+
+	if ($time_left < 0) {
+		$msg .= 'Raid beendet.' . CR2;
+
 	} else {
-		//$msg .= '<i>'.$time_left.'</i> until '.substr($raid['end_time'],11,5)."\n\n";
-		$msg .= '<i>'.$time_left.'</i> until '.unix2tz($raid['ts_end'],$raid['timezone'])."\n\n";
+		$msg .= '<i>'.$time_left.'</i> bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . CR;
 	}
-	$msg .= 'Location: https://maps.google.com/?q='.$raid['lat'].','.$raid['lon'].CR;
-	
-	$query = 'SELECT *, UNIX_TIMESTAMP(attend_time) AS ts_att  FROM attendance WHERE raid_id='.$raid['id'].' ORDER BY cancel ASC, raid_done DESC, team ASC, arrived DESC, attend_time ASC';
-	$rs = my_query($query);
+
+	$rs = my_query(
+        "
+        SELECT      *,
+                    UNIX_TIMESTAMP(attend_time) AS ts_att
+        FROM        attendance
+          WHERE     raid_id={$raid['id']}
+          ORDER BY  cancel ASC,
+                    raid_done DESC,
+                    team ASC,
+                    arrived DESC,
+                    attend_time ASC
+        "
+    );
+
 	$data = array();
 	
 	while ($row = $rs->fetch_assoc()) {
@@ -240,41 +413,94 @@ function show_raid_poll($raid) {
 	debug_log($data);
 	
 	if (count($data)==0) {
-		$msg .= CR.'No participants yet.'.CR;
+		$msg .= CR.'Noch keine Teilnehmer.'.CR;
 	
 	}
 	
-	foreach ($GLOBALS['teams'] as $k=>$v) {
-		if (!count($data[$k])) continue;
-		$msg .= CR.$v.' <b>'.ucfirst($k).': '.count($data[$k]).'</b>'."\n";
-		foreach ($data[$k] as $vv) {
-			if ($vv===false) continue;
-			if ($vv['raid_done']) continue;
+	$query = 'SELECT distinct UNIX_TIMESTAMP(attend_time) AS ts_att, count(attend_time) as count, sum(extra_people) as extra FROM attendance WHERE raid_id='.$raid['id'].' AND attend_time IS NOT NULL and raid_done !=1 and cancel!=1 group by attend_time ORDER BY attend_time ASC';
+	$rs = my_query($query);
+	$timeslots = array();
+	while ($row = $rs->fetch_assoc()) {
+		$timeslots[]=$row;
+	}
+	debug_log($timeslots);
+	
+	foreach ($timeslots as $ts) {
+	$msg .=CR.'<b>'.unix2tz($ts['ts_att'],$raid['timezone']).'</b>'.' ['.($ts['count']+$ts['extra']).']'.CR;
+		
+		$attend_query = 'select * from attendance where UNIX_TIMESTAMP(attend_time)='.$ts['ts_att'].' AND raid_done != 1 AND cancel != 1 AND raid_id='.$raid['id'].' ORDER BY team ASC';
+		$user_rs = my_query($attend_query);
+		$att_users = array();
+		while ($rowusers = $user_rs->fetch_assoc()) {
+		$att_users[]=$rowusers;
+		}
+		debug_log($att_users);
+	
+		foreach ($att_users as $vv) {
+					debug_log($vv['user_id']);
 			$query = 'SELECT * FROM users WHERE user_id='.$vv['user_id'];
 			$rs = my_query($query);
 			$row = $rs->fetch_assoc();
-			$name = '@'.$row['nick'];
-			if ($name=='@') $name = $row['name'];
-			if ($name=='') $name = $vv['user_id'];
-			$msg .= ' - '.$name.' ';
+			// always use name
+			$name = htmlspecialchars($row['name']);
+			if ($row['team']===NULL)
+			{
+			$msg .= ' └ '.$GLOBALS['teams']['unknown'].' '.$name.' ';
+			} else
+			{
+			$msg .= ' └ '.$GLOBALS['teams'][$row['team']].' '.$name.' ';
+			}
 			if ($vv['arrived']) {
-				$msg .= '[arrived '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
+				$msg .= '[Bin da'.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
 			} else if ($vv['cancel']) {
-				$msg .= '[cancel] ';
+				$msg .= '[abgesagt] ';
 			} else {
-//				$msg .= '['.substr($vv['attend_time'],11,5).'] ';
-				$msg .= '['.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
+				//$msg .= '['.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
 			}
 			if ($vv['extra_people']) $msg .= '+'.$vv['extra_people'];
 			
 			$msg .= CR;
 		}
 	}
+	
+	
 	if (count($data['done'])) {
-		$msg .= CR.' <b>Done: '.count($data['done']).'</b>'.CR;
-	}
+		$msg .= CR.TEAM_DONE.' <b>Fertig: </b>'.' ['.count($data['done']).']'.CR;
+		foreach ($data['done'] as $vv) {
 
-	$msg .= CR.'<i>Updated: '.unix2tz(time(), $raid['timezone'], 'H:i:s').'</i> ID = '.$raid['id'];
+			if (!$vv['raid_done']) continue;
+			$query = 'SELECT * FROM users WHERe user_id='.$vv['user_id'];
+			$rs = my_query($query);
+			$row = $rs->fetch_assoc();
+			$name = htmlspecialchars($row['name']);
+			$msg .= ' └ '.$GLOBALS['teams'][$row['team']].' '.$name.' ';
+			if ($vv['raid_done']) {
+				$msg .= '[Fertig '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
+			} 
+			if ($vv['extra_people']) $msg .= '+'.$vv['extra_people'];
+			$msg .= CR;
+		}
+	}
+	
+	if (count($data['cancel'])) {
+		$msg .= CR.TEAM_CANCEL.' <b>Abgesagt: </b>'.' ['.count($data['cancel']).']'.CR;
+		foreach ($data['cancel'] as $vv) {
+
+			if (!$vv['cancel']) continue;
+			$query = 'SELECT * FROM users WHERe user_id='.$vv['user_id'];
+			$rs = my_query($query);
+			$row = $rs->fetch_assoc();
+			$name = htmlspecialchars($row['name']);
+			$msg .= ' └ '.$GLOBALS['teams'][$row['team']].' '.$name.' ';
+			if ($vv['cancel']) {
+				$msg .= '[Abgesagt '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
+			} 
+			if ($vv['extra_people']) $msg .= '+'.$vv['extra_people'];
+			$msg .= CR;
+		}
+	}	
+
+	$msg .= CR.'<i>Aktualisiert: '.unix2tz(time(), $raid['timezone'], 'H:i:s').'</i>  ID = '.$raid['id'];
 
 	return $msg;
 }
@@ -305,7 +531,7 @@ function show_raid_poll_small($raid) {
 		$total += $sum;
 	}
 	if (!$total) {
-		$msg .= ' No participants'.CR;
+		$msg .= ' Keine Teilnehmer'.CR;
 	} else {
 		$msg .= ' = <b>'.$total.'</b>'.CR;
 	}
@@ -328,7 +554,7 @@ function raid_list($update) {
 			$rows[] = $answer;
 		}
 		debug_log($rows);
-		answer_inline_query($update['inline_query']['id'], $rows);
+        answerInlineQuery($update['inline_query']['id'], $rows);
 	} else {
 		/* By user */
 		$request = my_query('SELECT *,
@@ -342,6 +568,6 @@ function raid_list($update) {
 		}
 	
 		debug_log($rows);
-		answer_inline_query($update['inline_query']['id'], $rows);
+        answerInlineQuery($update['inline_query']['id'], $rows);
 	}
 }
