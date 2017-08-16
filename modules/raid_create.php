@@ -1,39 +1,66 @@
 <?php
+$tz = TIMEZONE;
 
+// Get latitude / longitude values.
 $lat = $update['message']['location']['latitude'];
 $lon = $update['message']['location']['longitude'];
 
+// Get the address.
 $addr = get_address($lat, $lon);
 
-$q = 'INSERT INTO raids SET
-			user_id=' . $update['message']['from']['id'] . ',
-			lat="' . $lat . '",
-			lon="' . $lon . '",
-			first_seen=NOW()
-		';
-
-$q .= ', timezone="' . TIMEZONE . '"';
-
+// Address found.
 if ($addr) {
-    $q .= ', address="' . $db->real_escape_string($addr) . '"';
+    // Build the query.
+    $rs = my_query(
+        "
+        INSERT INTO   raids
+        SET           user_id = {$update['message']['from']['id']},
+			          lat = '{$lat}',
+			          lon = '{$lon}',
+			          first_seen = NOW(),
+			          timezone = '{$tz}',
+			          address = '{$db->real_escape_string($addr)}'
+        "
+    );
+
+// No address found.
+} else {
+    // Build the query.
+    $rs = my_query(
+        "
+        INSERT INTO   raids
+        SET           user_id = {$update['message']['from']['id']},
+			          lat = '{$lat}',
+			          lon = '{$lon}',
+			          first_seen = NOW(),
+			          timezone = '{$tz}'
+        "
+    );
 }
 
-$rs = my_query($q);
+// Get last insert id from db.
 $id = my_insert_id();
+
+// Write to log.
 debug_log('ID=' . $id);
 
+// Get the keys.
 $keys = raid_edit_start_keys($id);
 
+// Build message.
 $msg = 'Create Raid at <i>' . $addr . '</i>';
 
 if ($update['message']['chat']['type'] == 'private') {
+    // Send the message.
     send_message($update['message']['chat']['id'], $msg . CR . 'Choose Raid level:', $keys);
+
 } else {
     $reply_to = $update['message']['chat']['id'];
-    if ($update['message']['reply_to_message']['message_id']) $reply_to = $update['message']['reply_to_message']['message_id'];
+    if ($update['message']['reply_to_message']['message_id']) {
+        $reply_to = $update['message']['reply_to_message']['message_id'];
+    }
 
-    send_message($update['message']['chat']['id'], $msg . CR . 'Choose Raid level:', $keys,
-        ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]
-    );
+    // Send the message.
+    send_message($update['message']['chat']['id'], $msg . CR . 'Choose Raid level:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
 }
 exit();

@@ -1,6 +1,8 @@
 <?php
-// Set error reporting.
-error_reporting(E_ALL ^ E_NOTICE);
+// Set error reporting in debug mode.
+if (DEBUG === true) {
+    error_reporting(E_ALL ^ E_NOTICE);
+}
 
 // Get current unix timestamp as float.
 $start = microtime(true);

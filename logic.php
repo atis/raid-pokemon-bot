@@ -7,12 +7,28 @@
  */
 function raid_access_check($update, $data)
 {
-    $rs = my_query("SELECT * FROM raids WHERE id = {$data['id']}");
+    // Build query.
+    $rs = my_query(
+        "
+        SELECT    *
+        FROM      raids
+          WHERE   id = {$data['id']}
+        "
+    );
+
     $raid = $rs->fetch_assoc();
 
     if ($update['callback_query']['from']['id'] != $raid['user_id']) {
-        $query = "SELECT COUNT(*) FROM users WHERE user_id={$update['callback_query']['from']['id']} AND moderator=1";
-        $rs = my_query($query);
+        // Build query.
+        $rs = my_query(
+            "
+            SELECT    COUNT(*)
+            FROM      users
+              WHERE   user_id = {$update['callback_query']['from']['id']}
+                AND   moderator = 1
+            "
+        );
+
         $row = $rs->fetch_row();
 
         if (empty($row['0'])) {
@@ -57,27 +73,27 @@ function raid_edit_start_keys($id)
     $keys = [
         [
             [
-                'text' => 'Legendary Raid *****',
+                'text'          => 'Legendary Raid *****',
                 'callback_data' => $id . ':edit:type_5'
             ]
         ],
         [
             [
-                'text' => '4 Star Raid ****',
+                'text'          => '4 Star Raid ****',
                 'callback_data' => $id . ':edit:type_4'
             ],
             [
-                'text' => '3 Star Raid ***',
+                'text'          => '3 Star Raid ***',
                 'callback_data' => $id . ':edit:type_3'
             ]
         ],
         [
             [
-                'text' => '2 Star Raid **',
+                'text'          => '2 Star Raid **',
                 'callback_data' => $id . ':edit:type_2'
             ],
             [
-                'text' => '1 Star Raid *',
+                'text'          => '1 Star Raid *',
                 'callback_data' => $id . ':edit:type_1'
             ]
         ]
@@ -100,23 +116,23 @@ function keys_raid_people($data)
 
     $keys = [
         [
-            'text' => '+1',
+            'text'          => '+1',
             'callback_data' => $data['id'] . ':vote:1'
         ],
         [
-            'text' => '+2',
+            'text'          => '+2',
             'callback_data' => $data['id'] . ':vote:2'
         ],
         [
-            'text' => '+3',
+            'text'          => '+3',
             'callback_data' => $data['id'] . ':vote:3'
         ],
         [
-            'text' => '+4',
+            'text'          => '+4',
             'callback_data' => $data['id'] . ':vote:4'
         ],
         [
-            'text' => '+5',
+            'text'          => '+5',
             'callback_data' => $data['id'] . ':vote:5'
         ]
     ];
@@ -140,37 +156,37 @@ function keys_vote($raid)
     $keys = [
         [
             [
-                'text' => 'alleine',
+                'text'          => 'alleine',
                 'callback_data' => $raid['id'] . ':vote:1'
             ],
             [
-                'text' => '+1',
+                'text'          => '+1',
                 'callback_data' => $raid['id'] . ':vote:2'
             ],
             [
-                'text' => '+2',
+                'text'          => '+2',
                 'callback_data' => $raid['id'] . ':vote:3'
             ],
             [
-                'text' => '+3',
+                'text'          => '+3',
                 'callback_data' => $raid['id'] . ':vote:4'
             ],
             [
-                'text' => '+4',
+                'text'          => '+4',
                 'callback_data' => $raid['id'] . ':vote:5'
             ]
         ],
         [
             [
-                'text' => TEAM_B . ' Mystic',
+                'text'          => TEAM_B . ' Mystic',
                 'callback_data' => $raid['id'] . ':vote_team:mystic'
             ],
             [
-                'text' => TEAM_R . ' Valor',
+                'text'          => TEAM_R . ' Valor',
                 'callback_data' => $raid['id'] . ':vote_team:valor'
             ],
             [
-                'text' => TEAM_Y . ' Instinct',
+                'text'          => TEAM_Y . ' Instinct',
                 'callback_data' => $raid['id'] . ':vote_team:instinct'
             ]
         ]
@@ -179,7 +195,7 @@ function keys_vote($raid)
     if ($end_time < $now) {
         $keys[] = [
             array(
-                'text' => 'Raid beendet.',
+                'text'          => 'Raid beendet.',
                 'callback_data' => $raid['id'] . ':vote_time:' . (ceil(time() / 900) * 900)
             )
         ];
@@ -195,7 +211,7 @@ function keys_vote($raid)
             }
 
             $keys_time[] = array(
-                'text' => unix2tz($i, $raid['timezone']),
+                'text'          => unix2tz($i, $raid['timezone']),
                 'callback_data' => $raid['id'] . ':vote_time:' . $i
             );
         }
@@ -206,19 +222,19 @@ function keys_vote($raid)
 
     $keys[] = [
         [
-            'text' => EMOJI_REFRESH,
+            'text'          => EMOJI_REFRESH,
             'callback_data' => $raid['id'] . ':vote_refresh:0'
         ],
         [
-            'text' => 'Bin da',
+            'text'          => 'Bin da',
             'callback_data' => $raid['id'] . ':vote_arrived:0'
         ],
         [
-            'text' => 'Fertig',
+            'text'          => 'Fertig',
             'callback_data' => $raid['id'] . ':vote_done:0'
         ],
         [
-            'text' => 'Absage',
+            'text'          => 'Absage',
             'callback_data' => $raid['id'] . ':vote_cancel:0'
         ],
     ];
@@ -227,7 +243,7 @@ function keys_vote($raid)
         $keys = [
             [
                 [
-                    'text' => 'Raid beendet',
+                    'text'          => 'Raid beendet',
                     'callback_data' => $raid['id'] . ':vote_refresh:0'
                 ]
             ]

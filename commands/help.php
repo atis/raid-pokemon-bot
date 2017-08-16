@@ -11,6 +11,6 @@ $msg = '
 7) press share and choose yourRaid channel
 8) wait until the option with the boss name appears and select it
 ';
-$msg = 'This is a private bot.';
+$msg = 'This is a private bot.'; // temp
 sendMessage($update['message']['from']['id'], $msg);
 	

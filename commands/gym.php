@@ -1,36 +1,68 @@
 <?php
-
+// Get gym name.
 $gym_name = trim(substr($update['message']['text'], 4));
 
 // Write to log.
 debug_log('SET gym name to ' . $gym_name);
 
 if ($update['message']['chat']['type'] == 'private' || $update['callback_query']['message']['chat']['type'] == 'private') {
-
-    $query = 'UPDATE raids SET gym_name="' . $db->real_escape_string($gym_name) . '" WHERE user_id=' . $update['message']['from']['id'] . ' ORDER BY id DESC LIMIT 1';
-    my_query($query);
+    // Build query.
+    my_query(
+        "
+        UPDATE    raids
+        SET       gym_name = '{$db->real_escape_string($gym_name)}'
+          WHERE   user_id = {$update['message']['from']['id']}
+        ORDER BY  id DESC LIMIT 1
+        "
+    );
 
     sendMessage($update['message']['chat']['id'], 'Gym name updated');
 
 } else {
     if ($update['message']['reply_to_message']['text']) {
+
         $lines = explode(CR, $update['message']['reply_to_message']['text']);
         $last_line = array_pop($lines);
         $pos = strpos($last_line, 'ID = ');
         $id = intval(trim(substr($last_line, $pos + 5)));
+
+        // Write to log.
         debug_log('Gym ID=' . $id . ' name=' . $gym_name);
 
-        $query = 'SELECT COUNT(*) FROM users WHERE user_id=' . $update['message']['from']['id'] . ' AND moderator=1';
-        $rs = my_query($query);
+        // Build query.
+        $rs = my_query(
+            "
+            SELECT    COUNT(*)
+            FROM      users
+              WHERE   user_id = {$update['message']['from']['id']}
+                AND   moderator = 1
+            "
+        );
 
         $row = $rs->fetch_row();
-        $q = ' AND user_id=' . $update['message']['from']['id'];
-        if ($row[0]) {
-            $q = '';
-        }
 
-        $query = 'UPDATE raids SET gym_name="' . $db->real_escape_string($gym_name) . '" WHERE id=' . $id . ' ' . $q;
-        my_query($query);
+
+        if ($row[0]) {
+            // Build query.
+            my_query(
+                "
+                UPDATE    raids
+                SET       gym_name = '{$db->real_escape_string($gym_name)}'
+                  WHERE   id = {$id}
+                "
+            );
+
+        } else {
+            // Build query.
+            my_query(
+                "
+                UPDATE    raids
+                SET       gym_name = '{$db->real_escape_string($gym_name)}'
+                  WHERE   id = {$id}
+                    AND   user_id = {$update['message']['from']['id']}
+                "
+            );
+        }
 
         $rs = my_query(
             "

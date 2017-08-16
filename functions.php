@@ -224,7 +224,7 @@ function answerInlineQuery($query_id, $contents)
  * @param $text_val
  * @param $markup_val
  * @param null $chat_id
- * @param bool $merge_args
+ * @param mixed $merge_args
  */
 function editMessageText($id_val, $text_val, $markup_val, $chat_id = NULL, $merge_args = false)
 {

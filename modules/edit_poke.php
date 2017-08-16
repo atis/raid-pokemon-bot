@@ -22,7 +22,7 @@ if (true) {
 
 } else {
     /* Edit pokemon */
-    $keys = raid_edit_start_keys();
+    $keys = raid_edit_start_keys($id);
 }
 
 if (!$keys) $keys = [[['text' => 'Not supported', 'callback_data' => 'edit:not_supported']]];
