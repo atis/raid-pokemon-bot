@@ -387,7 +387,7 @@ function show_raid_poll($raid) {
         SELECT      *,
                     UNIX_TIMESTAMP(attend_time) AS ts_att
         FROM        attendance
-          WHERE     raid_id={$raid['id']}
+          WHERE     raid_id = {$raid['id']}
           ORDER BY  cancel ASC,
                     raid_done DESC,
                     team ASC,
@@ -399,12 +399,20 @@ function show_raid_poll($raid) {
 	$data = array();
 	
 	while ($row = $rs->fetch_assoc()) {
-		if ($row['cancel']) $row['team']='cancel';
-		if ($row['raid_done']) $row['team']='done';
-		if (!$row['team']) $row['team']='unknown';
-		$data[$row['team']][] = $row;
-		if ($row['extra_people']) {
-			for ($i=1; $i<=$row['extra_people']; $i++) {
+		if ($row['cancel']) {
+            $row['team'] = 'cancel';
+        }
+		if ($row['raid_done']) {
+            $row['team'] = 'done';
+        }
+		if (!$row['team']) {
+            $row['team'] = 'unknown';
+        }
+
+        $data[$row['team']][] = $row;
+
+        if ($row['extra_people']) {
+			for ($i = 1; $i <= $row['extra_people']; $i++) {
 				$data[$row['team']][] = false;
 			}
 		}
@@ -412,162 +420,287 @@ function show_raid_poll($raid) {
 
 	debug_log($data);
 	
-	if (count($data)==0) {
-		$msg .= CR.'Noch keine Teilnehmer.'.CR;
-	
+	if (count($data) == 0) {
+		$msg .= CR . 'Noch keine Teilnehmer.' . CR;
 	}
-	
-	$query = 'SELECT distinct UNIX_TIMESTAMP(attend_time) AS ts_att, count(attend_time) as count, sum(extra_people) as extra FROM attendance WHERE raid_id='.$raid['id'].' AND attend_time IS NOT NULL and raid_done !=1 and cancel!=1 group by attend_time ORDER BY attend_time ASC';
-	$rs = my_query($query);
-	$timeslots = array();
+
+	$rs = my_query(
+        "
+        SELECT DISTINCT UNIX_TIMESTAMP(attend_time) AS ts_att,
+                        count(attend_time)          AS count,
+                        sum(extra_people)           AS extra
+        FROM            attendance
+          WHERE         raid_id = {$raid['id']}
+            AND         attend_time IS NOT NULL
+            AND         raid_done != 1
+            AND         cancel != 1
+          GROUP BY      attend_time
+          ORDER BY      attend_time ASC
+        "
+    );
+
+    // Init empty time slots array.
+	$timeSlots = array();
+
 	while ($row = $rs->fetch_assoc()) {
-		$timeslots[]=$row;
+        $timeSlots[] = $row;
 	}
-	debug_log($timeslots);
+
+    // Write to log.
+	debug_log($timeSlots);
 	
-	foreach ($timeslots as $ts) {
-	$msg .=CR.'<b>'.unix2tz($ts['ts_att'],$raid['timezone']).'</b>'.' ['.($ts['count']+$ts['extra']).']'.CR;
-		
-		$attend_query = 'select * from attendance where UNIX_TIMESTAMP(attend_time)='.$ts['ts_att'].' AND raid_done != 1 AND cancel != 1 AND raid_id='.$raid['id'].' ORDER BY team ASC';
-		$user_rs = my_query($attend_query);
-		$att_users = array();
-		while ($rowusers = $user_rs->fetch_assoc()) {
-		$att_users[]=$rowusers;
+	foreach ($timeSlots as $ts) {
+        // Add to message.
+	    $msg .= CR . '<b>' . unix2tz($ts['ts_att'], $raid['timezone']) . '</b>' . ' [' . ($ts['count']+$ts['extra']) . ']' . CR;
+
+        $user_rs = my_query(
+            "
+            SELECT        *
+            FROM          attendance
+              WHERE       UNIX_TIMESTAMP(attend_time) = {$ts['ts_att']}
+                AND       raid_done != 1
+                AND       cancel != 1
+                AND       raid_id = {$raid['id']}
+                ORDER BY  team ASC
+            "
+        );
+
+        // Init empty attend users array.
+        $att_users = array();
+
+
+        while ($rowusers = $user_rs->fetch_assoc()) {
+		    $att_users[] = $rowusers;
 		}
+
+        // Write to log.
 		debug_log($att_users);
 	
 		foreach ($att_users as $vv) {
-					debug_log($vv['user_id']);
-			$query = 'SELECT * FROM users WHERE user_id='.$vv['user_id'];
-			$rs = my_query($query);
+            // Write to log.
+            debug_log($vv['user_id']);
+
+            $rs = my_query(
+                "
+                SELECT  *
+                FROM    users
+                WHERE   user_id = {$vv['user_id']}
+                "
+            );
+
 			$row = $rs->fetch_assoc();
-			// always use name
+
+			// Always use name.
 			$name = htmlspecialchars($row['name']);
-			if ($row['team']===NULL)
-			{
-			$msg .= ' └ '.$GLOBALS['teams']['unknown'].' '.$name.' ';
-			} else
-			{
-			$msg .= ' └ '.$GLOBALS['teams'][$row['team']].' '.$name.' ';
+
+            // Unknown team.
+            if ($row['team'] === NULL) {
+			    $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' ' . $name . ' ';
+
+            // Known team.
+			} else {
+			    $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ' . $name . ' ';
 			}
+
+            // Arrived.
 			if ($vv['arrived']) {
-				$msg .= '[Bin da'.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
+				$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+
+            // Cancelled.
 			} else if ($vv['cancel']) {
 				$msg .= '[abgesagt] ';
-			} else {
-				//$msg .= '['.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
 			}
-			if ($vv['extra_people']) $msg .= '+'.$vv['extra_people'];
+
+            // Add extra people.
+			if ($vv['extra_people']) {
+                $msg .= '+' . $vv['extra_people'];
+            }
 			
 			$msg .= CR;
 		}
 	}
 	
-	
+	// DONE
 	if (count($data['done'])) {
-		$msg .= CR.TEAM_DONE.' <b>Fertig: </b>'.' ['.count($data['done']).']'.CR;
-		foreach ($data['done'] as $vv) {
+        // Add to message.
+		$msg .= CR . TEAM_DONE . ' <b>Fertig: </b>' . ' [' . count($data['done']) . ']' . CR;
+
+        foreach ($data['done'] as $vv) {
 
 			if (!$vv['raid_done']) continue;
-			$query = 'SELECT * FROM users WHERe user_id='.$vv['user_id'];
-			$rs = my_query($query);
-			$row = $rs->fetch_assoc();
-			$name = htmlspecialchars($row['name']);
-			$msg .= ' └ '.$GLOBALS['teams'][$row['team']].' '.$name.' ';
+
+            $rs = my_query(
+                "
+                SELECT    *
+                FROM      users
+                  WHERE   user_id = {$vv['user_id']}
+                "
+            );
+
+            $row = $rs->fetch_assoc();
+
+            $name = htmlspecialchars($row['name']);
+
+            // Add to message.
+            $msg .= ' └ '.$GLOBALS['teams'][$row['team']].' '.$name.' ';
+
+            // Done.
 			if ($vv['raid_done']) {
 				$msg .= '[Fertig '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
-			} 
-			if ($vv['extra_people']) $msg .= '+'.$vv['extra_people'];
+			}
+            // Add extra people.
+			if ($vv['extra_people']) {
+                $msg .= '+' . $vv['extra_people'];
+            }
+
 			$msg .= CR;
 		}
 	}
-	
+
+    // CANCEL
 	if (count($data['cancel'])) {
-		$msg .= CR.TEAM_CANCEL.' <b>Abgesagt: </b>'.' ['.count($data['cancel']).']'.CR;
-		foreach ($data['cancel'] as $vv) {
+		// Add to message.
+        $msg .= CR . TEAM_CANCEL . ' <b>Abgesagt: </b>' . ' [' . count($data['cancel']) . ']' . CR;
+
+        foreach ($data['cancel'] as $vv) {
 
 			if (!$vv['cancel']) continue;
-			$query = 'SELECT * FROM users WHERe user_id='.$vv['user_id'];
-			$rs = my_query($query);
-			$row = $rs->fetch_assoc();
-			$name = htmlspecialchars($row['name']);
-			$msg .= ' └ '.$GLOBALS['teams'][$row['team']].' '.$name.' ';
-			if ($vv['cancel']) {
+
+            $rs = my_query(
+                "
+                SELECT    *
+                FROM      users
+                  WHERE   user_id = {$vv['user_id']}
+                "
+            );
+
+            $row = $rs->fetch_assoc();
+
+            $name = htmlspecialchars($row['name']);
+
+            $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ' . $name . ' ';
+
+            // Cancel.
+            if ($vv['cancel']) {
 				$msg .= '[Abgesagt '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
-			} 
-			if ($vv['extra_people']) $msg .= '+'.$vv['extra_people'];
+			}
+            // Add extra people.
+			if ($vv['extra_people']) {
+                $msg .= '+' . $vv['extra_people'];
+            }
+
 			$msg .= CR;
 		}
 	}	
 
-	$msg .= CR.'<i>Aktualisiert: '.unix2tz(time(), $raid['timezone'], 'H:i:s').'</i>  ID = '.$raid['id'];
+    // Add update time and raid id to message.
+	$msg .= CR . '<i>Aktualisiert: ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>  ID = ' . $raid['id'];
 
+    // Return the message.
 	return $msg;
 }
 
+/**
+ * Show small raid poll.
+ * @param $raid
+ * @return string
+ */
 function show_raid_poll_small($raid) {
 	$time_left = floor($raid['t_left']/60);
-	$time_left = floor($time_left/60).':'.str_pad($time_left%60,2,'0',STR_PAD_LEFT).' left';
+	$time_left = floor($time_left/60) . ':' . str_pad($time_left%60, 2, '0', STR_PAD_LEFT) . ' left';
 
-	$msg = '<b>'.ucfirst($raid['pokemon']).'</b> '.$time_left.' <b>'.$raid['gym_name'].'</b>'.CR;
-	if ($raid['address']) {
-		$addr = explode(',',$raid['address'],4);
+	$msg = '<b>' . ucfirst($raid['pokemon']) . '</b> ' . $time_left . ' <b>' . $raid['gym_name'] . '</b>' . CR;
+
+    // Address found.
+    if ($raid['address']) {
+		$addr = explode(',', $raid['address'], 4);
 		array_pop($addr);
-		$addr = implode(',',$addr);
-		$msg .= '<i>'.$addr.'</i>'.CR2;
+		$addr = implode(',', $addr);
+        // Add to message.
+		$msg .= '<i>' . $addr . '</i>' . CR2;
 	}
-	
-	$query = 'SELECT team, COUNT(*) AS cnt, SUM(extra_people) AS extra FROM attendance WHERE raid_id='.$raid['id'].' AND (cancel=0 OR cancel IS NULL) AND (raid_done=0 OR raid_done IS NULL) GROUP BY team';
-	$rs = my_query($query);
-	$data = array();
+
+    // Build query.
+	$rs = my_query(
+        "
+        SELECT      team,
+                    COUNT(*)                            AS cnt,
+                    SUM(extra_people)                   AS extra
+        FROM        attendance
+          WHERE     raid_id = {$raid['id']}
+            AND     (cancel = 0 OR cancel IS NULL)
+            AND     (raid_done = 0 OR raid_done IS NULL)
+          GROUP BY  team
+        "
+    );
 	
 	$total = 0;
 	$sep = '';
-	while ($row = $rs->fetch_assoc()) {
+
+    while ($row = $rs->fetch_assoc()) {
 		$sum = $row['cnt']+$row['extra'];
-		if ($sum==0) continue;
-		$msg .= $sep.$GLOBALS['teams'][$row['team']].' '.$sum;
+
+        if ($sum==0) continue;
+
+        // Add to message.
+        $msg .= $sep . $GLOBALS['teams'][$row['team']] . ' ' . $sum;
 		$sep = ' | ';
 		$total += $sum;
 	}
+
 	if (!$total) {
-		$msg .= ' Keine Teilnehmer'.CR;
+		$msg .= ' Keine Teilnehmer' . CR;
 	} else {
-		$msg .= ' = <b>'.$total.'</b>'.CR;
+		$msg .= ' = <b>' . $total . '</b>' . CR;
 	}
 
 	return $msg;
 }
 
+/**
+ * Raid list.
+ * @param $update
+ */
 function raid_list($update) {
-	/* INLINE - LIST POLLS */
+    // Init empty rows array.
+    $rows = array();
 
+	// Inline list polls.
 	if ($update['inline_query']['query']) {
-		/* By ID */
-		$request = my_query('SELECT *,
-			UNIX_TIMESTAMP(end_time) AS ts_end, 
-			UNIX_TIMESTAMP(NOW()) as ts_now, 
-			UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW()) AS t_left
-		 FROM raids WHERE id='.intval($update['inline_query']['query']));
-		$rows = array();
-		while($answer = $request->fetch_assoc()) {
-			$rows[] = $answer;
-		}
-		debug_log($rows);
-        answerInlineQuery($update['inline_query']['id'], $rows);
-	} else {
-		/* By user */
-		$request = my_query('SELECT *,
-			UNIX_TIMESTAMP(end_time) AS ts_end, 
-			UNIX_TIMESTAMP(NOW()) as ts_now, 
-			UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW()) AS t_left
-		FROM raids WHERE user_id = '.$update['inline_query']['from']['id'].' ORDER BY id DESC LIMIT 3;');
-		$rows = array();
-		while($answer = $request->fetch_assoc()) {
-			$rows[] = $answer;
-		}
-	
-		debug_log($rows);
-        answerInlineQuery($update['inline_query']['id'], $rows);
+
+        $iqq = intval($update['inline_query']['query']);
+
+		// By ID.
+		$request = my_query(
+            "
+            SELECT    *,
+			          UNIX_TIMESTAMP(end_time)                        AS ts_end,
+			          UNIX_TIMESTAMP(NOW())                           AS ts_now,
+			          UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+		    FROM      raids
+		      WHERE   id = {$iqq}
+            "
+        );
+
+    } else {
+		// By user.
+		$request = my_query(
+            "
+            SELECT      *,
+			            UNIX_TIMESTAMP(end_time)                        AS ts_end,
+			            UNIX_TIMESTAMP(NOW())                           AS ts_now,
+			            UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+		    FROM        raids
+		      WHERE     user_id = {$update['inline_query']['from']['id']}
+		      ORDER BY  id DESC LIMIT 3
+            "
+        );
 	}
+
+    while($answer = $request->fetch_assoc()) {
+        $rows[] = $answer;
+    }
+
+    debug_log($rows);
+    answerInlineQuery($update['inline_query']['id'], $rows);
 }
