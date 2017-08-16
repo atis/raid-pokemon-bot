@@ -2,8 +2,7 @@
 		
 		$lat = $update['message']['location']['latitude'];
 		$lon = $update['message']['location']['longitude'];
-		
-		$tz = get_timezone($lat, $lon);
+
 		$addr = get_address($lat, $lon);
 
 		$q = 'INSERT INTO raids SET 
@@ -13,9 +12,8 @@
 			first_seen=NOW()
 		';
 
-		if ($tz!==false) {
-			$q .= ', timezone="'.$tz.'"';
-		}
+        $q .= ', timezone="' . TIMEZONE . '"';
+
 		if ($addr) {
 			$q .= ', address="'.$db->real_escape_string($addr).'"';
 		}

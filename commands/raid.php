@@ -14,8 +14,7 @@
 
 	$lat = substr($lat,0,strpos('.',$lat)+9);
 	$lon = substr($lon,0,strpos('.',$lon)+9);
-		
-	$tz = get_timezone($lat, $lon);
+
 	$addr = get_address($lat, $lon);
 
 	$q = 'INSERT INTO raids SET 
@@ -29,9 +28,8 @@
 		gym_name="'.$db->real_escape_string($data[5]).'"
 	';
 
-	if ($tz!==false) {
-		$q .= ', timezone="'.$tz.'"';
-	}
+		$q .= ', timezone="' . TIMEZONE . '"';
+
 	if ($addr) {
 		$q .= ', address="'.$db->real_escape_string($addr).'"';
 	}
