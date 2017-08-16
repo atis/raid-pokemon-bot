@@ -2,6 +2,7 @@
 define('GOOGLE_API_KEY',    ''); // optional
 define('TIMEZONE',          'Europe/Berlin');
 
+define('DEBUG',             true);
 define('CONFIG_LOGFILE',    '/var/log/tg-bots/dev-raid-bot.log');
 define('CONFIG_HASH',       ' = hash(sha_512,tg_bot_key) ');
 

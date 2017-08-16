@@ -34,22 +34,26 @@ function my_query($query) {
  * @param string $type
  */
 function debug_log($val, $type = '*') {
-	$date = @date('Y-m-d H:i:s');
-	$usec = microtime(true);
-	$date = $date . '.' . str_pad(substr($usec, 11, 4), 4, '0', STR_PAD_RIGHT);
+    // Write to log only if debug is enabled.
+    if (DEBUG === true) {
 
-	$bt = debug_backtrace();
-	$bl = '';
+        $date = @date('Y-m-d H:i:s');
+        $usec = microtime(true);
+        $date = $date . '.' . str_pad(substr($usec, 11, 4), 4, '0', STR_PAD_RIGHT);
 
-	while($btl = array_shift($bt)) {
-		if ($btl['function'] == __FUNCTION__) continue;
-		$bl = '[' . basename($btl['file']) . ':' . $btl['line'] . '] ';
-		break;
-	}
+        $bt = debug_backtrace();
+        $bl = '';
 
-	if (gettype($val) != 'string') $val = var_export($val, 1);
-	$rows = explode("\n", $val);
-	foreach ($rows as $v) {
-		error_log('[' . $date . '][' . getmypid() . '] ' . $bl . $type . ' ' . $v . "\n", 3, CONFIG_LOGFILE);
-	}
+        while ($btl = array_shift($bt)) {
+            if ($btl['function'] == __FUNCTION__) continue;
+            $bl = '[' . basename($btl['file']) . ':' . $btl['line'] . '] ';
+            break;
+        }
+
+        if (gettype($val) != 'string') $val = var_export($val, 1);
+        $rows = explode("\n", $val);
+        foreach ($rows as $v) {
+            error_log('[' . $date . '][' . getmypid() . '] ' . $bl . $type . ' ' . $v . "\n", 3, CONFIG_LOGFILE);
+        }
+    }
 }
