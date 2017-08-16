@@ -5,7 +5,8 @@
  * @param $lon
  * @return bool|string
  */
-function get_address($lat, $lon) {
+function get_address($lat, $lon)
+{
     // Set maps geocode url.
     $url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon;
 
@@ -38,7 +39,7 @@ function get_address($lat, $lon) {
                 $result = $v['formatted_address'];
                 $type   = $v['geometry']['location_type'];
             }
-            if ($type=='ROOFTOP') return $result;
+            if ($type == 'ROOFTOP') return $result;
         }
 
         // Return the result.

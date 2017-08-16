@@ -10,14 +10,14 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     $query = 'UPDATE raids SET gym_name="' . $db->real_escape_string($gym_name) . '" WHERE user_id=' . $update['message']['from']['id'] . ' ORDER BY id DESC LIMIT 1';
     my_query($query);
 
-    sendMessage($update['message']['chat']['id'],'Gym name updated');
+    sendMessage($update['message']['chat']['id'], 'Gym name updated');
 
 } else {
     if ($update['message']['reply_to_message']['text']) {
         $lines = explode(CR, $update['message']['reply_to_message']['text']);
         $last_line = array_pop($lines);
         $pos = strpos($last_line, 'ID = ');
-        $id = intval(trim(substr($last_line, $pos+5)));
+        $id = intval(trim(substr($last_line, $pos + 5)));
         debug_log('Gym ID=' . $id . ' name=' . $gym_name);
 
         $query = 'SELECT COUNT(*) FROM users WHERE user_id=' . $update['message']['from']['id'] . ' AND moderator=1';

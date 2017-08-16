@@ -1,4 +1,4 @@
 <?php
 
-		send_response_vote($update, $data);
+send_response_vote($update, $data);
 		

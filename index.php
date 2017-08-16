@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Set error reporting.
 error_reporting(E_ALL ^ E_NOTICE);
 
@@ -47,7 +47,7 @@ if (!$update) {
 
 } else {
     // Write to log.
-    debug_log($update,'<');
+    debug_log($update, '<');
 }
 
 // Init command.

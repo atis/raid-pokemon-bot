@@ -1,6 +1,6 @@
 <?php
 
-	$msg = '
+$msg = '
 <b>EN Guide on how to create a raid poll raid bot</b>
 1) make sure the raid hasn\'t been posted yet in the chat
 2) check how much time is left for the raid
@@ -11,6 +11,6 @@
 7) press share and choose yourRaid channel
 8) wait until the option with the boss name appears and select it
 ';
-	$msg = 'This is a private bot.';
-	sendMessage($update['message']['from']['id'], $msg);
+$msg = 'This is a private bot.';
+sendMessage($update['message']['from']['id'], $msg);
 	

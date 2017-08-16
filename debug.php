@@ -3,10 +3,11 @@
  * Get last insert id from db.
  * @return mixed
  */
-function my_insert_id() {
-	global $db;
+function my_insert_id()
+{
+    global $db;
 
-	return $db->insert_id;
+    return $db->insert_id;
 }
 
 /**
@@ -14,18 +15,19 @@ function my_insert_id() {
  * @param $query
  * @return bool|mysqli_result
  */
-function my_query($query) {
-	global $db;
+function my_query($query)
+{
+    global $db;
 
-	debug_log($query, '?');
+    debug_log($query, '?');
 
-	$res = $db->query($query);
+    $res = $db->query($query);
 
-	if ($db->error) {
-		debug_log($db->error, '!');
-	}
+    if ($db->error) {
+        debug_log($db->error, '!');
+    }
 
-	return $res;
+    return $res;
 }
 
 /**
@@ -33,7 +35,8 @@ function my_query($query) {
  * @param $val
  * @param string $type
  */
-function debug_log($val, $type = '*') {
+function debug_log($val, $type = '*')
+{
     // Write to log only if debug is enabled.
     if (DEBUG === true) {
 
