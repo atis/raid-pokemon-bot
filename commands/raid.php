@@ -85,6 +85,7 @@ $raid = $rs->fetch_assoc();
 // Set text.
 $text = show_raid_poll($raid);
 
+// Private chat type.
 if ($update['message']['chat']['type'] == 'private' || $update['callback_query']['message']['chat']['type'] == 'private') {
     // Set keys.
     $keys = [

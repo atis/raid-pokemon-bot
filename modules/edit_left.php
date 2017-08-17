@@ -46,7 +46,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     answerCallbackQuery($update['callback_query']['id'], $callback_response);
 
 } else {
-    // Build query.
+    // Get raid times.
     $rs = my_query(
         "
         SELECT    *,

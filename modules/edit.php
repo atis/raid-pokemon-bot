@@ -161,5 +161,8 @@ if (isset($update['callback_query']['inline_message_id'])) {
     editMessageText($update['callback_query']['message']['message_id'], 'Choose Raid Boss', $keys, $update['callback_query']['message']['chat']['id'], $keys);
 }
 
+// Build callback message string.
 $callback_response = 'Ok';
+
+// Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);

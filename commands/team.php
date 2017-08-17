@@ -17,15 +17,16 @@ $teams = array(
 
 // Valid team name.
 if ($teams[$gym_team]) {
-    // Build Query.
+    // Update team in raids table.
     my_query(
         "
         UPDATE    raids
         SET       gym_team = '{$teams[$gym_team]}'
           WHERE   user_id = {$update['message']['from']['id']}
-        ORDER BY id DESC LIMIT 1
+        ORDER BY  id DESC LIMIT 1
         "
     );
+
     // Send the message.
     sendMessage($update['message']['chat']['id'], 'Gym team set to ' . ucfirst($teams[$gym_team]));
 

@@ -5,8 +5,9 @@ $gym_name = trim(substr($update['message']['text'], 4));
 // Write to log.
 debug_log('SET gym name to ' . $gym_name);
 
+// Private chat type.
 if ($update['message']['chat']['type'] == 'private' || $update['callback_query']['message']['chat']['type'] == 'private') {
-    // Build query.
+    // Update gym name in raid table.
     my_query(
         "
         UPDATE    raids
@@ -16,6 +17,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
         "
     );
 
+    // Send the message.
     sendMessage($update['message']['chat']['id'], 'Gym name updated');
 
 } else {

@@ -45,7 +45,7 @@ if (!empty($answer)) {
     $row = $rs->fetch_assoc();
 
     // Check if we found the users team.
-    $team = !empty($row['team']) ? $row['team'] : '';
+    $team = !empty($row['team']) ? "'" . $row['team'] . "'" : NULL;
 
     // Create attendance.
     my_query(
@@ -54,7 +54,7 @@ if (!empty($answer)) {
         SET           raid_id = {$data['id']},
                       user_id = {$update['callback_query']['from']['id']},
                       arrived = 1,
-                      team = '{$team}',
+                      team = {$team},
                       attend_time = NOW()
         "
     );

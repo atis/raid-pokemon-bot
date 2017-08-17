@@ -9,8 +9,8 @@ $lon = $update['message']['location']['longitude'];
 $addr = get_address($lat, $lon);
 
 // Address found.
-if ($addr) {
-    // Build the query.
+if (!empty($addr)) {
+    // Create raid with address.
     $rs = my_query(
         "
         INSERT INTO   raids
@@ -25,7 +25,7 @@ if ($addr) {
 
 // No address found.
 } else {
-    // Build the query.
+    // Create raid without address.
     $rs = my_query(
         "
         INSERT INTO   raids
@@ -50,6 +50,7 @@ $keys = raid_edit_start_keys($id);
 // Build message.
 $msg = 'Create Raid at <i>' . $addr . '</i>';
 
+// Private chat type.
 if ($update['message']['chat']['type'] == 'private') {
     // Send the message.
     send_message($update['message']['chat']['id'], $msg . CR . 'Choose Raid level:', $keys);
@@ -63,4 +64,5 @@ if ($update['message']['chat']['type'] == 'private') {
     // Send the message.
     send_message($update['message']['chat']['id'], $msg . CR . 'Choose Raid level:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
 }
+
 exit();
