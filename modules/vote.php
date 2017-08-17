@@ -58,7 +58,7 @@ if (!empty($answer)) {
         SET           raid_id = {$data['id']},
                       user_id = {$update['callback_query']['from']['id']},
                       extra_people = {$extraPeople},
-                      team = '{$team}'
+                      team = {$team}
         "
     );
 }
