@@ -29,7 +29,7 @@ CREATE TABLE `attendance` (
   `raid_done` tinyint(1) unsigned DEFAULT NULL,
   `cancel` tinyint(1) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1860 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `raids` */
 
@@ -46,7 +46,7 @@ CREATE TABLE `raids` (
   `gym_name` varchar(255) DEFAULT NULL,
   `gym_team` enum('mystic','valor','instinct') DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=549 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `users` */
 
@@ -61,9 +61,10 @@ CREATE TABLE `users` (
   `lang` varchar(5) DEFAULT NULL,
   `alert_lat` varchar(12) DEFAULT NULL,
   `alert_lon` varchar(12) DEFAULT NULL,
+  `level` int(10) unsigned DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `i_userid` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12891 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

@@ -178,16 +178,24 @@ function keys_vote($raid)
         ],
         [
             [
-                'text'          => TEAM_B . ' Mystic',
+                'text'          => TEAM_B,
                 'callback_data' => $raid['id'] . ':vote_team:mystic'
             ],
             [
-                'text'          => TEAM_R . ' Valor',
+                'text'          => TEAM_R,
                 'callback_data' => $raid['id'] . ':vote_team:valor'
             ],
             [
-                'text'          => TEAM_Y . ' Instinct',
+                'text'          => TEAM_Y,
                 'callback_data' => $raid['id'] . ':vote_team:instinct'
+            ],
+            [
+                'text'          => 'Lvl +',
+                'callback_data' => $raid['id'] . ':vote_level:up'
+            ],
+            [
+                'text'          => 'Lvl -',
+                'callback_data' => $raid['id'] . ':vote_level:down'
             ]
         ]
     ];
@@ -520,11 +528,11 @@ function show_raid_poll($raid)
 
             // Unknown team.
             if ($row['team'] === NULL) {
-                $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' ' . $name . ' ';
+                $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' <b>' . $row['level'] . '</b>  ' . $name . ' ';
 
                 // Known team.
             } else {
-                $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ' . $name . ' ';
+                $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' <b>' . $row['level'] . '</b>  ' . $name . ' ';
             }
 
             // Arrived.
