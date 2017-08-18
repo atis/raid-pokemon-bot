@@ -302,6 +302,7 @@ function update_user($update)
         $name .= $sep . $msg['last_name'];
     }
 
+    // Create or update the user.
     $request = my_query(
         "
         INSERT INTO users
@@ -325,6 +326,7 @@ function update_user($update)
  */
 function send_response_vote($update, $data, $new = false)
 {
+    // Get the raid data by id.
     $rs = my_query(
         "
         SELECT  *,
@@ -336,6 +338,7 @@ function send_response_vote($update, $data, $new = false)
         "
     );
 
+    // Get the row.
     $raid = $rs->fetch_assoc();
 
     $msg = show_raid_poll($raid);
@@ -347,15 +350,21 @@ function send_response_vote($update, $data, $new = false)
     if ($new) {
         $loc = send_location($update['callback_query']['message']['chat']['id'], $raid['lat'], $raid['lon']);
 
+        // Write to log.
         debug_log('location:');
         debug_log($loc);
 
+        // Send the message.
         send_message($update['callback_query']['message']['chat']['id'], $msg . "\n", $keys, ['reply_to_message_id' => $loc['result']['message_id']]);
+        // Answer the callback.
         answerCallbackQuery($update['callback_query']['id'], $msg);
 
     } else {
+        // Edit the message.
         edit_message($update, $msg, $keys);
+        // Change message string.
         $msg = 'Abstimmung aktualisiert';
+        // Answer the callback.
         answerCallbackQuery($update['callback_query']['id'], $msg);
     }
 
@@ -363,6 +372,7 @@ function send_response_vote($update, $data, $new = false)
 }
 
 /**
+ * Convert unix timestamp to time string by timezone settings.
  * @param $unix
  * @param $tz
  * @param string $format
@@ -370,13 +380,20 @@ function send_response_vote($update, $data, $new = false)
  */
 function unix2tz($unix, $tz, $format = 'H:i')
 {
-    if (!$unix) {
+    // Unix timestamp is required.
+    if (!empty($unix)) {
+        // Create dateTime object.
+        $dt = new DateTime('@' . $unix);
+
+        // Set the timezone.
+        $dt->setTimeZone(new DateTimeZone($tz));
+
+        // Return formatted time.
+        return $dt->format($format);
+
+    } else {
         return false;
     }
-
-    $dt = new DateTime('@' . $unix);
-    $dt->setTimeZone(new DateTimeZone($tz));
-    return $dt->format($format);
 }
 
 /**
@@ -394,6 +411,7 @@ function show_raid_poll($raid)
 
     if ($raid['gym_name'] || $raid['gym_team']) {
         $msg .= 'Arena: <b>' . $raid['gym_name'] . '</b>';
+
         if ($raid['gym_team']) {
             $msg .= ' ' . $GLOBALS['teams'][$raid['gym_team']] . ' ' . ucfirst($raid['gym_team']);
         }
@@ -404,8 +422,10 @@ function show_raid_poll($raid)
         $addr = explode(',', $raid['address'], 4);
         array_pop($addr);
         $addr = implode(',', $addr);
+
         $msg .= 'Adresse: <a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . CR . '">' . $addr . '</a>' . CR2;
     }
+
     $msg .= 'Raid Boss: <b>' . ucfirst($raid['pokemon']) . '</b>' . CR2;
 
     if ($time_left < 0) {
@@ -429,6 +449,7 @@ function show_raid_poll($raid)
         "
     );
 
+    // Init empty data array.
     $data = array();
 
     while ($row = $rs->fetch_assoc()) {
@@ -513,6 +534,7 @@ function show_raid_poll($raid)
             // Write to log.
             debug_log($vv['user_id']);
 
+            // Get user data.
             $rs = my_query(
                 "
                 SELECT  *
@@ -521,6 +543,7 @@ function show_raid_poll($raid)
                 "
             );
 
+            // Get the row.
             $row = $rs->fetch_assoc();
 
             // Always use name.
@@ -530,7 +553,7 @@ function show_raid_poll($raid)
             if ($row['team'] === NULL) {
                 $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' <b>' . $row['level'] . '</b>  ' . $name . ' ';
 
-                // Known team.
+            // Known team.
             } else {
                 $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' <b>' . $row['level'] . '</b>  ' . $name . ' ';
             }
@@ -539,7 +562,7 @@ function show_raid_poll($raid)
             if ($vv['arrived']) {
                 $msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
 
-                // Cancelled.
+            // Cancelled.
             } else if ($vv['cancel']) {
                 $msg .= '[abgesagt] ';
             }
