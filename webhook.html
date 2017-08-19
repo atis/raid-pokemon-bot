@@ -14,7 +14,7 @@
         Enter your Bot Token: <input class="txt" type="text" v-model="token"/><br>
         Enter your Bot Url: <input class="txt" type="text" name="url" v-model="bot_url"/><br>
         MAX Connections?: <input class="txt" type="text" name="max_connections" value="40"/><br>
-        Enter your Certificate: <input type="file" name="certificate" id="fileToUpload"/><br>
+        Enter your Certificate (only if self-signed): <input type="file" name="certificate" id="fileToUpload"/><br>
         <br/>
         <input type="submit" value="Set Webhook" name="submit">
     </form>
@@ -31,7 +31,7 @@
                 return 'https://api.telegram.org/bot' + this.token + '/setwebhook'
             },
             bot_url: function () {
-                return 'https://your-server-address.com:' + this.port + '/' + this.token
+                return 'https://your-server-address.com:' + this.port + '/' + this.token + '/?apikey=' + this.token
             }
         }
     })

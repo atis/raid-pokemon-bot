@@ -24,9 +24,7 @@ if (hash('sha512', $apiKey) == CONFIG_HASH) {
     $splitKey = explode(':', $apiKey);
 
     // Set constants.
-    define('API_KEY',   $apiKey);
-    define('BOT_ID',    $splitKey[0]);
-    define('BOT_KEY',   $splitKey[1]);
+    define('API_KEY', $apiKey);
 
 // Api key is wrong!
 } else {
@@ -56,7 +54,7 @@ if (!$update) {
 $command = NULL;
 
 // Establish mysql connection.
-$db = new mysqli('localhost', BOT_ID, BOT_KEY, BOT_ID);
+$db = new mysqli('localhost', DB_NAME, DB_PASSWORD, DB_USER);
 
 // Error connecting to db.
 if ($db->connect_errno) {

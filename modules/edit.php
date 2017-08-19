@@ -15,16 +15,16 @@ if ($data['arg'] == 'type_5') {
     $keys = [
         [
             [
-                'text'          => 'Articuno',
-                'callback_data' => $id . ':edit_poke:articuno'
+                'text'          => 'Arktos',
+                'callback_data' => $id . ':edit_poke:arktos'
             ],
             [
                 'text'          => 'Lugia',
                 'callback_data' => $id . ':edit_poke:lugia'
             ],
             [
-                'text'          => 'Moltres',
-                'callback_data' => $id . ':edit_poke:moltres'
+                'text'          => 'Lavados',
+                'callback_data' => $id . ':edit_poke:lavados'
             ],
             [
                 'text'          => 'Zapdos',
@@ -39,36 +39,36 @@ if ($data['arg'] == 'type_5') {
     $keys = [
         [
             [
-                'text'          => 'Tyranitar',
-                'callback_data' => $id . ':edit_poke:tyranitar'
+                'text'          => 'Despotar',
+                'callback_data' => $id . ':edit_poke:despotar'
             ]
         ],
         [
             [
-                'text'          => 'Snorlax',
-                'callback_data' => $id . ':edit_poke:snorlax'
+                'text'          => 'Relaxo',
+                'callback_data' => $id . ':edit_poke:relaxo'
             ],
             [
                 'text'          => 'Lapras',
                 'callback_data' => $id . ':edit_poke:lapras'
             ],
             [
-                'text'          => 'Rhydon',
-                'callback_data' => $id . ':edit_poke:rhydon'
+                'text'          => 'Rizeros',
+                'callback_data' => $id . ':edit_poke:rizeros'
             ]
         ],
         [
             [
-                'text'          => 'Charizard',
-                'callback_data' => $id . ':edit_poke:charizard'
+                'text'          => 'Glurak',
+                'callback_data' => $id . ':edit_poke:glurak'
             ],
             [
-                'text'          => 'Venusaur',
-                'callback_data' => $id . ':edit_poke:venusaur'
+                'text'          => 'Bisasflor',
+                'callback_data' => $id . ':edit_poke:bisasflor'
             ],
             [
-                'text'          => 'Blastoise',
-                'callback_data' => $id . ':edit_poke:blastoise'
+                'text'          => 'Turtok',
+                'callback_data' => $id . ':edit_poke:turtok'
             ]
         ]
     ];
@@ -79,32 +79,32 @@ if ($data['arg'] == 'type_5') {
     $keys = [
         [
             [
-                'text'          => 'Machamp',
-                'callback_data' => $id . ':edit_poke:machamp'
+                'text'          => 'Machomei',
+                'callback_data' => $id . ':edit_poke:machomei'
             ]
         ],
         [
             [
-                'text'          => 'Vaporeon',
-                'callback_data' => $id . ':edit_poke:vaporeon'
+                'text'          => 'Aquana',
+                'callback_data' => $id . ':edit_poke:aquana'
             ],
             [
-                'text'          => 'Flareon',
-                'callback_data' => $id . ':edit_poke:flareon'
+                'text'          => 'Flamara',
+                'callback_data' => $id . ':edit_poke:flamara'
             ],
             [
-                'text'          => 'Jolteon',
-                'callback_data' => $id . ':edit_poke:jolteon'
+                'text'          => 'Blitza',
+                'callback_data' => $id . ':edit_poke:blitza'
             ]
         ],
         [
             [
-                'text'          => 'Alakazam',
-                'callback_data' => $id . ':edit_poke:alakazam'
+                'text'          => 'Simsala',
+                'callback_data' => $id . ':edit_poke:simsala'
             ],
             [
-                'text'          => 'Arcanine',
-                'callback_data' => $id . ':edit_poke:arcanine'
+                'text'          => 'Arkani',
+                'callback_data' => $id . ':edit_poke:arkani'
             ],
             [
                 'text'          => 'Gengar',
@@ -119,8 +119,8 @@ if ($data['arg'] == 'type_5') {
     $keys = [
         [
             [
-                'text'          => 'Muk',
-                'callback_data' => $id . ':edit_poke:muk'
+                'text'          => 'Sleimok',
+                'callback_data' => $id . ':edit_poke:sleimok'
             ]
         ]
     ];
