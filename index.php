@@ -65,7 +65,10 @@ if ($db->connect_errno) {
 }
 
 // Update the user.
-update_user($update);
+$userUpdate = update_user($update);
+
+// Write to log.
+debug_log('Update user: ' . $userUpdate);
 
 // Callback query received.
 if (isset($update['callback_query'])) {

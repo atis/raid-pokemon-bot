@@ -409,15 +409,21 @@ function show_raid_poll($raid)
     // Init empty message string.
     $msg = '';
 
+    // Display gym details.
     if ($raid['gym_name'] || $raid['gym_team']) {
-        $msg .= 'Arena: <b>' . $raid['gym_name'] . '</b>';
-
-        if ($raid['gym_team']) {
-            $msg .= ' ' . $GLOBALS['teams'][$raid['gym_team']] . ' ' . ucfirst($raid['gym_team']);
+        // Add gym name to message.
+        if ($raid['gym_name']) {
+            $msg .= 'Arena: <b>' . $raid['gym_name'] . '</b> ';
         }
+        // Add team to message.
+        if ($raid['gym_team']) {
+            $msg .= $GLOBALS['teams'][$raid['gym_team']] . ' ' . ucfirst($raid['gym_team']);
+        }
+
         $msg .= CR;
     }
 
+    // Display address.
     if ($raid['address']) {
         $addr = explode(',', $raid['address'], 4);
         array_pop($addr);
@@ -426,15 +432,19 @@ function show_raid_poll($raid)
         $msg .= 'Adresse: <a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . CR . '">' . $addr . '</a>' . CR2;
     }
 
+    // Display raid boss.
     $msg .= 'Raid Boss: <b>' . ucfirst($raid['pokemon']) . '</b>' . CR2;
 
+    // Add raid is done message.
     if ($time_left < 0) {
         $msg .= 'Raid beendet.' . CR2;
 
+    // Add time left message.
     } else {
         $msg .= '<i>' . $time_left . '</i> bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . CR;
     }
 
+    // Get attendance for this raid.
     $rs = my_query(
         "
         SELECT      *,
@@ -452,10 +462,13 @@ function show_raid_poll($raid)
     // Init empty data array.
     $data = array();
 
+    // For each attendance.
     while ($row = $rs->fetch_assoc()) {
+        // Set cancel text.
         if ($row['cancel']) {
             $row['team'] = 'cancel';
         }
+        // Set done text.
         if ($row['raid_done']) {
             $row['team'] = 'done';
         }
@@ -474,6 +487,7 @@ function show_raid_poll($raid)
 
     debug_log($data);
 
+    // Add no attendance found message.
     if (count($data) == 0) {
         $msg .= CR . 'Noch keine Teilnehmer.' . CR;
     }
@@ -503,6 +517,7 @@ function show_raid_poll($raid)
     // Write to log.
     debug_log($timeSlots);
 
+    // TIMES
     foreach ($timeSlots as $ts) {
         // Add to message.
         $msg .= CR . '<b>' . unix2tz($ts['ts_att'], $raid['timezone']) . '</b>' . ' [' . ($ts['count'] + $ts['extra']) . ']' . CR;
@@ -523,8 +538,8 @@ function show_raid_poll($raid)
         $att_users = array();
 
 
-        while ($rowusers = $user_rs->fetch_assoc()) {
-            $att_users[] = $rowusers;
+        while ($rowUsers = $user_rs->fetch_assoc()) {
+            $att_users[] = $rowUsers;
         }
 
         // Write to log.
