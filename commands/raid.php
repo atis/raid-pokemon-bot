@@ -23,6 +23,9 @@ $lon = substr($lon, 0, strpos('.', $lon) + 9);
 // Get the address.
 $addr = get_address($lat, $lon);
 
+// Get full address.
+$fullAddress = (!empty($addr['district']) ? $addr['district'] : '') . (!empty($addr['street']) ? ", " . $addr['street'] : "");
+
 // Address found.
 if ($addr) {
     // Build the query.
@@ -38,7 +41,7 @@ if ($addr) {
 		              gym_team = '{$db->real_escape_string($data[4])}',
 		              gym_name = '{$db->real_escape_string($data[5])}',
 		              timezone = '{$tz}',
-		              address = '{$db->real_escape_string($addr)}'
+		              address = '{$db->real_escape_string($fullAddress)}'
         "
     );
 

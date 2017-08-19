@@ -404,45 +404,44 @@ function unix2tz($unix, $tz, $format = 'H:i')
 function show_raid_poll($raid)
 {
     $time_left = floor($raid['t_left'] / 60);
-    $time_left = floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h übrig ';
+    $time_left = 'noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h';
 
     // Init empty message string.
     $msg = '';
 
-    // Display gym details.
-    if ($raid['gym_name'] || $raid['gym_team']) {
-        // Add gym name to message.
-        if ($raid['gym_name']) {
-            $msg .= 'Arena: <b>' . $raid['gym_name'] . '</b> ';
-        }
-        // Add team to message.
-        if ($raid['gym_team']) {
-            $msg .= $GLOBALS['teams'][$raid['gym_team']] . ' ' . ucfirst($raid['gym_team']);
-        }
-
-        $msg .= CR;
-    }
+    // Display raid boss name.
+    $msg .= '<b>' . ucfirst($raid['pokemon']) . '</b>, ';
 
     // Display address.
     if ($raid['address']) {
-        $addr = explode(',', $raid['address'], 4);
-        array_pop($addr);
-        $addr = implode(',', $addr);
-
-        $msg .= 'Adresse: <a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . CR . '">' . $addr . '</a>' . CR2;
+        $msg .= $raid['address'] . ', ';
     }
-
-    // Display raid boss.
-    $msg .= 'Raid Boss: <b>' . ucfirst($raid['pokemon']) . '</b>' . CR2;
 
     // Add raid is done message.
     if ($time_left < 0) {
         $msg .= 'Raid beendet.' . CR2;
 
-    // Add time left message.
+        // Add time left message.
     } else {
-        $msg .= '<i>' . $time_left . '</i> bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . CR;
+        $msg .= 'bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . ' (' . $time_left . ').' . CR;
     }
+
+    // Display gym details.
+    if ($raid['gym_name'] || $raid['gym_team']) {
+        // Add gym name to message.
+        if ($raid['gym_name']) {
+            $msg .= 'Arena: <i>' . $raid['gym_name'] . '</i>';
+        }
+        // Add team to message.
+        if ($raid['gym_team']) {
+            $msg .= ' <i>(' . ucfirst($raid['gym_team']) . ')</i>';
+        }
+
+        $msg .= CR;
+    }
+
+    // Add google maps link to message.
+    $msg .= '<a href="http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '">http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '</a>' . CR;
 
     // Get attendance for this raid.
     $rs = my_query(
@@ -566,12 +565,18 @@ function show_raid_poll($raid)
 
             // Unknown team.
             if ($row['team'] === NULL) {
-                $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' <b>' . $row['level'] . '</b>  ' . $name . ' ';
+                $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' ' . $name;
 
             // Known team.
             } else {
-                $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' <b>' . $row['level'] . '</b>  ' . $name . ' ';
+                $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ' . $name;
             }
+
+            // Add level.
+            if ($row['level'] != 0) {
+                $msg .= ' (Lv.' . $row['level'] . ')';
+            }
+            $msg .= ' ';
 
             // Arrived.
             if ($vv['arrived']) {
@@ -665,7 +670,8 @@ function show_raid_poll($raid)
     }
 
     // Add update time and raid id to message.
-    $msg .= CR . '<i>Aktualisiert: ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>  ID = ' . $raid['id'];
+    $msg .= CR . '<i>Aktualisiert: ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>';
+    // $msg.=   ' ID = ' . $raid['id']; // Debug.
 
     // Return the message.
     return $msg;
@@ -685,11 +691,13 @@ function show_raid_poll_small($raid)
 
     // Address found.
     if ($raid['address']) {
+        /*
         $addr = explode(',', $raid['address'], 4);
         array_pop($addr);
         $addr = implode(',', $addr);
         // Add to message.
-        $msg .= '<i>' . $addr . '</i>' . CR2;
+        */
+        $msg .= '<i>' . $raid['address'] . '</i>' . CR2;
     }
 
     // Build query.

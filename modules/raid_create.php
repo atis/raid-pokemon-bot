@@ -8,6 +8,9 @@ $lon = $update['message']['location']['longitude'];
 // Get the address.
 $addr = get_address($lat, $lon);
 
+// Get full address.
+$fullAddress = (!empty($addr['district']) ? $addr['district'] : '') . (!empty($addr['street']) ? ", " . $addr['street'] : "");
+
 // Address found.
 if (!empty($addr)) {
     // Create raid with address.
@@ -19,7 +22,7 @@ if (!empty($addr)) {
 			          lon = '{$lon}',
 			          first_seen = NOW(),
 			          timezone = '{$tz}',
-			          address = '{$db->real_escape_string($addr)}'
+			          address = '{$db->real_escape_string($fullAddress)}'
         "
     );
 
@@ -48,7 +51,7 @@ debug_log('ID=' . $id);
 $keys = raid_edit_start_keys($id);
 
 // Build message.
-$msg = 'Erstelle Raid in: <i>' . $addr . '</i>';
+$msg = 'Erstelle Raid in: <i>' . $fullAddress . '</i>';
 
 // Private chat type.
 if ($update['message']['chat']['type'] == 'private') {
