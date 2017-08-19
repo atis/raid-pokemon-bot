@@ -7,9 +7,9 @@ $teams = array(
     'mystic'    => 'mystic',
     'instinct'  => 'instinct',
     'valor'     => 'valor',
-    'red'       => 'valor',
-    'blue'      => 'mystic',
-    'yellow'    => 'instinct',
+    'rot'       => 'valor',
+    'blau'      => 'mystic',
+    'gelb'      => 'instinct',
     'r'         => 'valor',
     'b'         => 'mystic',
     'y'         => 'instinct'
@@ -28,10 +28,10 @@ if ($teams[$gym_team]) {
     );
 
     // Send the message.
-    sendMessage($update['message']['chat']['id'], 'Gym team set to ' . ucfirst($teams[$gym_team]));
+    sendMessage($update['message']['chat']['id'], 'Arena Team gesetzt auf: ' . ucfirst($teams[$gym_team]));
 
 // Invalid team name.
 } else {
     // Send the message.
-    sendMessage($update['message']['chat']['id'], 'Invalid team name - type Mystic, Valor, Instinct or Blue, Red, Yellow');
+    sendMessage($update['message']['chat']['id'], 'Ungültiger Team Name - schreibe: Mystic, Valor, Instinct oder Blau, Rot, Gelb');
 }

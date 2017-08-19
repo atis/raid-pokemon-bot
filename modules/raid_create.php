@@ -48,12 +48,12 @@ debug_log('ID=' . $id);
 $keys = raid_edit_start_keys($id);
 
 // Build message.
-$msg = 'Create Raid at <i>' . $addr . '</i>';
+$msg = 'Erstelle Raid in: <i>' . $addr . '</i>';
 
 // Private chat type.
 if ($update['message']['chat']['type'] == 'private') {
     // Send the message.
-    send_message($update['message']['chat']['id'], $msg . CR . 'Choose Raid level:', $keys);
+    send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys);
 
 } else {
     $reply_to = $update['message']['chat']['id'];
@@ -62,7 +62,7 @@ if ($update['message']['chat']['type'] == 'private') {
     }
 
     // Send the message.
-    send_message($update['message']['chat']['id'], $msg . CR . 'Choose Raid level:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
+    send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
 }
 
 exit();

@@ -73,27 +73,27 @@ function raid_edit_start_keys($id)
     $keys = [
         [
             [
-                'text'          => 'Legendary Raid *****',
+                'text'          => '5 Sterne Raid',
                 'callback_data' => $id . ':edit:type_5'
             ]
         ],
         [
             [
-                'text'          => '4 Star Raid ****',
+                'text'          => '4 Sterne Raid',
                 'callback_data' => $id . ':edit:type_4'
             ],
             [
-                'text'          => '3 Star Raid ***',
+                'text'          => '3 Sterne Raid',
                 'callback_data' => $id . ':edit:type_3'
             ]
         ],
         [
             [
-                'text'          => '2 Star Raid **',
+                'text'          => '2 Sterne Raid',
                 'callback_data' => $id . ':edit:type_2'
             ],
             [
-                'text'          => '1 Star Raid *',
+                'text'          => '1 Stern Raid',
                 'callback_data' => $id . ':edit:type_1'
             ]
         ]
@@ -664,7 +664,7 @@ function show_raid_poll($raid)
 function show_raid_poll_small($raid)
 {
     $time_left = floor($raid['t_left'] / 60);
-    $time_left = floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . ' left';
+    $time_left = 'noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT);
 
     $msg = '<b>' . ucfirst($raid['pokemon']) . '</b> ' . $time_left . ' <b>' . $raid['gym_name'] . '</b>' . CR;
 

@@ -136,7 +136,7 @@ if (isset($update['callback_query'])) {
         }
 
         // Echo bot response.
-        sendMessage($update['message']['chat']['id'], '<b>Please send location to start Raid announce</b>');
+        sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b>');
     }
 }
 

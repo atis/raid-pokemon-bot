@@ -24,23 +24,23 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     $keys = [
         [
             [
-                'text'                => 'Share',
+                'text'                => 'Teilen',
                 'switch_inline_query' => strval($id)
             ]
         ]
     ];
 
     // Build message string.
-    $msg  = 'Raid saved.' . CR;
-    $msg .= 'Optional - set gym name and team:' . CR2;
-    $msg .= '/gym <code>gym name</code>' . CR;
-    $msg .= '/team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>';
+    $msg  = 'Raid gespeichert.' . CR;
+    $msg .= 'Optional - Arena Name und Arena Team:' . CR2;
+    $msg .= '/gym <code>Name der Arena</code>' . CR;
+    $msg .= '/team <code>Mystic/Valor/Instinct/Blau/Rot/Gelb</code>';
 
     // Edit message.
     edit_message($update, $msg, $keys, false);
 
     // Build callback message string.
-    $callback_response = 'End time set to ' . $data['arg'] . ' minutes';
+    $callback_response = 'Ablaufzeit gesetzt auf ' . $data['arg'] . ' Minuten';
 
     // Answer callback.
     answerCallbackQuery($update['callback_query']['id'], $callback_response);

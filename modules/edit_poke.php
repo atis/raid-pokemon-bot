@@ -26,7 +26,7 @@ if (true) {
     for ($i = 120; $i >= 25; $i = $i - 5) {
         // Create the keys.
         $keys[] = array(
-            'text'          => floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT) . ' left',
+            'text'          => 'noch ' . floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
             'callback_data' => $id . ':edit_left:' . $i
         );
     }
@@ -56,10 +56,10 @@ if (!$keys) {
 }
 
 // Edit the message.
-edit_message($update, 'How much time is left for Raid?', $keys);
+edit_message($update, 'Wie lange läuft der Raid noch?', $keys);
 
 // Build callback message string.
-$callback_response = 'Pokemon set to ' . $data['arg'];
+$callback_response = 'Pokemon gespeichert: ' . $data['arg'];
 
 // Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);

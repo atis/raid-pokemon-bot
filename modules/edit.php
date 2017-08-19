@@ -131,7 +131,7 @@ if ($data['arg'] == 'type_5') {
     $keys = [
         [
             [
-                'text' => 'Not supported',
+                'text' => 'Nicht unterstützt',
                 'callback_data' => 'edit:not_supported'
             ]
         ]
@@ -148,7 +148,7 @@ if (!$keys) {
     $keys = [
         [
             [
-                'text'          => 'Not supported',
+                'text'          => 'Nicht unterstützt',
                 'callback_data' => 'edit:not_supported'
             ]
         ]
@@ -156,9 +156,9 @@ if (!$keys) {
 }
 
 if (isset($update['callback_query']['inline_message_id'])) {
-    editMessageText($update['callback_query']['inline_message_id'], 'Choose Raid Boss:', $keys);
+    editMessageText($update['callback_query']['inline_message_id'], 'Raid Boss auswählen:', $keys);
 } else {
-    editMessageText($update['callback_query']['message']['message_id'], 'Choose Raid Boss', $keys, $update['callback_query']['message']['chat']['id'], $keys);
+    editMessageText($update['callback_query']['message']['message_id'], 'Raid Boss auswählen', $keys, $update['callback_query']['message']['chat']['id'], $keys);
 }
 
 // Build callback message string.
