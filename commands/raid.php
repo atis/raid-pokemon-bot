@@ -85,6 +85,13 @@ $rs = my_query(
 // Get row.
 $raid = $rs->fetch_assoc();
 
+// Send location.
+$loc = send_location($update['message']['chat']['id'], $raid['lat'], $raid['lon']);
+
+// Write to log.
+debug_log('location:');
+debug_log($loc);
+
 // Set text.
 $text = show_raid_poll($raid);
 
