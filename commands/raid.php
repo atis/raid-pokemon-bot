@@ -1,13 +1,30 @@
 <?php
+/**
+ * Mimic inline message to create raid poll from external notifier.
+ *
+ */
 $tz = TIMEZONE;
 
-// Get gym data.
+// Get data from message text. (remove: "/raid ")
 $gym_data = trim(substr($update['message']['text'], 5));
 
-$data = explode(',', $gym_data, 6);
+// Create data array (max. 8)
+$data = explode(',', $gym_data, 8);
 
-// Invalid data.
-if (count($data) < 6) {
+/**
+ * Info:
+ * [0] = Boss name
+ * [1] = latitude
+ * [2] = longitude
+ * [3] = minutes
+ * [4] = gym team
+ * [5] = gym name
+ * [6] = district
+ * [7] = street
+ */
+
+// Invalid data received.
+if (count($data) < 8) {
     send_message($update['message']['chat']['id'], 'Invalid input', []);
     exit;
 }
@@ -20,14 +37,11 @@ $lon = floatval($data[2]);
 $lat = substr($lat, 0, strpos('.', $lat) + 9);
 $lon = substr($lon, 0, strpos('.', $lon) + 9);
 
-// Get the address.
-$addr = get_address($lat, $lon);
-
-// Get full address.
-$fullAddress = (!empty($addr['district']) ? $addr['district'] : '') . (!empty($addr['street']) ? ", " . $addr['street'] : "");
+// Build address string.
+$address = (!empty($data[6]) ? $data[6] : '') . (!empty($data[7]) ? ", " . $data[7] : "");
 
 // Address found.
-if ($addr) {
+if (!empty($address)) {
     // Build the query.
     $rs = my_query(
         "
@@ -41,7 +55,7 @@ if ($addr) {
 		              gym_team = '{$db->real_escape_string($data[4])}',
 		              gym_name = '{$db->real_escape_string($data[5])}',
 		              timezone = '{$tz}',
-		              address = '{$db->real_escape_string($fullAddress)}'
+		              address = '{$db->real_escape_string($address)}'
         "
     );
 
