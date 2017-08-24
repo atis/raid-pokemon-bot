@@ -1,8 +1,8 @@
 /*
 SQLyog Community v8.8 Beta2
-MySQL - 5.7.19-0ubuntu0.16.04.1 : Database - 437562092
+MySQL - 5.7.19-0ubuntu0.16.04.1-log : Database - 437562092
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -28,8 +28,17 @@ CREATE TABLE `attendance` (
   `arrived` tinyint(1) unsigned DEFAULT NULL,
   `raid_done` tinyint(1) unsigned DEFAULT NULL,
   `cancel` tinyint(1) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `i_raidid` (`raid_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13871 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `help` */
+
+CREATE TABLE `help` (
+  `id` bigint(20) NOT NULL,
+  `message` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1860 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `raids` */
 
@@ -45,8 +54,10 @@ CREATE TABLE `raids` (
   `address` varchar(255) DEFAULT NULL,
   `gym_name` varchar(255) DEFAULT NULL,
   `gym_team` enum('mystic','valor','instinct') DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=549 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `i_endtime` (`end_time`),
+  KEY `i_userid` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3682 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `users` */
 
@@ -63,13 +74,7 @@ CREATE TABLE `users` (
   `alert_lon` varchar(12) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `i_userid` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12891 DEFAULT CHARSET=utf8;
-
-CREATE TABLE `help` (
-  `id` bigint(20) NOT NULL,
-  `message` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=91175 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
