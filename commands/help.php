@@ -1,6 +1,6 @@
 <?php
 
-	$rs = my_query('SELECT * FROM help WHERE id=253227190');
+	$rs = my_query('SELECT * FROM help WHERE id=-1001135811922');
 	$row = $rs->fetch_assoc();
 	if (!$row) exit;
 

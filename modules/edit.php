@@ -17,6 +17,20 @@
 				'text' => 'Moltres', 'callback_data' => $id.':edit_poke:moltres',
 			],[
 				'text' => 'Zapdos', 'callback_data' => $id.':edit_poke:zapdos',
+		]],[[
+				'text' => 'Mewtwo', 'callback_data' => $id.':edit_poke:mewtwo',
+			],[
+				'text' => 'Mew', 'callback_data' => $id.':edit_poke:mew',
+			],[
+				'text' => 'Ho-Oh', 'callback_data' => $id.':edit_poke:hooh',
+			],[
+				'text' => 'Celebi', 'callback_data' => $id.':edit_poke:celebi',
+		]],[[
+				'text' => 'Raikou', 'callback_data' => $id.':edit_poke:raikou',
+			],[
+				'text' => 'Entei', 'callback_data' => $id.':edit_poke:entei',
+			],[
+				'text' => 'Suicune', 'callback_data' => $id.':edit_poke:suicune',
 		]]];
 	
 	} else if ($data['arg']=='type_4') {
