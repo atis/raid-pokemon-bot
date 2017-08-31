@@ -30,6 +30,38 @@ if ($data['arg'] == 'type_5') {
                 'text'          => 'Zapdos',
                 'callback_data' => $id . ':edit_poke:zapdos'
             ]
+        ],
+        [
+            [
+                'text'          => 'Mewtu',
+                'callback_data' => $id . ':edit_poke:mewtu'
+            ],
+            [
+                'text'          => 'Mew',
+                'callback_data' => $id . ':edit_poke:mew'
+            ],
+            [
+                'text'          => 'Ho-Oh',
+                'callback_data' => $id . ':edit_poke:hooh'
+            ],
+            [
+                'text'          => 'Celebi',
+                'callback_data' => $id . ':edit_poke:celebi'
+            ]
+        ],
+        [
+            [
+                'text'          => 'Raikou',
+                'callback_data' => $id . ':edit_poke:raikou'
+            ],
+            [
+                'text'          => 'Entei',
+                'callback_data' => $id . ':edit_poke:entei'
+            ],
+            [
+                'text'          => 'Suicune',
+                'callback_data' => $id . ':edit_poke:suicune'
+            ]
         ]
     ];
 
