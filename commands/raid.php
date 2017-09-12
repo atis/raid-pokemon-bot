@@ -37,6 +37,9 @@ $lon = floatval($data[2]);
 $lat = substr($lat, 0, strpos('.', $lat) + 9);
 $lon = substr($lon, 0, strpos('.', $lon) + 9);
 
+// Escape comma in Raidname
+$name = str_replace('|',',',$data[5]);
+
 // Build address string.
 $address = (!empty($data[6]) ? $data[6] : '') . (!empty($data[7]) ? ", " . $data[7] : "");
 
@@ -53,7 +56,7 @@ if (!empty($address)) {
 		              first_seen = NOW(),
 		              end_time = DATE_ADD(first_seen, INTERVAL {$data[3]} MINUTE),
 		              gym_team = '{$db->real_escape_string($data[4])}',
-		              gym_name = '{$db->real_escape_string($data[5])}',
+		              gym_name = '{$db->real_escape_string($name)}',
 		              timezone = '{$tz}',
 		              address = '{$db->real_escape_string($address)}'
         "
