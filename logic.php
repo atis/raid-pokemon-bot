@@ -209,8 +209,10 @@ function keys_vote($raid)
         ];
 
     } else {
+	$timePerSlot = 600; // 10 minutes
+	$timeBeforeEnd = 600; // 10 minutes
         $col = 1;
-        for ($i = ceil($now / 900) * 900; $i <= ($end_time - 900); $i = $i + 900) {
+        for ($i = ceil($now / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
 
             if ($col++ >= 4) {
                 $keys[] = $keys_time;
@@ -404,6 +406,9 @@ function unix2tz($unix, $tz, $format = 'H:i')
 function show_raid_poll($raid)
 {
     $time_left = floor($raid['t_left'] / 60);
+    if ( strpos(str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) , '-' ) !== false )
+	$time_left = 'beendet';
+    else
     $time_left = 'noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h';
 
     // Init empty message string.
@@ -434,7 +439,16 @@ function show_raid_poll($raid)
         }
         // Add team to message.
         if ($raid['gym_team']) {
-            $msg .= ' <i>(' . ucfirst($raid['gym_team']) . ')</i>';
+
+		// FB: Korrekt Team Color
+		$team = '';
+		if ($raid['gym_team'] == 'valor')
+			$team = 'blau';
+		else if ($raid['gym_team'] == 'instinct')
+			$team = 'gelb';
+		else if ($raid['gym_team'] == 'mystic')
+			$team = 'rot';
+            $msg .= ' <i>(' . $team . ')</i>';
         }
 
         $msg .= CR;
