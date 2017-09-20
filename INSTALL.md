@@ -35,3 +35,7 @@ Use https://your-hostname/bot-dir/setup.php
 
 Get maps API key, and set as `TZ_API_KEY` in your config.
 
+Activate it for both Geocoding and Time Zone API
+
+https://developers.google.com/maps/documentation/timezone/get-api-key
+https://developers.google.com/maps/documentation/geocoding/start#get-a-key
