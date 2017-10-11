@@ -18,7 +18,7 @@ edit config.php and set `CONFIG_LOGFILE`
 Start chat with https://t.me/BotFather and create bot token.
 Enable Inline mode, Allow Groups, Group Privacy off
 
-Use http://passwordsgenerator.net/sha512-hash-generator/ and set `CONFIG_HASH` to hashed value of your token
+Use https://www.miniwebtool.com/sha512-hash-generator/ and set `CONFIG_HASH` to hashed value of your token (make sure it is lowecase)
 
 ## Database
 
