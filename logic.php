@@ -152,6 +152,7 @@ function keys_vote($raid)
 
     $end_time = $raid['ts_end'];
     $now = $raid['ts_now'];
+    $start_time = $raid['ts_start'];
 
     $keys = [
         [
@@ -209,21 +210,38 @@ function keys_vote($raid)
         ];
 
     } else {
-	$timePerSlot = 600; // 10 minutes
-	$timeBeforeEnd = 600; // 10 minutes
+	$timePerSlot = 60*RAID_SLOTS;
+	$timeBeforeEnd = 60*RAID_LAST_START;
         $col = 1;
-        for ($i = ceil($now / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
+        //for ($i = ceil($now / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
+        for ($i = ceil($start_time / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
 
             if ($col++ >= 4) {
                 $keys[] = $keys_time;
                 $keys_time = [];
                 $col = 1;
             }
+	    // Plus 60 seconds, so vote button for e.g. 10:00 will disappear after 10:00:59 / at 10:01:00 and not right after 09:59:59 / at 10:00:00
+	    if (($i + 60) > $now) {
+		// Display vote buttons for now + 1 additional minute
+                $keys_time[] = array(
+                    'text'          => unix2tz($i, $raid['timezone']),
+                    'callback_data' => $raid['id'] . ':vote_time:' . $i
+                );
+	    }
 
-            $keys_time[] = array(
-                'text'          => unix2tz($i, $raid['timezone']),
-                'callback_data' => $raid['id'] . ':vote_time:' . $i
-            );
+	    // This is our last run of the for loop since $i + timePerSlot are ahead of $end_time - $timeBeforeEnd
+	    // Offer a last raid, which is x minutes before the raid ends, x = $timeBeforeEnd
+            if (($i + $timePerSlot) > ($end_time - $timeBeforeEnd)) {
+		// Set the time for the last possible raid and add vote key if there is enough time left
+                $timeLastRaid = $end_time - $timeBeforeEnd;
+		if($timeLastRaid > $i + $timeBeforeEnd && ($timeLastRaid >= $now)){
+                    $keys_time[] = array(
+                        'text'          => unix2tz($timeLastRaid, $raid['timezone']),
+                        'callback_data' => $raid['id'] . ':vote_time:' . $timeLastRaid
+                    );
+		}
+            }
         }
 
         $keys[] = $keys_time;
@@ -274,15 +292,15 @@ function update_user($update)
     $name = '';
     $sep = '';
 
-    if ($update['message']) {
+    if (isset($update['message'])) {
         $msg = $update['message']['from'];
     }
 
-    if ($update['callback_query']) {
+    if (isset($update['callback_query'])) {
         $msg = $update['callback_query']['from'];
     }
 
-    if ($update['inline_query']) {
+    if (isset($update['inline_query'])) {
         $msg = $update['inline_query']['from'];
     }
 
@@ -300,7 +318,7 @@ function update_user($update)
         $sep = ' ';
     }
 
-    if ($msg['last_name']) {
+    if (isset($msg['last_name'])) {
         $name .= $sep . $msg['last_name'];
     }
 
@@ -333,6 +351,7 @@ function send_response_vote($update, $data, $new = false)
         "
         SELECT  *,
                 UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                UNIX_TIMESTAMP(start_time)                      AS ts_start,
                 UNIX_TIMESTAMP(NOW())                           AS ts_now,
                 UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
         FROM    raids
@@ -405,37 +424,14 @@ function unix2tz($unix, $tz, $format = 'H:i')
  */
 function show_raid_poll($raid)
 {
-    $time_left = floor($raid['t_left'] / 60);
-    if ( strpos(str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) , '-' ) !== false )
-	$time_left = 'beendet';
-    else
-    $time_left = 'noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h';
-
     // Init empty message string.
     $msg = '';
-
-    // Display raid boss name.
-    $msg .= '<b>' . ucfirst($raid['pokemon']) . '</b>, ';
-
-    // Display address.
-    if ($raid['address']) {
-        $msg .= $raid['address'] . ', ';
-    }
-
-    // Add raid is done message.
-    if ($time_left < 0) {
-        $msg .= 'Raid beendet.' . CR2;
-
-        // Add time left message.
-    } else {
-        $msg .= 'bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . ' (' . $time_left . ').' . CR;
-    }
 
     // Display gym details.
     if ($raid['gym_name'] || $raid['gym_team']) {
         // Add gym name to message.
         if ($raid['gym_name']) {
-            $msg .= 'Arena: <i>' . $raid['gym_name'] . '</i>';
+            $msg .= 'Arena: <b>' . $raid['gym_name'] . '</b>';
         }
         // Add team to message.
         if ($raid['gym_team']) {
@@ -443,19 +439,54 @@ function show_raid_poll($raid)
 		// FB: Korrekt Team Color
 		$team = '';
 		if ($raid['gym_team'] == 'valor')
-			$team = 'blau';
+			$team = TEAM_R;
 		else if ($raid['gym_team'] == 'instinct')
-			$team = 'gelb';
+			$team = TEAM_Y;
 		else if ($raid['gym_team'] == 'mystic')
-			$team = 'rot';
-            $msg .= ' <i>(' . $team . ')</i>';
+			$team = TEAM_B;
+            $msg .= ' ' . $team;
         }
 
         $msg .= CR;
     }
 
     // Add google maps link to message.
-    $msg .= '<a href="http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '">http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '</a>' . CR;
+    if (!empty($raid['address'])) {
+        $msg .= 'Adresse: <a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . '">' . $raid['address'] . '</a>' . CR;
+    } else {
+	$msg .= 'Adresse: <a href="http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '">http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '</a>' . CR;
+    }
+
+    // Display raid boss name.
+    $msg .= 'Raid Boss: <b>' . ucfirst($raid['pokemon']) . '</b>' . CR;
+
+    $time_left = floor($raid['t_left'] / 60);
+    if ( strpos(str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) , '-' ) !== false ) {
+	// $time_left = 'beendet'; <-- REPLACED BY $tl_msg, so if clause below is still working ($time_left < 0)
+        $tl_msg .= '<b>Raid beendet.</b>';
+    } else {
+	// Replace $time_left with $tl_msg too
+        $tl_msg = ' — <b>noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>';
+    }
+
+    // Raid has not started yet - adjust time left message
+    if ($raid['ts_now'] < $raid['ts_start']) {
+	$msg .= '<b>Raid-Ei öffnet sich um ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+
+    // Raid has started and active or already ended
+    } else {
+
+        // Add raid is done message.
+        // FIXED - $time_left got changed to text above, so added $tl_msg
+        if ($time_left < 0) {
+            $msg .= $tl_msg . CR2;
+
+            // Add time left message.
+        } else {
+            $msg .= 'Raid bis ' . unix2tz($raid['ts_end'], $raid['timezone']);
+	    $msg .= $tl_msg . CR;
+        }
+    }
 
     // Get attendance for this raid.
     $rs = my_query(
@@ -579,22 +610,28 @@ function show_raid_poll($raid)
 
             // Unknown team.
             if ($row['team'] === NULL) {
-                $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' ' . $name;
+                $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' ';
 
             // Known team.
             } else {
-                $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ' . $name;
+                $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ';
             }
 
             // Add level.
             if ($row['level'] != 0) {
-                $msg .= ' (Lv.' . $row['level'] . ')';
+                $msg .= '<b>'.$row['level'].'</b>';
             }
+            $msg .= '  ';
+
+	    // Add name.
+	    $msg .= $name;
             $msg .= ' ';
 
             // Arrived.
             if ($vv['arrived']) {
-                $msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+		// No time is displayed, but undefined_index error in log, so changed it:
+                //$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                $msg .= '[Bin da]';
 
             // Cancelled.
             } else if ($vv['cancel']) {
@@ -603,7 +640,7 @@ function show_raid_poll($raid)
 
             // Add extra people.
             if ($vv['extra_people']) {
-                $msg .= '+' . $vv['extra_people'];
+                $msg .= ' +' . $vv['extra_people'];
             }
 
             $msg .= CR;
@@ -611,7 +648,8 @@ function show_raid_poll($raid)
     }
 
     // DONE
-    if (count($data['done'])) {
+    if (isset($data['done']) ? count($data['done']) : '' ) {
+    //if (count($data['done'])) {
         // Add to message.
         $msg .= CR . TEAM_DONE . ' <b>Fertig: </b>' . ' [' . count($data['done']) . ']' . CR;
 
@@ -648,7 +686,8 @@ function show_raid_poll($raid)
     }
 
     // CANCEL
-    if (count($data['cancel'])) {
+    if (isset($data['cancel']) ? count($data['cancel']) : '' ) {
+    //if (count($data['cancel'])) {
         // Add to message.
         $msg .= CR . TEAM_CANCEL . ' <b>Abgesagt: </b>' . ' [' . count($data['cancel']) . ']' . CR;
 
@@ -685,7 +724,7 @@ function show_raid_poll($raid)
 
     // Add update time and raid id to message.
     $msg .= CR . '<i>Aktualisiert: ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>';
-    // $msg.=   ' ID = ' . $raid['id']; // Debug.
+    $msg .= '  ID = ' . $raid['id']; // Debug.
 
     // Return the message.
     return $msg;
@@ -770,6 +809,7 @@ function raid_list($update)
             "
             SELECT    *,
 			          UNIX_TIMESTAMP(end_time)                        AS ts_end,
+			          UNIX_TIMESTAMP(start_time)                      AS ts_start,
 			          UNIX_TIMESTAMP(NOW())                           AS ts_now,
 			          UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
 		    FROM      raids
@@ -783,6 +823,7 @@ function raid_list($update)
             "
             SELECT      *,
 			            UNIX_TIMESTAMP(end_time)                        AS ts_end,
+			            UNIX_TIMESTAMP(start_time)                      AS ts_start,
 			            UNIX_TIMESTAMP(NOW())                           AS ts_now,
 			            UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
 		    FROM        raids
