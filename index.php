@@ -1,6 +1,6 @@
 <?php
 // Set error reporting in debug mode.
-if (DEBUG === true) {
+if ('DEBUG' === true) {
     error_reporting(E_ALL ^ E_NOTICE);
 }
 
