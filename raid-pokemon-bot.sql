@@ -40,6 +40,7 @@ CREATE TABLE `raids` (
   `lat` varchar(11) DEFAULT NULL,
   `lon` varchar(11) DEFAULT NULL,
   `first_seen` datetime DEFAULT NULL,
+  `start_time` datetime DEFAULT NULL,
   `end_time` datetime DEFAULT NULL,
   `timezone` char(30) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
