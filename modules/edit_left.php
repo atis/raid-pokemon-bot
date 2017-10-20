@@ -14,7 +14,7 @@ $id = $data['id'];
 my_query(
     "
     UPDATE    raids
-    SET       end_time = DATE_ADD(first_seen, INTERVAL {$data['arg']} MINUTE)
+    SET       end_time = DATE_ADD(start_time, INTERVAL {$data['arg']} MINUTE)
       WHERE   id = {$id}
     "
 );
@@ -50,6 +50,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     $rs = my_query(
         "
         SELECT    *,
+			      UNIX_TIMESTAMP(start_time)                      AS ts_start,
 			      UNIX_TIMESTAMP(end_time)                        AS ts_end,
 			      UNIX_TIMESTAMP(NOW())                           AS ts_now,
 			      UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
