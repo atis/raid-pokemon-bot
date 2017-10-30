@@ -40,6 +40,79 @@ function raid_access_check($update, $data)
 }
 
 /**
+ * Raid duplication check.
+ * @param $gym
+ * @param $end
+ * @return $raid['id'] or 0
+ */
+function raid_duplication_check($gym,$end)
+{
+    // Build query.
+    $rs = my_query(
+        "
+        SELECT    *,
+                          UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                          UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                          UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                          UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+            FROM      raids
+            WHERE   gym_name = '{$gym}'
+	    ORDER BY id DESC
+	    LIMIT 1
+        "
+    );
+
+    // Get row.
+    $raid = $rs->fetch_assoc();
+
+    // Set duplicate ID to 0
+    $duplicate_id = 0;
+
+    // If gym is in database and new end_time matches existing end_time the updated duplicate ID to raid ID from database
+    if ($raid) {
+	// Timezone - maybe there's a more elegant solution as date_default_timezone_set?!
+        $tz = TIMEZONE;
+        date_default_timezone_set($tz);
+
+        // Now + $end = endtime of new raid
+        $end = time() + $end*60;
+
+        // Compare end time - check 5 minutes before and after database value
+        $ts_end_before = $raid['ts_end'] - (5*60);
+        $ts_end_after = $raid['ts_end'] + (5*60);
+
+	// Debug log unix times
+	debug_log("Unix timestamp of endtime new raid: " . $end);
+	debug_log("Unix timestamp of endtime-5 existing raid: " . $ts_end_before);
+	debug_log("Unix timestamp of endtime+5 existing raid: " . $ts_end_after);
+
+        // Debug log
+        debug_log("Searched database for raids at " . $raid['gym_name']);
+        debug_log("Database raid ID of last raid at ". $raid['gym_name'] . ": " . $raid['id']);
+        debug_log("New raid at " . $raid['gym_name'] . " will end: " . unix2tz($end,$tz));
+        debug_log("Existing raid at " . $raid['gym_name'] . " will end between " . unix2tz($ts_end_before,$tz) . " and " . unix2tz($ts_end_after,$tz));
+
+        // Check if end_time of new raid is between plus minus 5 minutes of existing raid
+        if($end >= $ts_end_before && $end <= $ts_end_after){
+	    // Update existing raid.
+	    $duplicate_id = $raid['id'];
+	    debug_log("New raid matches end_time of existing raid!");
+	    debug_log("Updating raid ID: " . $duplicate_id);
+    	} else {
+	    // Create new raid.
+	    debug_log("New raid end_time does not match the end_time of existing raid.");
+	    debug_log("Creating new raid at gym: " . $raid['gym_name']);
+        }
+    } else {
+	debug_log("Gym '" . $gym . "' not found in database!");
+	debug_log("Creating new raid at gym: " . $gym);
+    }
+
+    // Return ID or 0
+    return $duplicate_id;
+}
+
+/**
  * Inline key array.
  * @param $buttons
  * @param $columns
@@ -236,6 +309,9 @@ function keys_vote($raid)
 		// Set the time for the last possible raid and add vote key if there is enough time left
                 $timeLastRaid = $end_time - $timeBeforeEnd;
 		if($timeLastRaid > $i + $timeBeforeEnd && ($timeLastRaid >= $now)){
+		    // Round last raid time to 5 minutes to avoid crooked voting times
+		    $near5 = 5*60;
+		    $timeLastRaid = round($timeLastRaid / $near5) * $near5;
                     $keys_time[] = array(
                         'text'          => unix2tz($timeLastRaid, $raid['timezone']),
                         'callback_data' => $raid['id'] . ':vote_time:' . $timeLastRaid
@@ -463,7 +539,7 @@ function show_raid_poll($raid)
     $time_left = floor($raid['t_left'] / 60);
     if ( strpos(str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) , '-' ) !== false ) {
 	// $time_left = 'beendet'; <-- REPLACED BY $tl_msg, so if clause below is still working ($time_left < 0)
-        $tl_msg .= '<b>Raid beendet.</b>';
+        $tl_msg = '<b>Raid beendet.</b>';
     } else {
 	// Replace $time_left with $tl_msg too
         $tl_msg = ' — <b>noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>';
