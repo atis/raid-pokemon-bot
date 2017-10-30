@@ -64,6 +64,50 @@ if (!empty($data[8])) {
     $countdown = $data[8];
 }
 
+// Insert new raid or update existing raid?
+$raid_id = raid_duplication_check($name,($endtime + $countdown));
+
+if ($raid_id != 0){
+    // Update pokemon and team in raids table.
+    my_query(
+        "
+        UPDATE    raids
+        SET       pokemon = '{$db->real_escape_string($boss)}',
+		  gym_team = '{$db->real_escape_string($team)}'
+          WHERE   id = {$raid_id}
+        "
+    );
+
+    // Debug log
+    debug_log('Updated raid ID: ' . $raid_id);
+
+    // Build query.
+    $rs = my_query(
+        "
+        SELECT    *,
+                          UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                          UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                          UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                          UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+            FROM      raids
+              WHERE   id = {$raid_id}
+        "
+    );
+
+    // Get row.
+    $raid = $rs->fetch_assoc();
+
+    // Set text.
+    $text = '<b>Raid aktualisiert!  ID = ' . $raid_id . "</b>" . CR;
+    $text .= CR . show_raid_poll($raid);
+
+    // Send the message
+    sendMessage($update['message']['chat']['id'], $text);
+
+    // Exit now after update of raid and message.
+    exit;
+}
+
 // Address found.
 if (!empty($address)) {
     // Build the query.
