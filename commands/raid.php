@@ -42,7 +42,7 @@ $lat = substr($lat, 0, strpos('.', $lat) + 9);
 $lon = substr($lon, 0, strpos('.', $lon) + 9);
 
 // Endtime from input / config
-if ((!empty($data[3])) && ($data[3] > 0)) {
+if ((!empty($data[3])) && ($data[3] > 0) && ($data[3] < 60)) {
     $endtime = $data[3];
 } else {
     $endtime = RAID_DURATION;
@@ -55,8 +55,17 @@ $team = $data[4];
 $name = str_replace('|',',',$data[5]);
 
 // Build address string.
-// Based on input order of [6] and [7] it'll be either: Street, District or District, Street
-$address = (!empty($data[6]) ? $data[6] : '') . (!empty($data[7]) ? ", " . $data[7] : "");
+$addr = get_address($lat, $lon);
+
+// Get full address - Street #, ZIP District
+$address = "";
+$address .= (!empty($addr['street']) ? $addr['street'] : "");
+$address .= (!empty($addr['street_number']) ? " " . $addr['street_number'] : "");
+$address .= ", ";
+$address .= (!empty($addr['postal_code']) ? $addr['postal_code'] . " " : "");
+$address .= (!empty($addr['district']) ? $addr['district'] : "");
+
+
 
 // Get countdown minutes when specified, otherwise 0 minutes until raid starts
 $countdown = 0;
@@ -102,7 +111,7 @@ if ($raid_id != 0){
     $text .= CR . show_raid_poll($raid);
 
     // Send the message
-    sendMessage($update['message']['chat']['id'], $text);
+    //sendMessage($update['message']['chat']['id'], $text);
 
     // Exit now after update of raid and message.
     exit;
