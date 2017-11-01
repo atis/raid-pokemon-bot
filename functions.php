@@ -374,6 +374,11 @@ function curl_json_request($json)
     curl_setopt($curl, CURLOPT_POST, true);
     curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
 
+    // Use Proxyserver for curl if configured
+    if (CURL_USEPROXY == true) {
+    	curl_setopt($curl, CURLOPT_PROXY, CURL_PROXYSERVER);
+    }
+
     // Write to log.
     debug_log($json, '->');
 

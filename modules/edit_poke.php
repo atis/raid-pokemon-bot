@@ -23,10 +23,12 @@ if (true) {
     // Init empty keys array.
     $keys = array();
 
-    for ($i = 120; $i >= 25; $i = $i - 5) {
+    for ($i = 120; $i >= 20; $i = $i - 5) {
         // Create the keys.
         $keys[] = array(
-            'text'          => 'noch ' . floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
+	    // Just show the time, no text - not everyone has a phone or tablet with a large screen...
+            //'text'          => 'noch ' . floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
+            'text'          => floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
             'callback_data' => $id . ':edit_left:' . $i
         );
     }

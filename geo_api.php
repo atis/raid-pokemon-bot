@@ -10,6 +10,8 @@ function get_address($lat, $lon)
     // Init defaults.
     $location = array();
     $location['street'] = '';
+    $location['street_number'];
+    $location['postal_code'];
     $location['district'] = '';
 
     // Set maps geocode url.
@@ -26,6 +28,11 @@ function get_address($lat, $lon)
 
     curl_setopt($curl, CURLOPT_HEADER, false);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    // Use Proxyserver for curl if configured
+    if (CURL_USEPROXY == true) {
+        curl_setopt($curl, CURLOPT_PROXY, CURL_PROXYSERVER);
+    }
 
     debug_log($url, 'G>');
 
@@ -56,6 +63,18 @@ function get_address($lat, $lon)
                     if (in_array('route', $address_component->types) && !empty($address_component->long_name)) {
                         // Set street by first found.
                         $location['street'] = empty($location['street']) ? $address_component->long_name : $location['street'];
+                    }
+
+                    // Street number found.
+                    if (in_array('street_number', $address_component->types) && !empty($address_component->long_name)) {
+                        // Set street by first found.
+                        $location['street_number'] = empty($location['street_number']) ? $address_component->long_name : $location['street_number'];
+                    }
+
+                    // Postal code found.
+                    if (in_array('postal_code', $address_component->types) && !empty($address_component->long_name)) {
+                        // Set street by first found.
+                        $location['postal_code'] = empty($location['postal_code']) ? $address_component->long_name : $location['postal_code'];
                     }
 
                     // Sublocality level2 found.
