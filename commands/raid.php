@@ -42,7 +42,7 @@ $lat = substr($lat, 0, strpos('.', $lat) + 9);
 $lon = substr($lon, 0, strpos('.', $lon) + 9);
 
 // Endtime from input / config
-if ((!empty($data[3])) && ($data[3] > 0) && ($data[3] < 60)) {
+if ((!empty($data[3])) && ($data[3] > 0) && ($data[3] < RAID_DURATION)) {
     $endtime = $data[3];
 } else {
     $endtime = RAID_DURATION;
