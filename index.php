@@ -54,7 +54,7 @@ if (!$update) {
 $command = NULL;
 
 // Establish mysql connection.
-$db = new mysqli('localhost', DB_NAME, DB_PASSWORD, DB_USER);
+$db = new mysqli('localhost', DB_USER, DB_PASSWORD, DB_NAME);
 
 // Error connecting to db.
 if ($db->connect_errno) {
