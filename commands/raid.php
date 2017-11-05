@@ -16,7 +16,7 @@ $data = explode(',', $gym_data, 9);
  * [0] = Boss name
  * [1] = latitude
  * [2] = longitude
- * [3] = minutes
+ * [3] = raid duration in minutes
  * [4] = gym team
  * [5] = gym name
  * [6] = district (or street)
@@ -55,17 +55,20 @@ $team = $data[4];
 $name = str_replace('|',',',$data[5]);
 
 // Build address string.
-$addr = get_address($lat, $lon);
+if(!empty(GOOGLE_API_KEY)){
+    $addr = get_address($lat, $lon);
 
-// Get full address - Street #, ZIP District
-$address = "";
-$address .= (!empty($addr['street']) ? $addr['street'] : "");
-$address .= (!empty($addr['street_number']) ? " " . $addr['street_number'] : "");
-$address .= ", ";
-$address .= (!empty($addr['postal_code']) ? $addr['postal_code'] . " " : "");
-$address .= (!empty($addr['district']) ? $addr['district'] : "");
-
-
+    // Get full address - Street #, ZIP District
+    $address = "";
+    $address .= (!empty($addr['street']) ? $addr['street'] : "");
+    $address .= (!empty($addr['street_number']) ? " " . $addr['street_number'] : "");
+    $address .= ", ";
+    $address .= (!empty($addr['postal_code']) ? $addr['postal_code'] . " " : "");
+    $address .= (!empty($addr['district']) ? $addr['district'] : "");
+} else {
+    //Based on input order of [6] and [7] it'll be either: Street, District or District, Street
+    $address = (!empty($data[6]) ? $data[6] : '') . (!empty($data[7]) ? ", " . $data[7] : "");
+}
 
 // Get countdown minutes when specified, otherwise 0 minutes until raid starts
 $countdown = 0;
@@ -106,9 +109,10 @@ if ($raid_id != 0){
     // Get row.
     $raid = $rs->fetch_assoc();
 
+    //Debug
     // Set text.
-    $text = '<b>Raid aktualisiert!  ID = ' . $raid_id . "</b>" . CR;
-    $text .= CR . show_raid_poll($raid);
+    //$text = '<b>Raid aktualisiert!  ID = ' . $raid_id . "</b>" . CR;
+    //$text .= CR . show_raid_poll($raid);
 
     // Send the message
     //sendMessage($update['message']['chat']['id'], $text);
