@@ -17,6 +17,5 @@ define('MAINTAINER',        '@your_tg_username');
 define('MAINTAINER_ID',     'your_tg_integer');
 define('BOT_NAME',          '@RaidPokemonBot');
 
-define('RAID_DURATION',     '60'); // minutes, optional
 define('RAID_SLOTS',        '15'); // minutes
 define('RAID_LAST_START',   '10'); // minutes before RAID ends
