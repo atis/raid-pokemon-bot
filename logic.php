@@ -528,9 +528,9 @@ function show_raid_poll($raid)
 
     // Add google maps link to message.
     if (!empty($raid['address'])) {
-        $msg .= 'Adresse: <a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . '">' . $raid['address'] . '</a>' . CR;
+        $msg .= '<a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . '">' . $raid['address'] . '</a>' . CR;
     } else {
-	$msg .= 'Adresse: <a href="http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '">http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '</a>' . CR;
+	$msg .= '<a href="http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '">http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '</a>' . CR;
     }
 
     // Display raid boss name.
@@ -682,7 +682,7 @@ function show_raid_poll($raid)
             $row = $rs->fetch_assoc();
 
             // Always use name.
-            $name = htmlspecialchars($row['name']);
+            $name = '<a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
 
             // Unknown team.
             if ($row['team'] === NULL) {
@@ -696,18 +696,18 @@ function show_raid_poll($raid)
             // Add level.
             if ($row['level'] != 0) {
                 $msg .= '<b>'.$row['level'].'</b>';
+                $msg .= ' ';
             }
-            $msg .= '  ';
 
-	    // Add name.
-	    $msg .= $name;
+            // Add name.
+            $msg .= $name;
             $msg .= ' ';
 
             // Arrived.
             if ($vv['arrived']) {
 		// No time is displayed, but undefined_index error in log, so changed it:
                 //$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
-                $msg .= '[Bin da]';
+                $msg .= '[Bin da] ';
 
             // Cancelled.
             } else if ($vv['cancel']) {
@@ -716,7 +716,7 @@ function show_raid_poll($raid)
 
             // Add extra people.
             if ($vv['extra_people']) {
-                $msg .= ' +' . $vv['extra_people'];
+                $msg .= '+' . $vv['extra_people'];
             }
 
             $msg .= CR;
@@ -743,7 +743,7 @@ function show_raid_poll($raid)
 
             $row = $rs->fetch_assoc();
 
-            $name = htmlspecialchars($row['name']);
+            $name = '<a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
 
             // Add to message.
             $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ' . $name . ' ';
@@ -781,7 +781,7 @@ function show_raid_poll($raid)
 
             $row = $rs->fetch_assoc();
 
-            $name = htmlspecialchars($row['name']);
+            $name = '<a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
 
             $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ' . $name . ' ';
 
