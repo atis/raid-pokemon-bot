@@ -37,40 +37,56 @@
 		$keys = 
 		[[[
 				'text' => 'Tyranitar', 'callback_data' => $id.':edit_poke:tyranitar',
+		],[
+				'text' => 'Golem', 'callback_data' => $id.':edit_poke:Golem',
 		]],[[
 				'text' => 'Snorlax', 'callback_data' => $id.':edit_poke:snorlax',
 			],[
 				'text' => 'Lapras', 'callback_data' => $id.':edit_poke:lapras',
 			],[
-				'text' => 'Rhydon', 'callback_data' => $id.':edit_poke:rhydon',
+				'text' => 'NidoKing', 'callback_data' => $id.':edit_poke:nidoking',
 		]],[[
-				'text' => 'Charizard', 'callback_data' => $id.':edit_poke:charizard',
+				'text' => 'Victrebell', 'callback_data' => $id.':edit_poke:victrebell',
 			],[
-				'text' => 'Venusaur', 'callback_data' => $id.':edit_poke:venusaur',
+				'text' => 'Poliwrath', 'callback_data' => $id.':edit_poke:poliwrath',
 			],[
-				'text' => 'Blastoise', 'callback_data' => $id.':edit_poke:blastoise',
+				'text' => 'NidoQueen', 'callback_data' => $id.':edit_poke:nidoqueen',
 		]]];
 	} else if ($data['arg']=='type_3') {
 		$keys = 
 		[[[
 				'text' => 'Machamp', 'callback_data' => $id.':edit_poke:machamp',
 		]],[[
-				'text' => 'Vaporeon', 'callback_data' => $id.':edit_poke:vaporeon',
+				'text' => 'Gengar', 'callback_data' => $id.':edit_poke:gengar',
 			],[
-				'text' => 'Flareon', 'callback_data' => $id.':edit_poke:flareon',
-			],[
-				'text' => 'Jolteon', 'callback_data' => $id.':edit_poke:jolteon',
-		]],[[
 				'text' => 'Alakazam', 'callback_data' => $id.':edit_poke:alakazam',
 			],[
-				'text' => 'Arcanine', 'callback_data' => $id.':edit_poke:arcanine',
+				'text' => 'Porygon', 'callback_data' => $id.':edit_poke:porygon',
+		]],[[
+				'text' => 'Ninetales', 'callback_data' => $id.':edit_poke:ninetales',
 			],[
-				'text' => 'Gengar', 'callback_data' => $id.':edit_poke:gengar',
+				'text' => 'Scyther', 'callback_data' => $id.':edit_poke:scyther',
+			],[
+				'text' => 'Omastar', 'callback_data' => $id.':edit_poke:Omastar',
 		]]];
 	} else if ($data['arg']=='type_2') {
 		$keys = 
 		[[[
+				'text' => 'Sableye', 'callback_data' => $id.':edit_poke:sableye',
+		],[
 				'text' => 'Muk', 'callback_data' => $id.':edit_poke:muk',
+		]],[[
+				'text' => 'Marowak', 'callback_data' => $id.':edit_poke:marowak',
+			],[
+				'text' => 'Cloyster', 'callback_data' => $id.':edit_poke:cloyster',
+			],[
+				'text' => 'Tentacruel', 'callback_data' => $id.':edit_poke:tentacruel',
+		]],[[
+				'text' => 'Sandslash', 'callback_data' => $id.':edit_poke:sandslash',
+			],[
+				'text' => 'Weezing', 'callback_data' => $id.':edit_poke:weezing',
+			],[
+				'text' => 'Magenton', 'callback_data' => $id.':edit_poke:magneton',
 		]]];
 	} else if ($data['arg']=='type_1') {
 		$keys = [[[ 'text' => 'Not supported', 'callback_data' => 'edit:not_supported' ]]];
