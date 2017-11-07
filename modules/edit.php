@@ -73,8 +73,10 @@
 		$keys = 
 		[[[
 				'text' => 'Sableye', 'callback_data' => $id.':edit_poke:sableye',
+/* Removed
 		],[
 				'text' => 'Muk', 'callback_data' => $id.':edit_poke:muk',
+*/
 		]],[[
 				'text' => 'Marowak', 'callback_data' => $id.':edit_poke:marowak',
 			],[
@@ -86,7 +88,7 @@
 			],[
 				'text' => 'Weezing', 'callback_data' => $id.':edit_poke:weezing',
 			],[
-				'text' => 'Magenton', 'callback_data' => $id.':edit_poke:magneton',
+				'text' => 'Magneton', 'callback_data' => $id.':edit_poke:magneton',
 		]]];
 	} else if ($data['arg']=='type_1') {
 		$keys = [[[ 'text' => 'Not supported', 'callback_data' => 'edit:not_supported' ]]];
