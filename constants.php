@@ -20,6 +20,10 @@
 	define('TEAM_UNKNOWN', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f680)));
 
 	define('EMOJI_REFRESH', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F504)));
+//	define('EMOJI_EGG', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F95A))); // not showing on TG web
+	define('EMOJI_EGG', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F373)));
+	define('EMOJI_FEET', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F463)));
+	define('EMOJI_FACE', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F466)));
 
 $teams = array(
 	'mystic' => TEAM_B,

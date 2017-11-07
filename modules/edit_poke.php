@@ -14,9 +14,28 @@
 		my_query($q);
 
 		$keys = array();
-		for ($i=120; $i>=25; $i=$i-5) {
-			$keys[] = array('text' => floor($i/60).':'.str_pad($i%60,2,'0',STR_PAD_LEFT).' left', 'callback_data' => $id.':edit_left:'.$i);
+		$hatch_time = 60;
+		$raid_time = 45;
+		$disallow_end = 25;
+		$submit_intervals = 5;
+		
+		for ($i=($hatch_time+$raid_time); $i>=$disallow_end; $i=$i-$submit_intervals) {
+			$after_hatch = $i;
+			$before_hatch = $i-$raid_time;
+			if ($i>$raid_time) {
+				$hours=floor($before_hatch/60);
+				$minutes = str_pad($before_hatch%60,2,'0',STR_PAD_LEFT);
+
+				//$keys[] = array('text' => '🥚+'.$hours.':'.$minutes, 'callback_data' => $id.':edit_left:'.$i);
+				$keys[] = array('text' => EMOJI_EGG.'+'.$hours.':'.$minutes, 'callback_data' => $id.':edit_left:'.$i);
+			} else {
+				$hours=floor($after_hatch/60);
+				$minutes = str_pad($after_hatch%60,2,'0',STR_PAD_LEFT);
+
+				$keys[] = array('text' => $hours.':'.$minutes, 'callback_data' => $id.':edit_left:'.$i);
+			}
 		}
+
 		$keys = inline_key_array($keys,4);
 		debug_log($keys);
 
