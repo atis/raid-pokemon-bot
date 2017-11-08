@@ -10,8 +10,8 @@ function get_address($lat, $lon)
     // Init defaults.
     $location = array();
     $location['street'] = '';
-    $location['street_number'];
-    $location['postal_code'];
+    $location['street_number'] = '';
+    $location['postal_code'] = '';
     $location['district'] = '';
 
     // Set maps geocode url.
