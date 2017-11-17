@@ -113,6 +113,45 @@ function raid_duplication_check($gym,$end)
 }
 
 /**
+ * Insert gym.
+ * @param $gym_name
+ * @param $latitude
+ * @param $longitude
+ * @param $address
+ * @return array
+ */
+function insert_gym($name, $lat, $lon, $address)
+{
+    global $db;
+
+    // Build query to check if gym is already in database or not
+    $rs = my_query(
+        "
+        SELECT    COUNT(*)
+        FROM      gyms
+          WHERE   gym_name = '{$name}'
+         "
+        );
+
+    $row = $rs->fetch_row();
+
+    // Gym already in database or new
+    if (empty($row['0'])) {
+        // Build query for gyms table to add gym to database
+        debug_log('Gym not found in database gym list! Adding gym "' . $name . '" to the database gym list.');
+        $rs = my_query(
+            "
+            INSERT INTO   gyms
+            SET           lat = '{$lat}',
+                              lon = '{$lon}',
+                              gym_name = '{$db->real_escape_string($name)}',
+                              address = '{$db->real_escape_string($address)}'
+            "
+        );
+    }
+}
+
+/**
  * Inline key array.
  * @param $buttons
  * @param $columns
@@ -366,6 +405,7 @@ function update_user($update)
     global $db;
 
     $name = '';
+    $nick = '';
     $sep = '';
 
     if (isset($update['message'])) {
@@ -398,15 +438,19 @@ function update_user($update)
         $name .= $sep . $msg['last_name'];
     }
 
+    if (isset($msg['username'])) {
+        $nick = $msg['username'];
+    }
+
     // Create or update the user.
     $request = my_query(
         "
         INSERT INTO users
         SET         user_id = {$id},
-                    nick    = '{$db->real_escape_string($msg['username'])}',
+                    nick    = '{$db->real_escape_string($nick)}',
                     name    = '{$db->real_escape_string($name)}'
         ON DUPLICATE KEY
-        UPDATE      nick    = '{$db->real_escape_string($msg['username'])}',
+        UPDATE      nick    = '{$db->real_escape_string($nick)}',
                     name    = '{$db->real_escape_string($name)}'
         "
     );
@@ -916,3 +960,4 @@ function raid_list($update)
     debug_log($rows);
     answerInlineQuery($update['inline_query']['id'], $rows);
 }
+

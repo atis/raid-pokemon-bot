@@ -121,6 +121,9 @@ if ($raid_id != 0){
 
 // Address found.
 if (!empty($address)) {
+    // Insert gym with address, lat and lon to database if not already in database
+    $gym2db = insert_gym($name, $lat, $lon, $address);
+
     // Build the query.
     $rs = my_query(
         "
@@ -138,7 +141,6 @@ if (!empty($address)) {
 		              address = '{$db->real_escape_string($address)}'
         "
     );
-
 // No address found.
 } else {
     // Build the query.
@@ -181,12 +183,14 @@ $rs = my_query(
 // Get row.
 $raid = $rs->fetch_assoc();
 
-// Send location.
-$loc = send_location($update['message']['chat']['id'], $raid['lat'], $raid['lon']);
+if (RAID_LOCATION == true) {
+    // Send location.
+    $loc = send_location($update['message']['chat']['id'], $raid['lat'], $raid['lon']);
 
-// Write to log.
-debug_log('location:');
-debug_log($loc);
+    // Write to log.
+    debug_log('location:');
+    debug_log($loc);
+}
 
 // Set text.
 $text = show_raid_poll($raid);
