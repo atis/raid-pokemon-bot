@@ -20,6 +20,11 @@ if (isset($update['message']['chat']['type'])) {
     $chattype = $update['message']['chat']['type'];
 }
 
+// Init count_data, gym and gym_id
+$count_data = 0;
+$gym = 0;
+$gym_id = 0;
+
 // Get latitude / longitude from message text if empty
 // Necessary for Telegram Desktop Client as you cannot send a location :(
 if (empty($lat) && empty($lon)) {
@@ -42,31 +47,53 @@ if (empty($lat) && empty($lon)) {
     // Get lat and lon from message text
     $coords = $data['arg'];
 
-    // Create data array (max. 2)
-    $data = explode(',', $coords, 2);
+    // Create data array (max. 3)
+    $count_data = substr_count($coords, ",");
+    $data = explode(',', $coords, 3);
 
     // Set latitude / longitude
     $lat = $data[0];
     $lon = $data[1];
+    $gym_id = $data[2];
 
     // Debug
     debug_log('Lat=' . $lat);
     debug_log('Lon=' . $lon);
+
+    // Get gym data from database
+    if($count_data == 2) {
+        $gym_id = $data[2];
+        $gym = get_gym($gym_id);
+    }
 }
 
-// Get the address.
-$addr = get_address($lat, $lon);
-
-// Get full address - Street #, ZIP District
+// Init address and gym name
 $fullAddress = "";
-$fullAddress .= (!empty($addr['street']) ? $addr['street'] : "");
-$fullAddress .= (!empty($addr['street_number']) ? " " . $addr['street_number'] : "");
-$fullAddress .= ", ";
-$fullAddress .= (!empty($addr['postal_code']) ? $addr['postal_code'] . " " : "");
-$fullAddress .= (!empty($addr['district']) ? $addr['district'] : "");
+$gym_name = "";
+
+// Address and gym name based on input
+if($gym_id > 0) {
+    // Get address from database
+    $fullAddress = $gym['address'];
+    $gym_name = $gym['gym_name'];
+    debug_log('Gym ID: ' . $gym_id);
+    debug_log('Gym Name: ' . $gym_name);
+    debug_log('Gym Address: ' . $fullAddress);
+} else {
+    // Get the address.
+    $addr = get_address($lat, $lon);
+
+    // Get full address - Street #, ZIP District
+    $fullAddress = "";
+    $fullAddress .= (!empty($addr['street']) ? $addr['street'] : "");
+    $fullAddress .= (!empty($addr['street_number']) ? " " . $addr['street_number'] : "");
+    $fullAddress .= (!empty($fullAddress) ? ", " : "");
+    $fullAddress .= (!empty($addr['postal_code']) ? $addr['postal_code'] . " " : "");
+    $fullAddress .= (!empty($addr['district']) ? $addr['district'] : "");
+}
 
 // Address found.
-if (!empty($addr)) {
+if (!empty($fullAddress)) {
     // Create raid with address.
     $rs = my_query(
         "
@@ -76,6 +103,7 @@ if (!empty($addr)) {
 			          lon = '{$lon}',
 			          first_seen = NOW(),
 			          start_time = NOW(),
+				  gym_name = '{$db->real_escape_string($gym_name)}',
 			          timezone = '{$tz}',
 			          address = '{$db->real_escape_string($fullAddress)}'
         "
@@ -92,6 +120,7 @@ if (!empty($addr)) {
 			          lon = '{$lon}',
 			          first_seen = NOW(),
 			          start_time = NOW(),
+				  gym_name = '{$db->real_escape_string($gym_name)}',
 			          timezone = '{$tz}'
         "
     );
@@ -106,25 +135,51 @@ debug_log('ID=' . $id);
 // Get the keys.
 $keys = raid_edit_start_keys($id);
 
+// No keys found.
+if (!$keys) {
+    // Create the keys.
+    $keys = [
+        [
+            [
+                'text'          => 'Not supported',
+                'callback_data' => 'edit:not_supported'
+            ]
+        ]
+    ];
+}
+
 // Build message.
 $msg = 'Erstelle Raid in: <i>' . $fullAddress . '</i>';
 
-// Private chat type.
-if ($chattype == 'private') {
-    // Send the message.
-    //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys);
-    send_message($chatid, $msg . CR . 'Bitte Raid level auswählen:', $keys);
+// Answer callback or send message based on input prior raid creation
+if($gym_id != 0) {
+    // Edit the message.
+    edit_message($update, $msg . CR . 'Bitte Raid Level auswählen:', $keys);
 
+    // Build callback message string.
+    $callback_response = 'Arena gespeichert.';
+
+    // Answer callback.
+    answerCallbackQuery($update['callback_query']['id'], $callback_response);
 } else {
-    //$reply_to = $update['message']['chat']['id'];
-    $reply_to = $chatid;
-    if ($update['message']['reply_to_message']['message_id']) {
-        $reply_to = $update['message']['reply_to_message']['message_id'];
+    // Private chat type.
+    if ($chattype == 'private') {
+        // Send the message.
+        //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys);
+        send_message($chatid, $msg . CR . 'Bitte Raid Level auswählen:', $keys);
+
+    } else {
+        //$reply_to = $update['message']['chat']['id'];
+        $reply_to = $chatid;
+        if ($update['message']['reply_to_message']['message_id']) {
+            $reply_to = $update['message']['reply_to_message']['message_id'];
+        }
+
+        // Send the message.
+        //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
+        send_message($chatid, $msg . CR . 'Bitte Raid Level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
     }
 
-    // Send the message.
-    //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
-    send_message($chatid, $msg . CR . 'Bitte Raid level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
+    exit();
 }
 
-exit();

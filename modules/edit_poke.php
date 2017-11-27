@@ -23,13 +23,13 @@ if (true) {
     // Init empty keys array.
     $keys = array();
 
-    for ($i = 120; $i >= 20; $i = $i - 5) {
+    for ($i = 60; $i >= 0; $i = $i - 5) {
         // Create the keys.
         $keys[] = array(
 	    // Just show the time, no text - not everyone has a phone or tablet with a large screen...
             //'text'          => 'noch ' . floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
             'text'          => floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
-            'callback_data' => $id . ':edit_left:' . $i
+            'callback_data' => $id . ':edit_start:' . $i
         );
     }
 
@@ -58,7 +58,7 @@ if (!$keys) {
 }
 
 // Edit the message.
-edit_message($update, 'Wie lange läuft der Raid noch?', $keys);
+edit_message($update, 'Wann beginnt der Raid?' . CR . 'Raid läuft schon? --- Einfach 0:00 auswählen!', $keys);
 
 // Build callback message string.
 $callback_response = 'Pokemon gespeichert: ' . $data['arg'];
