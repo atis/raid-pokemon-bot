@@ -108,18 +108,24 @@ if (isset($update['callback_query'])) {
 
 // Inline query received.
 } else if (isset($update['inline_query'])) {
+    // Check access to the bot
+    bot_access_check($update);
     // List polls and exit.
     raid_list($update);
     exit();
 
 // Location received.
 } else if (isset($update['message']['location'])) {
+    // Check access to the bot
+    bot_access_check($update);
     // Create raid and exit.
     include_once('modules/raid_create.php');
     exit();
 
 // Message is required to check for commands.
 } else if (isset($update['message'])) {
+    // Check access to the bot
+    bot_access_check($update);
     // Check message text for a leading slash.
     if (substr($update['message']['text'], 0, 1) == '/') {
         // Get command name.
