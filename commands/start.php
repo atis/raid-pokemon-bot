@@ -1,3 +1,25 @@
 <?php
-// Send start message.
-sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b> ');
+// Write to log.
+debug_log('START');
+
+// Get the userid and chattype
+$userid = $update['message']['from']['id'];
+$chattype = $update['message']['chat']['type'];
+
+// Create keys array.
+$keys = [
+	    [
+	        [
+	            'text'          => 'Raid anlegen',
+		    'callback_data' => $userid . ',' . $chattype . ':raid_by_gym:0',
+	        ]
+	    ]
+	];
+
+// Set message.
+$msg = '<b>Bitte sende mir zuerst einen Standort.</b>' . CR2 . CR . '<b>Oder lege ein Raid per Arena-Auswahl an:</b>';
+
+// Send message.
+send_message($update['message']['from']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
+
+exit;
