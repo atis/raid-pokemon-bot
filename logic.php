@@ -1,5 +1,45 @@
 <?php
 /**
+ * Bot access check.
+ * @param $update
+ * @param $chat_id
+ */
+function bot_access_check($update)
+{
+    // Restricted or public access
+    if(!empty(BOT_ACCESS)) {
+	$chat_id = BOT_ACCESS;
+    
+	// Get administrators from chat
+    	$response = get_admins($chat_id);
+
+    	// Make sure we get a proper response
+    	if ($response['ok'] == true) { 
+            $allow_access = false;
+	    foreach($response['result'] as $admin) {
+	            // If user is found as administrator allow access to the bot
+	            if ($admin['user']['id'] == $update['message']['from']['id'] || $admin['user']['id'] == $update['inline_query']['from']['id']) {
+		        $allow_access = true;
+		        break;
+		    }
+                }
+        }
+
+        // Allow or deny access to the bot and log result
+        if ($allow_access) {
+            debug_log("Allowing access to the bot for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+        } else {
+            debug_log("Denying access to the bot for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+            $response_msg = '<b>You are not allowed to use this bot!</b>';
+	    sendMessage($update['message']['chat']['id'], $response_msg);
+            exit;
+        }
+    } else {
+        debug_log("Bot access is not restricted! Allowing access for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+    }
+}
+
+/**
  * Raid access check.
  * @param $update
  * @param $data
@@ -152,6 +192,26 @@ function insert_gym($name, $lat, $lon, $address)
 }
 
 /**
+ * Get gym.
+ * @param $id
+ */
+function get_gym($id)
+{
+    // Get gyms from database
+    $rs = my_query(
+            "
+            SELECT    *
+            FROM      gyms
+	    WHERE     id = {$id}
+            "
+        );
+
+    $gym = $rs->fetch_assoc();
+
+    return $gym;
+}
+
+/**
  * Inline key array.
  * @param $buttons
  * @param $columns
@@ -210,6 +270,41 @@ function raid_edit_start_keys($id)
             ]
         ]
     ];
+
+    return $keys;
+}
+
+/**
+ * Raid edit start keys.
+ * @param $id
+ * @return array
+ */
+function raid_edit_gym_keys($chatid, $chattype)
+{
+    // Get gyms from database
+    $rs = my_query(
+            "
+            SELECT    *
+            FROM      gyms
+	    ORDER BY  gym_name
+            "
+        );
+
+    // Init empty keys array.
+    $keys = array();
+
+    while ($gym = $rs->fetch_assoc()) {
+	$keys[] = array(
+            'text'          => $gym['gym_name'],
+            'callback_data' => $chatid . ',' . $chattype . ':raid_create:' . $gym['lat'] . ',' . $gym['lon'] . ',' . $gym['id']
+        );
+    }
+    
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 1);
+
+    // Write to log.
+    debug_log($keys);
 
     return $keys;
 }
@@ -538,6 +633,42 @@ function unix2tz($unix, $tz, $format = 'H:i')
 }
 
 /**
+ * Weekday number to weekday name
+ * @param weekdaynumber
+ */
+function weekday_number2name ($weekdaynumber)
+{
+    // Numeric value below 7 is required
+    if(is_numeric($weekdaynumber) && $weekdaynumber <= 7) {
+	switch($weekdaynumber) {
+	    case 1: 
+		$weekday = "Montag";
+		break;
+	    case 2: 
+		$weekday = "Dienstag";
+		break;
+	    case 3: 
+		$weekday = "Mittwoch";
+		break;
+	    case 4: 
+		$weekday = "Donnerstag";
+		break;
+	    case 5: 
+		$weekday = "Freitag";
+		break;
+	    case 6: 
+		$weekday = "Samstag";
+		break;
+	    case 7: 
+		$weekday = "Sonntag";
+		break;
+	}
+    }
+    // Return the weekday
+    return $weekday;
+}
+
+/**
  * Show raid poll.
  * @param $raid
  * @return string
@@ -591,7 +722,14 @@ function show_raid_poll($raid)
 
     // Raid has not started yet - adjust time left message
     if ($raid['ts_now'] < $raid['ts_start']) {
-	$msg .= '<b>Raid-Ei öffnet sich um ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	$weekday_now = date('N', $raid['ts_now']);
+	$weekday_start = date('N', $raid['ts_start']);
+	$raid_day = weekday_number2name ($weekday_start);
+	if ($weekday_now == $weekday_start) {
+	    $msg .= '<b>Raid-Ei öffnet sich um ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	} else {
+	    $msg .= '<b>Raid-Ei öffnet sich am ' . $raid_day .' um ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	}
 
     // Raid has started and active or already ended
     } else {
