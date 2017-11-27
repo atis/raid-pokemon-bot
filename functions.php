@@ -359,6 +359,32 @@ function edit_message($update, $message, $keys, $merge_args = false)
 }
 
 /**
+ * GetChatAdministrators
+ * @param $chatid
+ */
+function get_admins($chat_id)
+{
+    // Create response content array.
+    $reply_content = [
+        'method'     => 'getChatAdministrators',
+        'chat_id'    => $chat_id,
+        'parse_mode' => 'HTML',
+    ];
+
+    // Encode data to json.
+    $reply_json = json_encode($reply_content);
+
+    // Set header to json.
+    header('Content-Type: application/json');
+
+    // Write to log.
+    debug_log($reply_json, '>');
+
+    // Send request to telegram api.
+    return curl_json_request($reply_json);
+}
+
+/**
  * Send request to telegram api.
  * @param $json
  * @return mixed
