@@ -22,9 +22,17 @@ Bot Settings: Enable Inline mode, Allow Groups, Group Privacy off
 
 Use https://www.miniwebtool.com/sha512-hash-generator/ and set `CONFIG_HASH` to hashed value of your token (make sure it is lowecase)
 
+## Bot access
+
+Set `BOT_ACCESS` to the name (@Bot_Access_Groupname) or id (-100123456789) of group, supergroup or channel. All administrators (not members!) will gain access to the bot.
+
+When no group, supergroup or channel is specified, the bot will allow everyone to use it (public access).
+
 ## Raid times
 
 There are several options to configure the times related to the raid polls:
+
+Set `RAID_LOCATION` to true to send back the location as message in addition to the raid poll.
 
 Set `RAID_SLOTS` to the amount of minutes which shall be between the voting slots.
 
@@ -69,7 +77,12 @@ https://developers.google.com/maps/documentation/geocoding/start#get-a-key
 ## Bot commands
 #### Command: No command - just send your location to the bot
 
-The bot will guide you through the creation of the raid poll by asking you for the raid level, the pokemon raid boss and the time left for the raid. Afterwards you can set the gym name and gym team by using the /gym and /team commands.
+The bot will guide you through the creation of the raid poll by asking you for the raid level, the pokemon raid boss, the time until the raids starts and the time left for the raid. Afterwards you can set the gym name and gym team by using the /gym and /team commands.
+
+
+#### Command: /start
+
+The bot will guide you through the creation of the raid poll by asking you for the gym, raid level, the pokemon raid boss, the time until the raid starts and the time left for the raid. Afterwards you can set the gym team by using the /team command.
 
 
 #### Command: /help

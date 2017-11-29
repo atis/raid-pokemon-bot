@@ -1,6 +1,6 @@
 <?php
 // Write to log.
-debug_log('raid_edit_poke()');
+debug_log('raid_edit_start()');
 debug_log($update);
 debug_log($data);
 
@@ -11,11 +11,12 @@ raid_access_check($update, $data);
 $id = $data['id'];
 
 if (true) {
-    // Update pokemon in the raid table.
+
+    // Build query.
     my_query(
         "
         UPDATE    raids
-        SET       pokemon = '{$data['arg']}'
+        SET       start_time = DATE_ADD(start_time, INTERVAL {$data['arg']} MINUTE)
           WHERE   id = {$id}
         "
     );
@@ -23,13 +24,13 @@ if (true) {
     // Init empty keys array.
     $keys = array();
 
-    for ($i = 60; $i >= 0; $i = $i - 5) {
+    for ($i = 120; $i >= 15; $i = $i - 5) {
         // Create the keys.
         $keys[] = array(
 	    // Just show the time, no text - not everyone has a phone or tablet with a large screen...
             //'text'          => 'noch ' . floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
             'text'          => floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
-            'callback_data' => $id . ':edit_start:' . $i
+            'callback_data' => $id . ':edit_left:' . $i
         );
     }
 
@@ -44,24 +45,11 @@ if (true) {
     $keys = raid_edit_start_keys($id);
 }
 
-// No keys found.
-if (!$keys) {
-    // Create the keys.
-    $keys = [
-        [
-            [
-                'text'          => 'Not supported',
-                'callback_data' => 'edit:not_supported'
-            ]
-        ]
-    ];
-}
-
 // Edit the message.
-edit_message($update, 'Wann beginnt der Raid?' . CR . 'Raid läuft schon? --- Einfach 0:00 auswählen!', $keys);
+edit_message($update, 'Wie lange läuft der Raid?', $keys);
 
 // Build callback message string.
-$callback_response = 'Pokemon gespeichert: ' . $data['arg'];
+$callback_response = 'Vorlaufzeit gesetzt auf ' . $data['arg'] . ' Minuten';
 
 // Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);

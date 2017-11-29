@@ -46,7 +46,7 @@ if (!empty($answer)) {
     $row = $rs->fetch_assoc();
 
     // Check if we found the users team.
-    $team = !empty($row['team']) ? "'" . $row['team'] . "'" : NULL;
+    $team = !empty($row['team']) ? "'" . $row['team'] . "'" : "NULL";
 
     // Create attendance.
     my_query(

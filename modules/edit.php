@@ -185,6 +185,14 @@ if (!$keys) {
             ]
         ]
     ];
+} else {
+    $level = substr($data['arg'], -1);
+    $keys[] = [
+        array(
+            'text'          => EMOJI_EGG . ' Raid-Ei',
+            'callback_data' => $id . ':edit_poke:Level ' . $level . ' Ei'
+        )
+    ];
 }
 
 if (isset($update['callback_query']['inline_message_id'])) {

@@ -30,10 +30,41 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
         ]
     ];
 
+    // Get raid times.
+    $rs = my_query(
+        "
+        SELECT    *, 
+                              UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                              UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                              UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                              UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+                FROM      raids
+                  WHERE   id = {$data['id']}
+        "
+    );
+
+    // Fetch the row.
+    $raid = $rs->fetch_assoc();
+
     // Build message string.
-    $msg  = 'Raid gespeichert.' . CR;
-    $msg .= 'Optional - Arena Name und Arena Team:' . CR2;
-    $msg .= '/gym <code>Name der Arena</code>' . CR;
+    $msg = '';
+    $msg .= 'Raid gespeichert:' . CR;
+    // Pokemon
+    if(!empty($raid['pokemon'])) {
+	$msg .= '<b>' . ucfirst($raid['pokemon']) . '</b>';
+    }
+    // End time
+    if(!empty($raid['ts_end'])) {
+	$msg .= '<b> bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . '</b>' . CR;
+    }
+    // Gym Name
+    if(!empty($raid['gym_name'])) {
+	$msg .= $raid['gym_name'] . CR2 . CR;
+	$msg .= 'Optional - Arena Team setzen:' . CR2;
+    } else {
+        $msg .= 'Optional - Arena Name und Arena Team:' . CR2;
+        $msg .= '/gym <code>Name der Arena</code>' . CR;
+    }
     $msg .= '/team <code>Mystic/Valor/Instinct/Blau/Rot/Gelb</code>';
 
     // Edit message.

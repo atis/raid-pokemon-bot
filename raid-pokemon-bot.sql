@@ -31,6 +31,17 @@ CREATE TABLE `attendance` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
+/*Table structure for table `gyms` */
+
+CREATE TABLE `gyms` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `lat` varchar(11) DEFAULT NULL,
+  `lon` varchar(11) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `gym_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
 /*Table structure for table `raids` */
 
 CREATE TABLE `raids` (
