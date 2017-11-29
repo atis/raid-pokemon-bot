@@ -798,6 +798,10 @@ function show_raid_poll($raid)
         "
         SELECT DISTINCT UNIX_TIMESTAMP(attend_time) AS ts_att,
                         count(attend_time)          AS count,
+                        sum(team = 'mystic')        AS count_mystic,
+                        sum(team = 'valor')         AS count_valor,
+                        sum(team = 'instinct')      AS count_instinct,
+                        sum(team = 'NULL')          AS count_no_team,
                         sum(extra_people)           AS extra
         FROM            attendance
           WHERE         raid_id = {$raid['id']}
@@ -822,7 +826,15 @@ function show_raid_poll($raid)
     // TIMES
     foreach ($timeSlots as $ts) {
         // Add to message.
-        $msg .= CR . '<b>' . unix2tz($ts['ts_att'], $raid['timezone']) . '</b>' . ' [' . ($ts['count'] + $ts['extra']) . ']' . CR;
+        $msg .= CR . '<b>' . unix2tz($ts['ts_att'], $raid['timezone']) . '</b>' . ' [' . ($ts['count'] + $ts['extra']) . ']';
+	if ($ts['count'] > 0) {
+	    $msg .= ' — ';
+	    $msg .= (($ts['count_mystic'] > 0) ? TEAM_B . $ts['count_mystic'] . '  ' : '');
+	    $msg .= (($ts['count_valor'] > 0) ? TEAM_R . $ts['count_valor'] . '  ' : '');
+	    $msg .= (($ts['count_instinct'] > 0) ? TEAM_Y . $ts['count_instinct'] . '  ' : '');
+	    $msg .= ((($ts['count_no_team'] + $ts['extra']) > 0) ? TEAM_UNKNOWN . ($ts['count_no_team'] + $ts['extra']) : '');
+	    $msg .= CR;
+	}
 
         $user_rs = my_query(
             "
@@ -832,7 +844,7 @@ function show_raid_poll($raid)
                 AND       raid_done != 1
                 AND       cancel != 1
                 AND       raid_id = {$raid['id']}
-                ORDER BY  team ASC
+                ORDER BY  team ASC, arrived ASC
             "
         );
 
