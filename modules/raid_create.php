@@ -73,9 +73,13 @@ if($gym_id > 0) {
     // Get address from database
     $fullAddress = $gym['address'];
     $gym_name = $gym['gym_name'];
+    $lat = $gym['lat'];
+    $lon = $gym['lon'];
     debug_log('Gym ID: ' . $gym_id);
     debug_log('Gym Name: ' . $gym_name);
     debug_log('Gym Address: ' . $fullAddress);
+    debug_log('Lat=' . $lat);
+    debug_log('Lon=' . $lon);
 } else {
     // Get the address.
     $addr = get_address($lat, $lon);
