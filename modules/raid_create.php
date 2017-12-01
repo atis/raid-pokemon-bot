@@ -20,8 +20,7 @@ if (isset($update['message']['chat']['type'])) {
     $chattype = $update['message']['chat']['type'];
 }
 
-// Init count_data, gym and gym_id
-$count_data = 0;
+// Init gym and gym_id
 $gym = 0;
 $gym_id = 0;
 
@@ -47,23 +46,21 @@ if (empty($lat) && empty($lon)) {
     // Get lat and lon from message text
     $coords = $data['arg'];
 
-    // Create data array (max. 3)
-    $count_data = substr_count($coords, ",");
-    $data = explode(',', $coords, 3);
+    // Create data array (max. 2)
+    $data = explode(',', $coords, 2);
 
-    // Set latitude / longitude
-    $lat = $data[0];
-    $lon = $data[1];
-    $gym_id = $data[2];
-
-    // Debug
-    debug_log('Lat=' . $lat);
-    debug_log('Lon=' . $lon);
-
-    // Get gym data from database
-    if($count_data == 2) {
-        $gym_id = $data[2];
+    // Latitude and longitude or Gym ID?
+    if($data[0] == "ID") {
+        $gym_id = $data[1];
         $gym = get_gym($gym_id);
+    } else {
+        // Set latitude / longitude
+        $lat = $data[0];
+        $lon = $data[1];
+
+        // Debug
+        debug_log('Lat=' . $lat);
+        debug_log('Lon=' . $lon);
     }
 }
 
