@@ -47,23 +47,22 @@ if (empty($lat) && empty($lon)) {
     // Get lat and lon from message text
     $coords = $data['arg'];
 
-    // Create data array (max. 3)
+    // Create data array (max. 2)
     $count_data = substr_count($coords, ",");
-    $data = explode(',', $coords, 3);
+    $data = explode(',', $coords, 2);
 
-    // Set latitude / longitude
-    $lat = $data[0];
-    $lon = $data[1];
-    $gym_id = $data[2];
-
-    // Debug
-    debug_log('Lat=' . $lat);
-    debug_log('Lon=' . $lon);
-
-    // Get gym data from database
-    if($count_data == 2) {
-        $gym_id = $data[2];
+    // Latitude and longitude or Gym ID?
+    if($data[0] == "ID") {
+        $gym_id = $data[1];
         $gym = get_gym($gym_id);
+    } else {
+        // Set latitude / longitude
+        $lat = $data[0];
+        $lon = $data[1];
+
+        // Debug
+        debug_log('Lat=' . $lat);
+        debug_log('Lon=' . $lon);
     }
 }
 

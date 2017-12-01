@@ -12,6 +12,7 @@ if (isset($update['message']['chat']['type'])) {
 
 // Get the userid, chat id and type
 $id_type = $data['id'];
+$first = $data['arg'];
 
 // Create data array (max. 2)
 $userdata = explode(',', $id_type, 2);
@@ -25,12 +26,13 @@ $chattype = $userdata[1];
 debug_log('User ID=' . $userid);
 debug_log('Chat type=' . $chatid);
 debug_log('Chat type=' . $chattype);
+debug_log('First letter=' . $first);
 
 // Init id to 0
 $id = 0;
 
 // Get the keys.
-$keys = raid_edit_gym_keys($chatid, $chattype);
+$keys = raid_edit_gym_keys($chatid, $chattype, $first);
 
 // No keys found.
 if (!$keys) {
