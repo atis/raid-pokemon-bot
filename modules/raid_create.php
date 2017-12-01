@@ -20,8 +20,7 @@ if (isset($update['message']['chat']['type'])) {
     $chattype = $update['message']['chat']['type'];
 }
 
-// Init count_data, gym and gym_id
-$count_data = 0;
+// Init gym and gym_id
 $gym = 0;
 $gym_id = 0;
 
@@ -48,7 +47,6 @@ if (empty($lat) && empty($lon)) {
     $coords = $data['arg'];
 
     // Create data array (max. 2)
-    $count_data = substr_count($coords, ",");
     $data = explode(',', $coords, 2);
 
     // Latitude and longitude or Gym ID?
