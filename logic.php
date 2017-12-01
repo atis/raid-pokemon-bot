@@ -281,17 +281,63 @@ function raid_edit_start_keys($id)
 }
 
 /**
- * Raid edit start keys.
- * @param $id
- * @return array
+ * Raid gym first letter selection
+ * @param $chat_id
+ * @param $chattype
+ * @return $keys array
  */
-function raid_edit_gym_keys($chatid, $chattype)
+function raid_edit_gyms_first_letter_keys($chatid, $chattype) {
+    // Get gyms from database
+    $rs = my_query(
+            "
+            SELECT    *
+            FROM      gyms
+            ORDER BY  gym_name
+            "
+        );
+
+    // Init empty keys array.
+    $keys = array();
+
+    // Init previous first letter
+    $previous = null;
+
+    while ($gym = $rs->fetch_assoc()) {
+	$first = strtoupper(substr($gym['gym_name'], 0, 1));
+	// Add first letter to keys array
+        if($previous !== $first) {
+            $keys[] = array(
+                'text'          => $first,
+                'callback_data' => $chatid . ',' . $chattype . ':raid_by_gym:' . $first
+            );
+	}
+    $previous = $first;
+    }
+
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 4);
+
+    // Write to log.
+    debug_log($keys);
+
+    return $keys;
+}
+
+/**
+ * Raid edit gym keys.
+ * @param $chat_id
+ * @param $chattype
+ * @param $first
+ * @return $keys array
+ */
+function raid_edit_gym_keys($chatid, $chattype, $first)
 {
     // Get gyms from database
     $rs = my_query(
             "
             SELECT    *
             FROM      gyms
+	    WHERE     UPPER(LEFT(gym_name, 1)) = UPPER('{$first}')
 	    ORDER BY  gym_name
             "
         );
@@ -302,7 +348,7 @@ function raid_edit_gym_keys($chatid, $chattype)
     while ($gym = $rs->fetch_assoc()) {
 	$keys[] = array(
             'text'          => $gym['gym_name'],
-            'callback_data' => $chatid . ',' . $chattype . ':raid_create:' . $gym['lat'] . ',' . $gym['lon'] . ',' . $gym['id']
+            'callback_data' => $chatid . ',' . $chattype . ':raid_create:ID,' . $gym['id']
         );
     }
     

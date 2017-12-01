@@ -37,14 +37,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     $raid = $rs->fetch_assoc();
 
     // Create the keys.
-    $keys = [
-        [
-            [
-                'text'          => 'Fertig!',
-		'callback_data' => $raid['id'] . ':vote_refresh:0'
-            ]
-        ]
-    ];
+    $keys = [];
 
     // Build message string.
     $msg = '';
