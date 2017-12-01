@@ -49,7 +49,7 @@ if (!$keys) {
 edit_message($update, 'Bitte Anfangsbuchstabe der Arena auswählen:', $keys);
 
 // Build callback message string.
-$callback_response = 'Anfangsbuchstabe "' . $data['arg'] . '" ausgewählt.';
+$callback_response = 'Anfangsbuchstabe ausgewählt.';
 
 // Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);
