@@ -24,9 +24,11 @@ Use https://www.miniwebtool.com/sha512-hash-generator/ and set `CONFIG_HASH` to 
 
 ## Bot access
 
-Set `BOT_ACCESS` to the name (@Bot_Access_Groupname) or id (-100123456789) of group, supergroup or channel. All administrators (not members!) will gain access to the bot.
+Set `BOT_ACCESS` to the name (@Bot_Access_Groupname) or id (-100123456789) of one or multiple by comma separated groups, supergroups or channels. All administrators (not members!) will gain access to the bot.
 
 When no group, supergroup or channel is specified, the bot will allow everyone to use it (public access).
+
+Example for multiple access groups: `define('BOT_ACCESS', '@Bot_Access_Groupname,@Another_Bot_Access_Group,@Superadmins_Bot_Groups');`
 
 ## Raid times
 

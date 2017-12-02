@@ -11,7 +11,7 @@ $keys = [
 	    [
 	        [
 	            'text'          => 'Raid anlegen',
-		    'callback_data' => $userid . ',' . $chattype . ':raid_by_gym:0',
+		    'callback_data' => $userid . ',' . $chattype . ':raid_by_gym_letter:0',
 	        ]
 	    ]
 	];

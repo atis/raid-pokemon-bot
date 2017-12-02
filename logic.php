@@ -9,21 +9,27 @@ function bot_access_check($update)
     // Restricted or public access
     if(!empty(BOT_ACCESS)) {
 	$chat_id = BOT_ACCESS;
-    
-	// Get administrators from chat
-    	$response = get_admins($chat_id);
 
-    	// Make sure we get a proper response
-    	if ($response['ok'] == true) { 
-            $allow_access = false;
-	    foreach($response['result'] as $admin) {
-	            // If user is found as administrator allow access to the bot
-	            if ($admin['user']['id'] == $update['message']['from']['id'] || $admin['user']['id'] == $update['inline_query']['from']['id']) {
-		        $allow_access = true;
-		        break;
-		    }
-                }
-        }
+	// Check each admin chat defined in BOT_ACCESS 
+	$chats = explode(',', $chat_id);
+   	foreach($chats as $chat) {
+    
+	    // Get administrators from chat
+    	    $response = get_admins($chat);
+            debug_log("Getting administrators from chat '" . $chat . "'");
+
+    	    // Make sure we get a proper response
+    	    if ($response['ok'] == true) { 
+                $allow_access = false;
+	        foreach($response['result'] as $admin) {
+	                // If user is found as administrator allow access to the bot
+	                if ($admin['user']['id'] == $update['message']['from']['id'] || $admin['user']['id'] == $update['inline_query']['from']['id']) {
+		            $allow_access = true;
+		            break;
+		        }
+                    }
+            }
+	}
 
         // Allow or deny access to the bot and log result
         if ($allow_access) {
@@ -275,17 +281,63 @@ function raid_edit_start_keys($id)
 }
 
 /**
- * Raid edit start keys.
- * @param $id
- * @return array
+ * Raid gym first letter selection
+ * @param $chat_id
+ * @param $chattype
+ * @return $keys array
  */
-function raid_edit_gym_keys($chatid, $chattype)
+function raid_edit_gyms_first_letter_keys($chatid, $chattype) {
+    // Get gyms from database
+    $rs = my_query(
+            "
+            SELECT    *
+            FROM      gyms
+            ORDER BY  gym_name
+            "
+        );
+
+    // Init empty keys array.
+    $keys = array();
+
+    // Init previous first letter
+    $previous = null;
+
+    while ($gym = $rs->fetch_assoc()) {
+	$first = strtoupper(substr($gym['gym_name'], 0, 1));
+	// Add first letter to keys array
+        if($previous !== $first) {
+            $keys[] = array(
+                'text'          => $first,
+                'callback_data' => $chatid . ',' . $chattype . ':raid_by_gym:' . $first
+            );
+	}
+    $previous = $first;
+    }
+
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 4);
+
+    // Write to log.
+    debug_log($keys);
+
+    return $keys;
+}
+
+/**
+ * Raid edit gym keys.
+ * @param $chat_id
+ * @param $chattype
+ * @param $first
+ * @return $keys array
+ */
+function raid_edit_gym_keys($chatid, $chattype, $first)
 {
     // Get gyms from database
     $rs = my_query(
             "
             SELECT    *
             FROM      gyms
+	    WHERE     UPPER(LEFT(gym_name, 1)) = UPPER('{$first}')
 	    ORDER BY  gym_name
             "
         );
@@ -296,7 +348,7 @@ function raid_edit_gym_keys($chatid, $chattype)
     while ($gym = $rs->fetch_assoc()) {
 	$keys[] = array(
             'text'          => $gym['gym_name'],
-            'callback_data' => $chatid . ',' . $chattype . ':raid_create:' . $gym['lat'] . ',' . $gym['lon'] . ',' . $gym['id']
+            'callback_data' => $chatid . ',' . $chattype . ':raid_create:ID,' . $gym['id']
         );
     }
     
@@ -1010,16 +1062,23 @@ function show_raid_poll_small($raid)
     $time_left = floor($raid['t_left'] / 60);
     $time_left = 'noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT);
 
-    $msg = '<b>' . ucfirst($raid['pokemon']) . '</b> ' . $time_left . ' <b>' . $raid['gym_name'] . '</b>' . CR;
+    // Build message string.
+    $msg = '';
+    // Pokemon
+    if(!empty($raid['pokemon'])) {
+        $msg .= '<b>' . ucfirst($raid['pokemon']) . '</b>';
+    }
+    // End time
+    if(!empty($raid['ts_end'])) {
+        $msg .= '<b> bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . '</b> — ' . $time_left . CR;
+    }
+    // Gym Name
+    if(!empty($raid['gym_name'])) {
+        $msg .= $raid['gym_name'] . CR;
+    }
 
     // Address found.
-    if ($raid['address']) {
-        /*
-        $addr = explode(',', $raid['address'], 4);
-        array_pop($addr);
-        $addr = implode(',', $addr);
-        // Add to message.
-        */
+    if (!empty($raid['address'])) {
         $msg .= '<i>' . $raid['address'] . '</i>' . CR2;
     }
 
@@ -1038,23 +1097,33 @@ function show_raid_poll_small($raid)
     );
 
     $total = 0;
+    $total_extra = 0;
     $sep = '';
+    $msg_teams = '';
 
     while ($row = $rs->fetch_assoc()) {
-        $sum = $row['cnt'] + $row['extra'];
+        $sum = $row['cnt'];
 
         if ($sum == 0) continue;
 
         // Add to message.
-        $msg .= $sep . $GLOBALS['teams'][$row['team']] . ' ' . $sum;
-        $sep = ' | ';
+        $msg_teams .= $sep . $GLOBALS['teams'][$row['team']] . ' ' . $sum;
+        $sep = '   ';
         $total += $sum;
+    
+        if ($row['extra'] > 0) {
+	    $total_extra += $row['extra'];
+            $total += $row['extra'];
+        }
+    }
+    if ($total_extra > 0) {
+        $msg_teams .= $sep . TEAM_UNKNOWN . ' ' . $total_extra;
     }
 
     if (!$total) {
-        $msg .= ' Keine Teilnehmer' . CR;
+        $msg .= 'Keine Teilnehmer' . CR;
     } else {
-        $msg .= ' = <b>' . $total . '</b>' . CR;
+        $msg .= EMOJI_GROUP . '<b> ' . $total . '</b> — ' . $msg_teams;
     }
 
     return $msg;
