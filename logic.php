@@ -252,29 +252,30 @@ function raid_edit_start_keys($id)
         [
             [
                 'text'          => '5 Sterne Raid',
-                'callback_data' => $id . ':edit:type_5'
+                'callback_data' => $id . ':edit:5'
             ]
         ],
         [
             [
                 'text'          => '4 Sterne Raid',
-                'callback_data' => $id . ':edit:type_4'
+                'callback_data' => $id . ':edit:4'
             ],
             [
                 'text'          => '3 Sterne Raid',
-                'callback_data' => $id . ':edit:type_3'
+                'callback_data' => $id . ':edit:3'
             ]
-        ],
+// No raids for level 2 or 1
+/*        ],
         [
             [
                 'text'          => '2 Sterne Raid',
-                'callback_data' => $id . ':edit:type_2'
+                'callback_data' => $id . ':edit:2'
             ],
             [
                 'text'          => '1 Stern Raid',
-                'callback_data' => $id . ':edit:type_1'
+                'callback_data' => $id . ':edit:1'
             ]
-        ]
+*/        ]
     ];
 
     return $keys;
@@ -362,39 +363,57 @@ function raid_edit_gym_keys($chatid, $chattype, $first)
 }
 
 /**
- * Keys raid people.
- * @param $data
+ * Pokemon keys.
+ * @param $raid_id
+ * @param $raid_level
  * @return array
  */
-function keys_raid_people($data)
+function pokemon_keys($raid_id, $raid_level, $pokemonlist, $action)
 {
+    // Init empty keys array.
+    $keys = array();
 
-    if (!is_array($data)) {
-        $data = array('id' => $data);
+    // Iterate thru the pokemon list to create the keys
+    foreach($pokemonlist as $level => $levelmons) {
+        if($level == $raid_level) {
+            // Create the keys.
+            foreach($levelmons as $key => $pokemon) {
+                $keys[] = array(
+                    'text'          => $pokemon,
+                    'callback_data' => $raid_id . ':' . $action . ':' . $pokemon
+                );
+	    }
+	}
     }
 
-    $keys = [
-        [
-            'text'          => '+1',
-            'callback_data' => $data['id'] . ':vote:1'
-        ],
-        [
-            'text'          => '+2',
-            'callback_data' => $data['id'] . ':vote:2'
-        ],
-        [
-            'text'          => '+3',
-            'callback_data' => $data['id'] . ':vote:3'
-        ],
-        [
-            'text'          => '+4',
-            'callback_data' => $data['id'] . ':vote:4'
-        ],
-        [
-            'text'          => '+5',
-            'callback_data' => $data['id'] . ':vote:5'
-        ]
-    ];
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 4);
+
+    // Write to log.
+    debug_log($keys);
+
+    return $keys;
+}
+
+/**
+ * Back key.
+ * @param $keys
+ * @param $id
+ * @param $action
+ * @param $arg
+ * @return array
+ */
+function back_key($keys, $id, $action, $arg)
+{
+    $keys[] = [
+            array(
+                'text'          => 'Zurück',
+                'callback_data' => $id . ':' . $action . ':' . $arg
+            )
+        ];
+
+    // Write to log.
+    debug_log($keys);
 
     return $keys;
 }
@@ -1059,18 +1078,19 @@ function show_raid_poll($raid)
  */
 function show_raid_poll_small($raid)
 {
-    $time_left = floor($raid['t_left'] / 60);
-    $time_left = 'noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT);
+    // Left for possible future redesign of small raid poll
+    //$time_left = floor($raid['t_left'] / 60);
+    //$time_left = 'noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT);
 
     // Build message string.
     $msg = '';
     // Pokemon
     if(!empty($raid['pokemon'])) {
-        $msg .= '<b>' . ucfirst($raid['pokemon']) . '</b>';
+        $msg .= '<b>' . ucfirst($raid['pokemon']) . '</b> ';
     }
-    // End time
-    if(!empty($raid['ts_end'])) {
-        $msg .= '<b> bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . '</b> — ' . $time_left . CR;
+    // Start time and end time
+    if(!empty($raid['ts_start']) && !empty($raid['ts_end'])) {
+        $msg .= '<b>von ' . unix2tz($raid['ts_start'], $raid['timezone']) . ' bis ' . unix2tz($raid['ts_end'], $raid['timezone'])  . '</b>' . CR;
     }
     // Gym Name
     if(!empty($raid['gym_name'])) {
