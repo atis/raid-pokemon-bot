@@ -14,6 +14,11 @@ if (isset($update['message']['chat']['type'])) {
 $id_type = $data['id'];
 $first = $data['arg'];
 
+// Back key id, action and arg
+$back_id = $data['id'];
+$back_action = "raid_by_gym_letter";
+$back_arg = 0;
+
 // Create data array (max. 2)
 $userdata = explode(',', $id_type, 2);
 
@@ -45,6 +50,8 @@ if (!$keys) {
             ]
         ]
     ];
+} else {
+    $keys = back_key($keys, $back_id, $back_action, $back_arg);
 }
 
 // Edit the message.
