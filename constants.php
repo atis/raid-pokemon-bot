@@ -10,7 +10,6 @@ define('TEAM_Y',        iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f49B)));
 define('TEAM_CANCEL',   iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f494)));
 define('TEAM_DONE',     iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f4aa)));
 define('TEAM_UNKNOWN',  iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f680)));
-define('EMOJI_EGG',     iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f95a)));
 define('EMOJI_REFRESH', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f504)));
 define('EMOJI_GROUP',   iconv('UCS-4LE', 'UTF-8', pack('V', 0x1f465)));
 
@@ -30,24 +29,43 @@ $pokemon = array(
         'Lugia',
         'Lavados',
         'Zapdos',
+        'Mewtu',
+        'Mew',
+        'Ho-Oh',
+        'Celebi',
+        'Raikou',
+        'Entei',
+        'Suicune',
+	'Level 5 Ei',
     ),
     '4' => array(
         'Despotar',
         'Relaxo',
         'Lapras',
-        'Rizeros',
-        'Glurak',
+        'Quappo',
         'Bisasflor',
+        'Glurak',
         'Turtok',
+        'Sarzenia',
+        'Nidoqueen',
+        'Nidoking',
+        'Rizeros',
+        'Geowaz',
+	'Level 4 Ei',
     ),
     '3' => array(
-        'Machomei',
         'Aquana',
         'Flamara',
         'Blitza',
-        'Simsala',
         'Arkani',
+        'Machomei',
+        'Simsala',
         'Gengar',
+        'Sichlor',
+        'Porygon',
+        'Amoroso',
+        'Vulnona',
+	'Level 3 Ei',
     )
 );
 
