@@ -25,6 +25,7 @@ if (!$row) {
     exit;
 }
 
+
 // Build query.
 $request = my_query(
     "
@@ -35,6 +36,7 @@ $request = my_query(
               UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
     FROM      raids
       WHERE   end_time>NOW()
+        AND   user_id = {$update['message']['from']['id']}
         AND   timezone='{$row['timezone']}'
     ORDER BY  end_time ASC LIMIT 20
     "
