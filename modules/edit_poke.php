@@ -23,7 +23,7 @@ if (true) {
     // Init empty keys array.
     $keys = array();
 
-    for ($i = 60; $i >= 0; $i = $i - 5) {
+    for ($i = 60; $i >= 0; $i = $i - 1) {
         // Create the keys.
         $keys[] = array(
 	    // Just show the time, no text - not everyone has a phone or tablet with a large screen...
@@ -34,7 +34,7 @@ if (true) {
     }
 
     // Get the inline key array.
-    $keys = inline_key_array($keys, 4);
+    $keys = inline_key_array($keys, 5);
 
     // Write to log.
     debug_log($keys);

@@ -49,17 +49,10 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     // Build message string.
     $msg = '';
     $msg .= 'Raid gespeichert:' . CR;
-    // Pokemon
-    if(!empty($raid['pokemon'])) {
-	$msg .= '<b>' . ucfirst($raid['pokemon']) . '</b>';
-    }
-    // End time
-    if(!empty($raid['ts_end'])) {
-	$msg .= '<b> bis ' . unix2tz($raid['ts_end'], $raid['timezone']) . '</b>' . CR;
-    }
+    $msg .= show_raid_poll_small($raid) . CR;
+
     // Gym Name
     if(!empty($raid['gym_name'])) {
-	$msg .= $raid['gym_name'] . CR2 . CR;
 	$msg .= 'Optional - Arena Team setzen:' . CR2;
     } else {
         $msg .= 'Optional - Arena Name und Arena Team:' . CR2;
