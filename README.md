@@ -103,6 +103,13 @@ Parameters: Pokemon raid boss, latitude, longitude, raid duration in minutes, gy
 Example input: `/raid Entei,52.514545,13.350095,60,Mystic,Siegessäule,Großer Stern,10557 Berlin,30`
 
 
+#### Command: /pokemon
+
+Update pokemon of an existing raid poll. With this command you can change the pokemon raid boss from e.g. "Level 5 Egg" to "Lugia" once the egg has hatched.
+
+You can only change the pokemon raid boss of raid polls you created yourself. You cannot modify the pokemon of raid polls from other bot users.
+
+
 #### Command: /new
 
 The bot expects latitude and longitude seperated by comma and will then guide you through the creation of the raid poll.
