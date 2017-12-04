@@ -25,7 +25,6 @@ if (!$row) {
     exit;
 }
 
-
 // Build query.
 $request = my_query(
     "
