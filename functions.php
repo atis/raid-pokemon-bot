@@ -471,17 +471,11 @@ function curl_json_request($json)
                 debug_log('Message_ID: ' . $message_id);
 
 	        // Trigger cleanup preparation process when necessary id's are not empty and numeric
-	        //if (is_numeric(!empty($chat_id)) && is_numeric(!empty($message_id)) && is_numeric(($raid_id > 0))) {
-	        if ((is_numeric($chat_id)) && (is_numeric($message_id)) && (is_numeric($raid_id)) && ($raid_id > 0)) {
+	        if (!empty($chat_id) && !empty($message_id) && !empty($raid_id)) {
 		    debug_log('Calling cleanup preparation now!');
 		    insert_cleanup($chat_id, $message_id, $raid_id);
 	        } else {
-		    debug_log('Invalid input! Cannot call cleanup preparation!');
-		    $log_msg = '';
-		    $log_msg .= is_numeric($raid_id) ? 'RAID_ID = numeric' : 'Raid_ID is empty or not numeric!' . CR;
-		    $log_msg .= is_numeric($chat_id) ? 'CHAT_ID = numeric' : 'Chat_ID is empty or not numeric!' . CR;
-		    $log_msg .= is_numeric($message_id) ? 'NUMERIC--'. $message_id . '--NUMERIC' : 'Message_ID is not numeric!' . CR;
-		    debug_log($log_msg);
+		    debug_log('Missing input! Cannot call cleanup preparation!');
 		}
             }
 	}
