@@ -146,6 +146,28 @@ if (isset($update['callback_query'])) {
 
         // Echo bot response.
         sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b>');
+
+    // Cleanup channel / supergroup
+    } else if ($update['channel_post']['chat']['type'] == "channel" || $update['message']['chat']['type'] == "supergroup") {
+	  debug_log('Calling cleanup preparation now!');
+	// Channel 
+	if(isset($update['channel_post'])) {
+	    // Get chat_id and message_id
+	    $chat_id = $update['channel_post']['chat']['id'];
+	    $message_id = $update['channel_post']['message_id'];
+	// Supergroup
+	} else if ($update['message']['chat']['type'] == "supergroup") {
+	    // Get chat_id and message_id
+	    $chat_id = $update['message']['chat']['id'];
+	    $message_id = $update['message']['message_id'];
+	}
+
+	// Get raid_id from text.
+	$raid_id = substr(strrchr($update['message']['text'], "ID = "), 5);
+
+	// Write cleanup info to database.
+	insert_cleanup($chat_id, $message_id, $raid_id);
+	exit();
     }
 }
 
