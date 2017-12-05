@@ -31,17 +31,26 @@ function bot_access_check($update)
             }
 	}
 
+        // Prepare logging of username, first_name and/or id
+	$msg = '';
+	$msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
+	$msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
+	$msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
+	$msg .= !empty($update['inline_query']['from']['id']) ? "Id: " . $update['inline_query']['from']['id'] . CR : '';
+	$msg .= !empty($update['inline_query']['from']['username']) ? "Username: " . $update['inline_query']['from']['username'] . CR : '';
+	$msg .= !empty($update['inline_query']['from']['first_name']) ? "First Name: " . $update['inline_query']['from']['first_name'] . CR : '';
+
         // Allow or deny access to the bot and log result
         if ($allow_access) {
-            debug_log("Allowing access to the bot for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+            debug_log("Allowing access to the bot for user:" . CR . $msg);
         } else {
-            debug_log("Denying access to the bot for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+            debug_log("Denying access to the bot for user:" . CR . $msg);
             $response_msg = '<b>You are not allowed to use this bot!</b>';
 	    sendMessage($update['message']['chat']['id'], $response_msg);
             exit;
         }
     } else {
-        debug_log("Bot access is not restricted! Allowing access for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+        debug_log("Bot access is not restricted! Allowing access for user: " . CR . $msg);
     }
 }
 
@@ -123,9 +132,9 @@ function raid_duplication_check($gym,$end)
         // Now + $end = endtime of new raid
         $end = time() + $end*60;
 
-        // Compare end time - check 5 minutes before and after database value
-        $ts_end_before = $raid['ts_end'] - (5*60);
-        $ts_end_after = $raid['ts_end'] + (5*60);
+        // Compare end time - check 15 minutes before and after database value
+        $ts_end_before = $raid['ts_end'] - (15*60);
+        $ts_end_after = $raid['ts_end'] + (15*60);
 
 	// Debug log unix times
 	debug_log("Unix timestamp of endtime new raid: " . $end);
@@ -164,7 +173,6 @@ function raid_duplication_check($gym,$end)
  * @param $latitude
  * @param $longitude
  * @param $address
- * @return array
  */
 function insert_gym($name, $lat, $lon, $address)
 {
@@ -200,6 +208,7 @@ function insert_gym($name, $lat, $lon, $address)
 /**
  * Get gym.
  * @param $id
+ * @return array
  */
 function get_gym($id)
 {
@@ -318,9 +327,6 @@ function raid_edit_gyms_first_letter_keys($chatid, $chattype) {
     // Get the inline key array.
     $keys = inline_key_array($keys, 4);
 
-    // Write to log.
-    debug_log($keys);
-
     return $keys;
 }
 
@@ -356,9 +362,6 @@ function raid_edit_gym_keys($chatid, $chattype, $first)
     // Get the inline key array.
     $keys = inline_key_array($keys, 1);
 
-    // Write to log.
-    debug_log($keys);
-
     return $keys;
 }
 
@@ -389,9 +392,6 @@ function pokemon_keys($raid_id, $raid_level, $pokemonlist, $action)
     // Get the inline key array.
     $keys = inline_key_array($keys, 4);
 
-    // Write to log.
-    debug_log($keys);
-
     return $keys;
 }
 
@@ -412,10 +412,51 @@ function back_key($keys, $id, $action, $arg)
             )
         ];
 
-    // Write to log.
-    debug_log($keys);
-
     return $keys;
+}
+
+/**
+ * Insert cleanup.
+ * @param $chat_id
+ * @param $message_id
+ * @param $raid_id
+ */
+function insert_cleanup($chat_id, $message_id, $raid_id)
+{
+    global $db;
+
+    // Get raid times.
+    $rs = my_query(
+        "
+        SELECT    *, 
+                              UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                              UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                              UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                              UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+                FROM      raids
+                  WHERE   id = {$raid_id}
+        "
+    );
+
+    // Fetch raid data.
+    $raid = $rs->fetch_assoc();
+
+    // Insert cleanup info to database
+    if (!empty($raid)) {
+        // Build query for cleanup table to add cleanup info to database
+        debug_log('Adding cleanup info to database:');
+        $rs = my_query(
+            "
+            INSERT INTO   cleanup
+            SET           raid_id = '{$raid_id}',
+                              end_time = '{$raid['ts_end']}',
+                              chat_id = '{$chat_id}',
+                              message_id = '{$message_id}'
+            ON DUPLICATE KEY
+            UPDATE        raid_id  = '{$raid_id}'
+            "
+        );
+    }
 }
 
 /**
