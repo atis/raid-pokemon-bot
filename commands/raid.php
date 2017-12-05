@@ -41,10 +41,8 @@ $lon = floatval($data[2]);
 $lat = substr($lat, 0, strpos('.', $lat) + 9);
 $lon = substr($lon, 0, strpos('.', $lon) + 9);
 
-// Endtime from input / config
-// timeleft till raid ends or raid duration if egg hasn't hatched yet
+// Endtime from input
 $endtime = $data[3];
-
 
 // Team
 $team = $data[4];
