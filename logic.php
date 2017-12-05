@@ -423,39 +423,48 @@ function back_key($keys, $id, $action, $arg)
  */
 function insert_cleanup($chat_id, $message_id, $raid_id)
 {
-    global $db;
+    // Log ID's of raid, chat and message
+    debug_log('Raid_ID: ' . $raid_id);
+    debug_log('Chat_ID: ' . $chat_id);
+    debug_log('Message_ID: ' . $message_id);
 
-    // Get raid times.
-    $rs = my_query(
-        "
-        SELECT    *, 
-                              UNIX_TIMESTAMP(start_time)                      AS ts_start,
-                              UNIX_TIMESTAMP(end_time)                        AS ts_end,
-                              UNIX_TIMESTAMP(NOW())                           AS ts_now,
-                              UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
-                FROM      raids
-                  WHERE   id = {$raid_id}
-        "
-    );
+    if ((is_numeric($chat_id)) && (is_numeric($message_id)) && (is_numeric($raid_id)) && ($raid_id > 0)) {
+        global $db;
 
-    // Fetch raid data.
-    $raid = $rs->fetch_assoc();
-
-    // Insert cleanup info to database
-    if (!empty($raid)) {
-        // Build query for cleanup table to add cleanup info to database
-        debug_log('Adding cleanup info to database:');
+        // Get raid times.
         $rs = my_query(
             "
-            INSERT INTO   cleanup
-            SET           raid_id = '{$raid_id}',
-                              end_time = '{$raid['ts_end']}',
-                              chat_id = '{$chat_id}',
-                              message_id = '{$message_id}'
-            ON DUPLICATE KEY
-            UPDATE        raid_id  = '{$raid_id}'
+            SELECT    *, 
+                                  UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                                  UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                                  UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                                  UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+                    FROM      raids
+                      WHERE   id = {$raid_id}
             "
         );
+    
+        // Fetch raid data.
+        $raid = $rs->fetch_assoc();
+
+        // Insert cleanup info to database
+        if (!empty($raid)) {
+            // Build query for cleanup table to add cleanup info to database
+            debug_log('Adding cleanup info to database:');
+            $rs = my_query(
+                "
+                INSERT INTO   cleanup
+                SET           raid_id = '{$raid_id}',
+                                  end_time = '{$raid['ts_end']}',
+                                  chat_id = '{$chat_id}',
+                                  message_id = '{$message_id}'
+                ON DUPLICATE KEY
+                UPDATE        raid_id  = '{$raid_id}'
+                "
+            );
+        }
+    } else {
+        debug_log('Invalid input for cleanup preparation!');
     }
 }
 
