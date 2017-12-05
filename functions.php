@@ -359,6 +359,34 @@ function edit_message($update, $message, $keys, $merge_args = false)
 }
 
 /**
+ * Delete message
+ * @param $chat_id
+ * @param $message_id
+ */
+function delete_message($chat_id, $message_id)
+{
+    // Create response content array.
+    $reply_content = [
+        'method'     => 'deleteMessage',
+        'chat_id'    => $chat_id,
+        'message_id' => $message_id,
+        'parse_mode' => 'HTML',
+    ];
+
+    // Encode data to json.
+    $reply_json = json_encode($reply_content);
+
+    // Set header to json.
+    header('Content-Type: application/json');
+
+    // Write to log.
+    debug_log($reply_json, '>');
+
+    // Send request to telegram api.
+    return curl_json_request($reply_json);
+}
+
+/**
  * GetChatAdministrators
  * @param $chatid
  */
@@ -391,7 +419,6 @@ function get_admins($chat_id)
  */
 function curl_json_request($json)
 {
-
     $curl = curl_init('https://api.telegram.org/bot' . API_KEY . '/');
 
     curl_setopt($curl, CURLOPT_HEADER, false);
@@ -421,6 +448,43 @@ function curl_json_request($json)
     if ($response['ok'] != true || isset($response['update_id'])) {
         // Write error to log.
         debug_log('ERROR: ' . $json . "\n\n" . $json_response . "\n\n");
+    } else {
+	// Result seems ok, get message_id and chat_id if supergroup or channel message
+	if ($response['result']['chat']['type'] == ("channel" || "supergroup")) {
+            // Init raid_id
+            $raid_id = 0;
+
+	    // Set chat and message_id
+            $chat_id = $response['result']['chat']['id'];
+            $message_id = $response['result']['message_id'];
+
+            // Get raid id from $json
+            $json_message = json_decode($json, true);
+
+	    // Check if callback_data is present to get the raid_id and reply_to_message_id is set to filter only raid messages
+            if (!empty($json_message['reply_markup']['inline_keyboard']['0']['0']['callback_data']) && !empty($json_message['reply_to_message_id'])) {
+                $split_callback_data = explode(':', $json_message['reply_markup']['inline_keyboard']['0']['0']['callback_data']);
+                $raid_id = $split_callback_data[0];
+                debug_log('Found Raid_ID for cleanup preparation from callback_data!');
+                debug_log('Raid_ID: ' . $raid_id);
+                debug_log('Chat_ID: ' . $chat_id);
+                debug_log('Message_ID: ' . $message_id);
+
+	        // Trigger cleanup preparation process when necessary id's are not empty and numeric
+	        //if (is_numeric(!empty($chat_id)) && is_numeric(!empty($message_id)) && is_numeric(($raid_id > 0))) {
+	        if ((is_numeric($chat_id)) && (is_numeric($message_id)) && (is_numeric($raid_id)) && ($raid_id > 0)) {
+		    debug_log('Calling cleanup preparation now!');
+		    insert_cleanup($chat_id, $message_id, $raid_id);
+	        } else {
+		    debug_log('Invalid input! Cannot call cleanup preparation!');
+		    $log_msg = '';
+		    $log_msg .= is_numeric($raid_id) ? 'RAID_ID = numeric' : 'Raid_ID is empty or not numeric!' . CR;
+		    $log_msg .= is_numeric($chat_id) ? 'CHAT_ID = numeric' : 'Chat_ID is empty or not numeric!' . CR;
+		    $log_msg .= is_numeric($message_id) ? 'NUMERIC--'. $message_id . '--NUMERIC' : 'Message_ID is not numeric!' . CR;
+		    debug_log($log_msg);
+		}
+            }
+	}
     }
 
     // Return response.
