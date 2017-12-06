@@ -922,7 +922,7 @@ function show_raid_poll($raid)
                         sum(team = 'mystic')        AS count_mystic,
                         sum(team = 'valor')         AS count_valor,
                         sum(team = 'instinct')      AS count_instinct,
-                        sum(team = 'NULL')          AS count_no_team,
+                        sum(team IS NULL)           AS count_no_team,
                         sum(extra_people)           AS extra
         FROM            attendance
           WHERE         raid_id = {$raid['id']}
