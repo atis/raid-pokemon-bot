@@ -70,6 +70,19 @@ $userUpdate = update_user($update);
 // Write to log.
 debug_log('Update user: ' . $userUpdate);
 
+// Cleanup request received.
+if (isset($update['cleanup'])) {
+    debug_log('Cleanup process request received...');
+    // Check access to cleanup of bot
+    if ($update['cleanup'] == CLEANUP_SECRET) {
+        // Run cleanup
+        debug_log('Calling cleanup process now!');
+        run_cleanup();
+    }
+    // Exit after cleanup
+    exit();
+}
+
 // Callback query received.
 if (isset($update['callback_query'])) {
     // Init empty data array.
@@ -146,33 +159,36 @@ if (isset($update['callback_query'])) {
 
         // Echo bot response.
         sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b>');
+    }
 
-    // Cleanup channel / supergroup
-    } else if ($update['channel_post']['chat']['type'] == "channel" || $update['message']['chat']['type'] == "supergroup") {
-	debug_log('Collecting cleanup preparation information now!');
-	// Channel 
-	if(isset($update['channel_post'])) {
-	    // Get chat_id and message_id
-	    $chat_id = $update['channel_post']['chat']['id'];
-	    $message_id = $update['channel_post']['message_id'];
-	// Supergroup
-	} else if ($update['message']['chat']['type'] == "supergroup") {
-	    // Get chat_id and message_id
-	    $chat_id = $update['message']['chat']['id'];
-	    $message_id = $update['message']['message_id'];
-	}
+// Cleanup channel / supergroup
+} else if ($update['channel_post']['chat']['type'] == "channel" || $update['message']['chat']['type'] == "supergroup") {
+    // Write to log.
+    debug_log('Collecting cleanup preparation information...');
+    // Init raid_id.
+    $raid_id = 0;
+
+    // Channel 
+    if(isset($update['channel_post'])) {
+        // Get chat_id and message_id
+        $chat_id = $update['channel_post']['chat']['id'];
+        $message_id = $update['channel_post']['message_id'];
 
 	// Get raid_id from text.
-	$raid_id = 0;
-	if (isset($update['message']['text'])) {
-	    $raid_id = substr(strrchr($update['message']['text'], "ID = "), 5);
-	}
+        $raid_id = substr(strrchr($update['channel_post']['text'], "ID = "), 5);
 
-	// Write cleanup info to database.
-	if ($raid_id > 0) {
-	    insert_cleanup($chat_id, $message_id, $raid_id);
-	}
-	exit();
+    // Supergroup
+    } else if ($update['message']['chat']['type'] == "supergroup") {
+        // Get chat_id and message_id
+        $chat_id = $update['message']['chat']['id'];
+        $message_id = $update['message']['message_id'];
+
+	// Get raid_id from text.
+        $raid_id = substr(strrchr($update['message']['text'], "ID = "), 5);
     }
-}
 
+    // Write cleanup info to database.
+    debug_log('Calling cleanup preparation now!');
+    insert_cleanup($chat_id, $message_id, $raid_id);
+    exit();
+}
