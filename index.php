@@ -19,7 +19,7 @@ require_once('geo_api.php');
 $apiKey = $_GET['apikey'];
 
 // Check if hashed api key is matching config.
-if (hash('sha512', $apiKey) == CONFIG_HASH) {
+if (hash('sha512', $apiKey) == strtolower(CONFIG_HASH)) {
     // Split the api key.
     $splitKey = explode(':', $apiKey);
 
@@ -149,7 +149,7 @@ if (isset($update['callback_query'])) {
 
     // Cleanup channel / supergroup
     } else if ($update['channel_post']['chat']['type'] == "channel" || $update['message']['chat']['type'] == "supergroup") {
-	  debug_log('Calling cleanup preparation now!');
+	debug_log('Collecting cleanup preparation information now!');
 	// Channel 
 	if(isset($update['channel_post'])) {
 	    // Get chat_id and message_id
@@ -163,10 +163,15 @@ if (isset($update['callback_query'])) {
 	}
 
 	// Get raid_id from text.
-	$raid_id = substr(strrchr($update['message']['text'], "ID = "), 5);
+	$raid_id = 0;
+	if (isset($update['message']['text'])) {
+	    $raid_id = substr(strrchr($update['message']['text'], "ID = "), 5);
+	}
 
 	// Write cleanup info to database.
-	insert_cleanup($chat_id, $message_id, $raid_id);
+	if ($raid_id > 0) {
+	    insert_cleanup($chat_id, $message_id, $raid_id);
+	}
 	exit();
     }
 }
