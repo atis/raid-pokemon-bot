@@ -35,8 +35,7 @@ CREATE TABLE `attendance` (
 
 CREATE TABLE `cleanup` (
   `raid_id` int(10) unsigned NOT NULL,
-  `end_time` datetime NOT NULL,
-  `chat_id` bigint(20) unsigned NOT NULL,
+  `chat_id` bigint(20) signed NOT NULL,
   `message_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`raid_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
