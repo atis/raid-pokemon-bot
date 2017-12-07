@@ -416,7 +416,7 @@ function back_key($keys, $id, $action, $arg)
 }
 
 /**
- * Insert cleanup.
+ * Insert cleanup info to database.
  * @param $chat_id
  * @param $message_id
  * @param $raid_id
@@ -455,7 +455,6 @@ function insert_cleanup($chat_id, $message_id, $raid_id)
                 "
                 INSERT INTO   cleanup
                 SET           raid_id = '{$raid_id}',
-                                  end_time = '{$raid['ts_end']}',
                                   chat_id = '{$chat_id}',
                                   message_id = '{$message_id}'
                 ON DUPLICATE KEY
@@ -466,6 +465,35 @@ function insert_cleanup($chat_id, $message_id, $raid_id)
     } else {
         debug_log('Invalid input for cleanup preparation!');
     }
+}
+
+/**
+ * Run cleanup.
+ */
+function run_cleanup () {
+    // Get cleanup info.
+    $rs = my_query(
+        "
+        SELECT    * 
+                FROM      cleanup
+        "
+    );
+
+    // Fetch cleanup data.
+    $cleanup = $rs->fetch_assoc();
+
+    // Write to log.
+    debug_log("Chat_id:" . $cleanup['chat_id']);
+    debug_log("Message_id:" . $cleanup['message_id']);
+    debug_log("Raid_id:" . $cleanup['raid_id']);
+
+    // Delete raid poll telegram message
+
+    // Delete raid from raids table
+    
+    // Delete raid from attendance table
+
+    // Delete info from cleanup table
 }
 
 /**
@@ -1113,9 +1141,27 @@ function show_raid_poll($raid)
         }
     }
 
+    // Display user which created the raid.
+    // Get user data.
+    $rs = my_query(
+        "
+        SELECT  *
+        FROM    users
+        WHERE   user_id = {$raid['user_id']}
+        "
+    );
+
+    // Get the row.
+    $row = $rs->fetch_assoc();
+
+    // Display creator.
+    if ($row['user_id'] && $row['name']) {
+        $msg .= CR . 'Erstellt von: <a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
+    }
+
     // Add update time and raid id to message.
     $msg .= CR . '<i>Aktualisiert: ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>';
-    $msg .= '  ID = ' . $raid['id']; // Debug.
+    $msg .= '  ID = ' . $raid['id']; // DO NOT REMOVE! --> NEEDED FOR CLEANUP PREPARATION!
 
     // Return the message.
     return $msg;
