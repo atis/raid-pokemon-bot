@@ -31,14 +31,18 @@
 				'text' => 'Entei', 'callback_data' => $id.':edit_poke:entei',
 			],[
 				'text' => 'Suicune', 'callback_data' => $id.':edit_poke:suicune',
+		]],[[
+				'text' => 'Legendary (unknown)', 'callback_data' => $id.':edit_poke:legendary',
 		]]];
 	
 	} else if ($data['arg']=='type_4') {
 		$keys = 
 		[[[
 				'text' => 'Tyranitar', 'callback_data' => $id.':edit_poke:tyranitar',
-		],[
-				'text' => 'Golem', 'callback_data' => $id.':edit_poke:Golem',
+			],[
+				'text' => 'Golem', 'callback_data' => $id.':edit_poke:golem',
+			],[
+				'text' => 'Absol', 'callback_data' => $id.':edit_poke:absol',
 		]],[[
 				'text' => 'Snorlax', 'callback_data' => $id.':edit_poke:snorlax',
 			],[
@@ -77,6 +81,8 @@
 		],[
 				'text' => 'Muk', 'callback_data' => $id.':edit_poke:muk',
 */
+		],[
+				'text' => 'Mawile', 'callback_data' => $id.':edit_poke:mawile',
 		]],[[
 				'text' => 'Marowak', 'callback_data' => $id.':edit_poke:marowak',
 			],[
