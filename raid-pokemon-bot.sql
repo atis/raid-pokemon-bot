@@ -34,11 +34,12 @@ CREATE TABLE `attendance` (
 /*Table structure for table `cleanup` */
 
 CREATE TABLE `cleanup` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `raid_id` int(10) unsigned NOT NULL,
   `chat_id` bigint(20) signed NOT NULL,
   `message_id` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`raid_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `gyms` */
 
