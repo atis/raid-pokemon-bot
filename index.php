@@ -71,17 +71,29 @@ $userUpdate = update_user($update);
 debug_log('Update user: ' . $userUpdate);
 
 // Cleanup request received.
-if (isset($update['cleanup'])) {
+if (isset($update['cleanup']) && CLEANUP == true) {
     debug_log('Cleanup process request received...');
     // Check access to cleanup of bot
-    if ($update['cleanup'] == CLEANUP_SECRET) {
+    if ($update['cleanup']['secret'] == CLEANUP_SECRET) {
+	// Get telegram cleanup value if specified.
+        if (isset($update['cleanup']['telegram'])) {
+	    $telegram = $update['cleanup']['telegram'];
+	} else {
+	    $telegram = 2;
+	}
+	// Get database cleanup value if specified.
+        if (isset($update['cleanup']['database'])) {
+	    $database = $update['cleanup']['database'];
+	} else {
+	    $database = 2;
+	}
         // Run cleanup
         debug_log('Calling cleanup process now!');
-        run_cleanup();
+        run_cleanup($telegram, $database);
     }
     // Exit after cleanup
     exit();
-}
+} 
 
 // Callback query received.
 if (isset($update['callback_query'])) {
@@ -135,33 +147,7 @@ if (isset($update['callback_query'])) {
     include_once('modules/raid_create.php');
     exit();
 
-// Message is required to check for commands.
-} else if (isset($update['message'])) {
-    // Check access to the bot
-    bot_access_check($update);
-    // Check message text for a leading slash.
-    if (substr($update['message']['text'], 0, 1) == '/') {
-        // Get command name.
-        $com = strtolower(str_replace('/', '', str_replace(BOT_NAME, '', explode(' ', $update['message']['text'])[0])));
-
-        // Set command path.
-        $command = 'commands/' . basename($com) . '.php';
-
-        // Write to log.
-        debug_log($command);
-
-        // Check if command file exits.
-        if (file_exists($command)) {
-            // Dynamically include command file and exit.
-            include_once($command);
-            exit();
-        }
-
-        // Echo bot response.
-        sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b>');
-    }
-
-// Cleanup channel / supergroup
+// Cleanup collection from channel/supergroup messages.
 } else if ($update['channel_post']['chat']['type'] == "channel" || $update['message']['chat']['type'] == "supergroup") {
     // Write to log.
     debug_log('Collecting cleanup preparation information...');
@@ -191,4 +177,30 @@ if (isset($update['callback_query'])) {
     debug_log('Calling cleanup preparation now!');
     insert_cleanup($chat_id, $message_id, $raid_id);
     exit();
+
+// Message is required to check for commands.
+} else if (isset($update['message'])) {
+    // Check access to the bot
+    bot_access_check($update);
+    // Check message text for a leading slash.
+    if (substr($update['message']['text'], 0, 1) == '/') {
+        // Get command name.
+        $com = strtolower(str_replace('/', '', str_replace(BOT_NAME, '', explode(' ', $update['message']['text'])[0])));
+
+        // Set command path.
+        $command = 'commands/' . basename($com) . '.php';
+
+        // Write to log.
+        debug_log($command);
+
+        // Check if command file exits.
+        if (file_exists($command)) {
+            // Dynamically include command file and exit.
+            include_once($command);
+            exit();
+        }
+
+        // Echo bot response.
+        sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b>');
+    }
 }
