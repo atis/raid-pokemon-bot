@@ -138,8 +138,8 @@ function raid_duplication_check($gym,$end)
 
 	// Debug log unix times
 	debug_log("Unix timestamp of endtime new raid: " . $end);
-	debug_log("Unix timestamp of endtime-5 existing raid: " . $ts_end_before);
-	debug_log("Unix timestamp of endtime+5 existing raid: " . $ts_end_after);
+	debug_log("Unix timestamp of endtime-15 existing raid: " . $ts_end_before);
+	debug_log("Unix timestamp of endtime+15 existing raid: " . $ts_end_after);
 
         // Debug log
         debug_log("Searched database for raids at " . $raid['gym_name']);
