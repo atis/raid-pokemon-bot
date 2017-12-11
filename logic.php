@@ -390,7 +390,7 @@ function pokemon_keys($raid_id, $raid_level, $pokemonlist, $action)
     }
 
     // Get the inline key array.
-    $keys = inline_key_array($keys, 4);
+    $keys = inline_key_array($keys, 3);
 
     return $keys;
 }
@@ -1147,6 +1147,19 @@ function show_raid_poll($raid)
     }
 
     debug_log($data);
+
+    // Add Ex-Raid Message if Pokemon is in Ex-Raid-List.
+    $pokemonlist = $GLOBALS['pokemon'];
+    foreach($pokemonlist as $level => $levelmons) {
+        if($level == "X") {
+            foreach($levelmons as $key => $pokemon) {
+		if(strtolower($pokemon) == strtolower($raid['pokemon'])) {
+		    $msg.= CR . EMOJI_WARN . ' <b>TEILNAHME IST NUR MIT EX-RAID-PASS MÖGLICH</b> ' . EMOJI_WARN;
+		    break 2;
+	        }
+	    }
+        }
+    }
 
     // Add no attendance found message.
     if (count($data) == 0) {

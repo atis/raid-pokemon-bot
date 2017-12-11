@@ -20,6 +20,7 @@ $old_pokemon = $data['arg'];
 // Iterate thru the pokemon list to get raid level
 $pokemonlist = $GLOBALS['pokemon'];
 foreach($pokemonlist as $level => $levelmons) {
+    if($level == "X") continue;
     debug_log("Searching raid boss '" . $old_pokemon . "' in level " . $level . " raids");
     // Compare pokemon by pokemon to get raid level
     foreach($levelmons as $key => $pokemon) {
