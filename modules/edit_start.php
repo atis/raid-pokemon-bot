@@ -24,7 +24,16 @@ if (true) {
     // Init empty keys array.
     $keys = array();
 
-    for ($i = 120; $i >= 15; $i = $i - 5) {
+    // 1 Minute or 5 minute time slots
+    if ($data['arg'] == 0) {
+	$slotmax = 60;
+	$slotsize = 1;
+    } else {
+	$slotmax = 120;
+	$slotsize = 5;
+    }
+
+    for ($i = $slotmax; $i >= 15; $i = $i - $slotsize) {
         // Create the keys.
         $keys[] = array(
 	    // Just show the time, no text - not everyone has a phone or tablet with a large screen...
@@ -35,7 +44,7 @@ if (true) {
     }
 
     // Get the inline key array.
-    $keys = inline_key_array($keys, 4);
+    $keys = inline_key_array($keys, 5);
 
     // Write to log.
     debug_log($keys);
@@ -46,7 +55,7 @@ if (true) {
 }
 
 // Edit the message.
-edit_message($update, 'Wie lange läuft der Raid?', $keys);
+edit_message($update, 'Wie lange <b>dauert</b> der Raid?', $keys);
 
 // Build callback message string.
 $callback_response = 'Vorlaufzeit gesetzt auf ' . $data['arg'] . ' Minuten';

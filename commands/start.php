@@ -20,6 +20,6 @@ $keys = [
 $msg = '<b>Bitte sende mir zuerst einen Standort.</b>' . CR2 . CR . '<b>Oder lege ein Raid per Arena-Auswahl an:</b>';
 
 // Send message.
-send_message($update['message']['from']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
+send_message($update['message']['chat']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
 
 exit;

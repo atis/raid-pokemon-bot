@@ -19,7 +19,7 @@ require_once('geo_api.php');
 $apiKey = $_GET['apikey'];
 
 // Check if hashed api key is matching config.
-if (hash('sha512', $apiKey) == CONFIG_HASH) {
+if (hash('sha512', $apiKey) == strtolower(CONFIG_HASH)) {
     // Split the api key.
     $splitKey = explode(':', $apiKey);
 
@@ -69,6 +69,31 @@ $userUpdate = update_user($update);
 
 // Write to log.
 debug_log('Update user: ' . $userUpdate);
+
+// Cleanup request received.
+if (isset($update['cleanup']) && CLEANUP == true) {
+    debug_log('Cleanup process request received...');
+    // Check access to cleanup of bot
+    if ($update['cleanup']['secret'] == CLEANUP_SECRET) {
+	// Get telegram cleanup value if specified.
+        if (isset($update['cleanup']['telegram'])) {
+	    $telegram = $update['cleanup']['telegram'];
+	} else {
+	    $telegram = 2;
+	}
+	// Get database cleanup value if specified.
+        if (isset($update['cleanup']['database'])) {
+	    $database = $update['cleanup']['database'];
+	} else {
+	    $database = 2;
+	}
+        // Run cleanup
+        debug_log('Calling cleanup process now!');
+        run_cleanup($telegram, $database);
+    }
+    // Exit after cleanup
+    exit();
+} 
 
 // Callback query received.
 if (isset($update['callback_query'])) {
@@ -122,6 +147,37 @@ if (isset($update['callback_query'])) {
     include_once('modules/raid_create.php');
     exit();
 
+// Cleanup collection from channel/supergroup messages.
+} else if ($update['channel_post']['chat']['type'] == "channel" || $update['message']['chat']['type'] == "supergroup") {
+    // Write to log.
+    debug_log('Collecting cleanup preparation information...');
+    // Init raid_id.
+    $raid_id = 0;
+
+    // Channel 
+    if(isset($update['channel_post'])) {
+        // Get chat_id and message_id
+        $chat_id = $update['channel_post']['chat']['id'];
+        $message_id = $update['channel_post']['message_id'];
+
+	// Get raid_id from text.
+        $raid_id = substr(strrchr($update['channel_post']['text'], "ID = "), 5);
+
+    // Supergroup
+    } else if ($update['message']['chat']['type'] == "supergroup") {
+        // Get chat_id and message_id
+        $chat_id = $update['message']['chat']['id'];
+        $message_id = $update['message']['message_id'];
+
+	// Get raid_id from text.
+        $raid_id = substr(strrchr($update['message']['text'], "ID = "), 5);
+    }
+
+    // Write cleanup info to database.
+    debug_log('Calling cleanup preparation now!');
+    insert_cleanup($chat_id, $message_id, $raid_id);
+    exit();
+
 // Message is required to check for commands.
 } else if (isset($update['message'])) {
     // Check access to the bot
@@ -148,4 +204,3 @@ if (isset($update['callback_query'])) {
         sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b>');
     }
 }
-

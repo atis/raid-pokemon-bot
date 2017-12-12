@@ -58,7 +58,7 @@ if (!$keys) {
 }
 
 // Edit the message.
-edit_message($update, 'Wann beginnt der Raid?' . CR . 'Raid läuft schon? --- Einfach 0:00 auswählen!', $keys);
+edit_message($update, 'Wann <b>beginnt</b> der Raid?' . CR . CR . 'Raid läuft schon?' . CR .'Einfach 0:00 auswählen!', $keys);
 
 // Build callback message string.
 $callback_response = 'Pokemon gespeichert: ' . $data['arg'];

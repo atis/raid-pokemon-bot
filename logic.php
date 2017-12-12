@@ -31,17 +31,26 @@ function bot_access_check($update)
             }
 	}
 
+        // Prepare logging of username, first_name and/or id
+	$msg = '';
+	$msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
+	$msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
+	$msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
+	$msg .= !empty($update['inline_query']['from']['id']) ? "Id: " . $update['inline_query']['from']['id'] . CR : '';
+	$msg .= !empty($update['inline_query']['from']['username']) ? "Username: " . $update['inline_query']['from']['username'] . CR : '';
+	$msg .= !empty($update['inline_query']['from']['first_name']) ? "First Name: " . $update['inline_query']['from']['first_name'] . CR : '';
+
         // Allow or deny access to the bot and log result
         if ($allow_access) {
-            debug_log("Allowing access to the bot for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+            debug_log("Allowing access to the bot for user:" . CR . $msg);
         } else {
-            debug_log("Denying access to the bot for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+            debug_log("Denying access to the bot for user:" . CR . $msg);
             $response_msg = '<b>You are not allowed to use this bot!</b>';
 	    sendMessage($update['message']['chat']['id'], $response_msg);
             exit;
         }
     } else {
-        debug_log("Bot access is not restricted! Allowing access for user: " . $update['message']['from']['username'] . " (Id: " . $update['message']['from']['id'] . ")");
+        debug_log("Bot access is not restricted! Allowing access for user: " . CR . $msg);
     }
 }
 
@@ -123,14 +132,14 @@ function raid_duplication_check($gym,$end)
         // Now + $end = endtime of new raid
         $end = time() + $end*60;
 
-        // Compare end time - check 5 minutes before and after database value
-        $ts_end_before = $raid['ts_end'] - (5*60);
-        $ts_end_after = $raid['ts_end'] + (5*60);
+        // Compare end time - check 15 minutes before and after database value
+        $ts_end_before = $raid['ts_end'] - (15*60);
+        $ts_end_after = $raid['ts_end'] + (15*60);
 
 	// Debug log unix times
 	debug_log("Unix timestamp of endtime new raid: " . $end);
-	debug_log("Unix timestamp of endtime-5 existing raid: " . $ts_end_before);
-	debug_log("Unix timestamp of endtime+5 existing raid: " . $ts_end_after);
+	debug_log("Unix timestamp of endtime-15 existing raid: " . $ts_end_before);
+	debug_log("Unix timestamp of endtime+15 existing raid: " . $ts_end_after);
 
         // Debug log
         debug_log("Searched database for raids at " . $raid['gym_name']);
@@ -164,7 +173,6 @@ function raid_duplication_check($gym,$end)
  * @param $latitude
  * @param $longitude
  * @param $address
- * @return array
  */
 function insert_gym($name, $lat, $lon, $address)
 {
@@ -200,6 +208,7 @@ function insert_gym($name, $lat, $lon, $address)
 /**
  * Get gym.
  * @param $id
+ * @return array
  */
 function get_gym($id)
 {
@@ -312,14 +321,11 @@ function raid_edit_gyms_first_letter_keys($chatid, $chattype) {
                 'callback_data' => $chatid . ',' . $chattype . ':raid_by_gym:' . $first
             );
 	}
-    $previous = $first;
+        $previous = $first;
     }
 
     // Get the inline key array.
     $keys = inline_key_array($keys, 4);
-
-    // Write to log.
-    debug_log($keys);
 
     return $keys;
 }
@@ -356,9 +362,6 @@ function raid_edit_gym_keys($chatid, $chattype, $first)
     // Get the inline key array.
     $keys = inline_key_array($keys, 1);
 
-    // Write to log.
-    debug_log($keys);
-
     return $keys;
 }
 
@@ -387,10 +390,7 @@ function pokemon_keys($raid_id, $raid_level, $pokemonlist, $action)
     }
 
     // Get the inline key array.
-    $keys = inline_key_array($keys, 4);
-
-    // Write to log.
-    debug_log($keys);
+    $keys = inline_key_array($keys, 3);
 
     return $keys;
 }
@@ -412,10 +412,298 @@ function back_key($keys, $id, $action, $arg)
             )
         ];
 
-    // Write to log.
-    debug_log($keys);
-
     return $keys;
+}
+
+/**
+ * Insert cleanup info to database.
+ * @param $chat_id
+ * @param $message_id
+ * @param $raid_id
+ */
+function insert_cleanup($chat_id, $message_id, $raid_id)
+{
+    // Log ID's of raid, chat and message
+    debug_log('Raid_ID: ' . $raid_id);
+    debug_log('Chat_ID: ' . $chat_id);
+    debug_log('Message_ID: ' . $message_id);
+
+    if ((is_numeric($chat_id)) && (is_numeric($message_id)) && (is_numeric($raid_id)) && ($raid_id > 0)) {
+        global $db;
+
+        // Get raid times.
+        $rs = my_query(
+            "
+            SELECT    *, 
+                                  UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                                  UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                                  UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                                  UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+                    FROM      raids
+                      WHERE   id = {$raid_id}
+            "
+        );
+    
+        // Fetch raid data.
+        $raid = $rs->fetch_assoc();
+	
+	// Init found.
+	$found = false;
+
+        // Insert cleanup info to database
+        if ($raid) {
+	    // Check if cleanup info is already in database or not
+	    // Needed since raids can be shared to multiple channels / supergroups!
+	    $rs = my_query(
+                "
+		SELECT    *
+            	    FROM      cleanup
+                    WHERE     raid_id = '{$raid_id}'
+                "
+            );
+
+	    // Chat_id and message_id equal to info from database
+	    while ($cleanup = $rs->fetch_assoc()) {
+		// Leave while loop if cleanup info is already in database
+		if(($cleanup['chat_id'] == $chat_id) && ($cleanup['message_id'] == $message_id)) {
+            	    debug_log('Cleanup preparation info is already in database!');
+		    $found = true;
+		    break;
+		} 
+	    }
+	}
+
+	// Insert into database when raid found but no cleanup info found
+        if ($raid && !$found) {
+            // Build query for cleanup table to add cleanup info to database
+            debug_log('Adding cleanup info to database:');
+            $rs = my_query(
+                "
+                INSERT INTO   cleanup
+                SET           raid_id = '{$raid_id}',
+                                  chat_id = '{$chat_id}',
+                                  message_id = '{$message_id}'
+                "
+            );
+	} 
+    } else {
+        debug_log('Invalid input for cleanup preparation!');
+    }
+}
+
+/**
+ * Run cleanup.
+ * @param $telegram
+ * @param $database
+ */
+function run_cleanup ($telegram = 2, $database = 2) {
+    // Check configuration, cleanup of telegram needs to happen before database cleanup!
+    if (CLEANUP_TIME_TG > CLEANUP_TIME_DB) {
+	debug_log('Configuration issue! Cleanup time for telegram messages needs to be lower or equal to database cleanup time!');
+	debug_log('Stopping cleanup process now!');
+	exit;
+    }
+
+    /* Check input
+     * 0 = Do nothing
+     * 1 = Cleanup
+     * 2 = Read from config
+    */
+
+    // Get cleanup values from config per default.
+    if ($telegram == 2) {
+	$telegram = (CLEANUP_TELEGRAM == true) ? 1 : 0;
+    }
+
+    if ($database == 2) {
+	$database = (CLEANUP_DATABASE == true) ? 1 : 0;
+    }
+
+    // Start cleanup when at least one parameter is set to trigger cleanup
+    if ($telegram == 1 || $database == 1) {
+        // Get cleanup info.
+        $rs = my_query(
+            "
+            SELECT    * 
+                    FROM      cleanup
+            "
+        );
+
+        // Init empty cleanup jobs array.
+        $cleanup_jobs = array();
+
+	// Fill array with cleanup jobs.
+        while ($rowJob = $rs->fetch_assoc()) {
+            $cleanup_jobs[] = $rowJob;
+        }
+
+        // Write to log.
+        debug_log($cleanup_jobs);
+
+        // Init previous raid id.
+        $prev_raid_id = "FIRST_RUN";
+
+        foreach ($cleanup_jobs as $row) {
+	    // Set current raid id.
+	    $current_raid_id = ($row['raid_id'] == 0) ? $row['cleaned'] : $row['raid_id'];
+
+            // Write to log.
+            debug_log("Cleanup ID: " . $row['id']);
+            debug_log("Chat ID: " . $row['chat_id']);
+            debug_log("Message ID: " . $row['message_id']);
+            debug_log("Raid ID: " . $row['raid_id']);
+
+	    // Get raid data only when raid_id changed compared to previous run
+	    if ($prev_raid_id != $current_raid_id) {
+                // Get the raid data by id.
+                $rs = my_query(
+                    "
+                    SELECT  *,
+                            UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                            UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                            UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                            UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+                    FROM    raids
+                      WHERE id = {$current_raid_id}
+                    "
+                );
+
+                // Fetch raid data.
+                $raid = $rs->fetch_assoc();
+
+	        // Set times. 
+	        $end = $raid['ts_end'];
+	        $tz = $raid['timezone'];
+    	        $now = $raid['ts_now'];
+	        $cleanup_time_tg = 60*CLEANUP_TIME_TG;
+	        $cleanup_time_db = 60*CLEANUP_TIME_DB;
+
+		// Write times to log.
+		debug_log("Raid end time: " . unix2tz($end,$tz,"Y-m-d H:i:s"));
+		debug_log("Raid cleanup time: " . unix2tz(($end + $cleanup_time),$tz,"Y-m-d H:i:s"));
+		debug_log("Current time: " . unix2tz($now,$tz,"Y-m-d H:i:s"));
+
+		// Write unix timestamps to log.
+		debug_log("Unix timestamps:");
+		debug_log("Raid end time: " . $end);
+		debug_log("Telegram cleanup time: " . ($end + $cleanup_time_tg));
+		debug_log("Database cleanup time: " . ($end + $cleanup_time_db));
+		debug_log("Current time: " . $now);
+	    }
+
+	    // Time for telegram cleanup?
+	    if (($end + $cleanup_time_tg) < $now) {
+                // Delete raid poll telegram message if not already deleted
+	        if ($telegram == 1 && $row['chat_id'] != 0 && $row['message_id'] != 0) {
+		    // Delete telegram message.
+                    debug_log('Deleting telegram message ' . $row['message_id'] . ' from chat ' . $row['chat_id'] . ' for raid ' . $row['raid_id']);
+                    delete_message($row['chat_id'], $row['message_id']);
+		    // Set database values of chat_id and message_id to 0 so we know telegram message was deleted already.
+                    debug_log('Updating telegram cleanup inforamtion.');
+		    my_query(
+    		    "
+    		        UPDATE    cleanup
+    		        SET       chat_id = 0, 
+    		                  message_id = 0 
+      		        WHERE   id = {$row['id']}
+		    "
+		    );
+	        } else {
+		    if ($telegram == 1) {
+			debug_log('Telegram message is already deleted!');
+		    } else {
+			debug_log('Telegram cleanup was not triggered! Skipping...');
+		    }
+		}
+	    } else {
+		debug_log('Skipping cleanup of telegram for this raid! Cleanup time has not yet come...');
+	    }
+
+	    // Time for database cleanup?
+	    if (($end + $cleanup_time_db) < $now) {
+                // Delete raid from attendance table.
+	        // Make sure to delete only once - raid may be in multiple channels/supergroups, but only 1 time in database
+	        if (($database == 1) && $row['raid_id'] != 0 && ($prev_raid_id != $current_raid_id)) {
+		    // Delete raid from attendance table.
+                    debug_log('Deleting attendances for raid ' . $current_raid_id);
+                    my_query(
+                    "
+                        DELETE FROM    attendance
+                        WHERE   id = {$row['raid_id']}
+                    "
+                    );
+
+		    // Set database value of raid_id to 0 so we know attendance info was deleted already
+		    // Use raid_id in where clause since the same raid_id can in cleanup more than once
+                    debug_log('Updating database cleanup inforamtion.');
+                    my_query(
+                    "
+                        UPDATE    cleanup
+                        SET       raid_id = 0, 
+				  cleaned = {$row['raid_id']}
+                        WHERE   raid_id = {$row['raid_id']}
+                    "
+                    );
+	        } else {
+		    if ($database == 1) {
+		        debug_log('Attendances are already deleted!');
+		    } else {
+			debug_log('Attendance cleanup was not triggered! Skipping...');
+		    }
+		}
+
+		// Delete raid from cleanup table and raid table once every value is set to 0 and cleaned got updated from 0 to the raid_id
+		// In addition trigger deletion only when previous and current raid_id are different to avoid unnecessary sql queries
+		if ($row['raid_id'] == 0 && $row['chat_id'] == 0 && $row['message_id'] == 0 && $row['cleaned'] != 0 && ($prev_raid_id != $current_raid_id)) {
+		    // Delete raid from raids table.
+		    debug_log('Deleting raid ' . $row['cleaned'] . ' from database.');
+                    my_query(
+                    "
+                        DELETE FROM    raids
+                        WHERE   id = {$row['cleaned']}
+                    "
+                    );
+		    
+		    // Get all cleanup jobs which will be deleted now.
+                    debug_log('Removing cleanup info from database:');
+		    $rs_cl = my_query(
+                    "
+                        SELECT *
+			FROM    cleanup
+                        WHERE   cleaned = {$row['cleaned']}
+                    "
+		    );
+
+		    // Log each cleanup ID which will be deleted.
+		    while($rs_cleanups = $rs_cl->fetch_assoc()) {
+ 			debug_log('Cleanup ID: ' . $rs_cleanups['id'] . ', Former Raid ID: ' . $rs_cleanups['cleaned']);
+		    }
+
+		    // Finally delete from cleanup table.
+                    my_query(
+                    "
+                        DELETE FROM    cleanup
+                        WHERE   cleaned = {$row['cleaned']}
+                    "
+                    );
+		} else {
+		    if ($prev_raid_id != $current_raid_id) {
+			debug_log('Time for complete removal of raid from database has not yet come.');
+		    } else {
+			debug_log('Complete removal of raid from database was already done!');
+		    }
+		}
+	    } else {
+		debug_log('Skipping cleanup of database for this raid! Cleanup time has not yet come...');
+	    }
+	
+	    // Store current raid id as previous id for next loop
+            $prev_raid_id = $current_raid_id;
+        }
+
+    // Write to log.
+    debug_log('Finished with cleanup process!');
+    }
 }
 
 /**
@@ -860,6 +1148,19 @@ function show_raid_poll($raid)
 
     debug_log($data);
 
+    // Add Ex-Raid Message if Pokemon is in Ex-Raid-List.
+    $pokemonlist = $GLOBALS['pokemon'];
+    foreach($pokemonlist as $level => $levelmons) {
+        if($level == "X") {
+            foreach($levelmons as $key => $pokemon) {
+		if(strtolower($pokemon) == strtolower($raid['pokemon'])) {
+		    $msg.= CR . EMOJI_WARN . ' <b>TEILNAHME IST NUR MIT EX-RAID-PASS MÖGLICH</b> ' . EMOJI_WARN;
+		    break 2;
+	        }
+	    }
+        }
+    }
+
     // Add no attendance found message.
     if (count($data) == 0) {
         $msg .= CR . 'Noch keine Teilnehmer.' . CR;
@@ -872,7 +1173,7 @@ function show_raid_poll($raid)
                         sum(team = 'mystic')        AS count_mystic,
                         sum(team = 'valor')         AS count_valor,
                         sum(team = 'instinct')      AS count_instinct,
-                        sum(team = 'NULL')          AS count_no_team,
+                        sum(team IS NULL)           AS count_no_team,
                         sum(extra_people)           AS extra
         FROM            attendance
           WHERE         raid_id = {$raid['id']}
@@ -1063,9 +1364,27 @@ function show_raid_poll($raid)
         }
     }
 
+    // Display user which created the raid.
+    // Get user data.
+    $rs = my_query(
+        "
+        SELECT  *
+        FROM    users
+        WHERE   user_id = {$raid['user_id']}
+        "
+    );
+
+    // Get the row.
+    $row = $rs->fetch_assoc();
+
+    // Display creator.
+    if ($row['user_id'] && $row['name']) {
+        $msg .= CR . 'Erstellt von: <a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
+    }
+
     // Add update time and raid id to message.
     $msg .= CR . '<i>Aktualisiert: ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>';
-    $msg .= '  ID = ' . $raid['id']; // Debug.
+    $msg .= '  ID = ' . $raid['id']; // DO NOT REMOVE! --> NEEDED FOR CLEANUP PREPARATION!
 
     // Return the message.
     return $msg;

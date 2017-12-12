@@ -21,3 +21,10 @@ define('BOT_ACCESS',        ''); // optional
 define('RAID_LOCATION',     false); // send location as message in addition to raid poll message
 define('RAID_SLOTS',        '15'); // minutes
 define('RAID_LAST_START',   '10'); // minutes before RAID ends
+
+define('CLEANUP',           false); // must be true for cleanup
+define('CLEANUP_SECRET',    'your-cleanup-secret/passphrase');
+define('CLEANUP_TELEGRAM',  true);
+define('CLEANUP_TIME_TG',   '10'); // minutes after RAID ended
+define('CLEANUP_DATABASE',  true);
+define('CLEANUP_TIME_DB',   '10080'); // minutes after RAID ended

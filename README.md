@@ -68,11 +68,59 @@ Optionally you can you use Google maps API to lookup addresses of gyms based on 
 
 Therefore get a Google maps API key and set it as `GOOGLE_API_KEY` in your config.
 
-Activate it for both Geocoding and Time Zone API
+To get a new API key, navigate to https://console.developers.google.com/apis/credentials and create a new API project, e.g. raid-telegram-bot
 
-https://developers.google.com/maps/documentation/timezone/get-api-key
+Once the project is created select "API key" from the "Create credentials" dropdown menu - a new API key is created.
 
-https://developers.google.com/maps/documentation/geocoding/start#get-a-key
+After the key is created, you need to activate it for both: Geocoding and Timezone API
+
+Therefore go to "Dashboard" on the left navigation pane and afterwards hit "Enable APIs and services" on top of the page.
+
+Search for Geocoding and Timezone API and enable them. Alternatively use these links to get to Geocoding and Timezone API services:
+
+https://console.developers.google.com/apis/library/timezone-backend.googleapis.com
+
+https://console.developers.google.com/apis/library/geocoding-backend.googleapis.com
+
+Finally check the dashboard again and make sure Google Maps Geocoding API and Google Maps Time Zone API are listed as enabled services. 
+
+## Cleanup
+
+The bot features an automatic cleanup of telegram raid poll messages as well as cleanup of the database (attendance and raids tables).
+
+To activate cleanup you need to change the config and create a cronjob to trigger the cleanup process as follows:
+
+Set the `CLEANUP` in the config to `true` and define a cleanup secret/passphrase under `CLEANUP_SECRET`.
+
+Activate the cleanup of telegram messages and/or the database by setting `CLEANUP_TELEGRAM` / `CLEANUP_DATABASE` to true.
+
+Specify the amount of minutes which need to pass by after raid has ended before the bot executes the cleanup. Times are in minutes in `CLEANUP_TIME_TG` for telegram cleanup and `CLEANUP_TIME_DB` for database cleanup.
+
+The value for the minutes of the database cleanup `CLEANUP_TIME_DB` must be greater than then one for telegram cleanup `CLEANUP_TIME_TG`. Otherwise cleanup will do nothing and exit due to misconfiguration!
+
+Finally set up a cronjob to trigger the cleanup. You can also trigger telegram / database cleanup per cronjob: For no cleanup use 0, for cleanup use 1 and to use your config file use 2 or leave "telegram" and "database" out of the request data array.
+
+A few examples - make sure to replace the URL with yours:
+
+#### Cronjob using cleanup values from config.php: Just the secret without telegram/database OR telegram = 2 and database = 2
+
+`curl -k -d '{"cleanup":{"secret":"your-cleanup-secret/passphrase"}}' https://localhost/index.php?apikey=111111111:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP123`
+
+OR
+
+`curl -k -d '{"cleanup":{"secret":"your-cleanup-secret/passphrase","telegram":"2","database":"2"}}' https://localhost/index.php?apikey=111111111:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP123`
+
+#### Cronjob to clean up telegram messages only: telegram = 1 and database = 0 
+
+`curl -k -d '{"cleanup":{"secret":"your-cleanup-secret/passphrase","telegram":"1","database":"0"}}' https://localhost/index.php?apikey=111111111:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP123`
+
+#### Cronjob to clean up telegram messages and database: telegram = 1 and database = 1
+
+`curl -k -d '{"cleanup":{"secret":"your-cleanup-secret/passphrase","telegram":"1","database":"1"}}' https://localhost/index.php?apikey=111111111:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP123`
+
+#### Cronjob to clean up database and maybe telegram messages (when specified in config): telegram = 2 and database = 1
+
+`curl -k -d '{"cleanup":{"secret":"your-cleanup-secret/passphrase","telegram":"2","database":"1"}}' https://localhost/index.php?apikey=111111111:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP123`
 
 # Usage
 
