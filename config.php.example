@@ -16,6 +16,7 @@ define('DB_PASSWORD',       'your_database_password');
 define('MAINTAINER',        '@your_tg_username');
 define('MAINTAINER_ID',     'your_tg_integer');
 define('BOT_NAME',          '@RaidPokemonBot');
+define('BOT_ADMINS',        ''); // optional
 define('BOT_ACCESS',        ''); // optional
 
 define('RAID_LOCATION',     false); // send location as message in addition to raid poll message
