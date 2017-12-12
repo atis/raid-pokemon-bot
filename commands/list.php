@@ -40,6 +40,11 @@ $request = my_query(
 );
 
 while ($raid = $request->fetch_assoc()) {
+    if(!$raid) {
+	sendMessage($update['message']['from']['id'], '<b>Aktuell sind keine laufenden Raids im System!</b>');
+	exit;
+    }
+
     // Create keys array.
     $keys = [
         [
