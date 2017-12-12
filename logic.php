@@ -4,31 +4,48 @@
  * @param $update
  * @param $chat_id
  */
-function bot_access_check($update)
+function bot_access_check($update, $access_type = BOT_ACCESS)
 {
     // Restricted or public access
-    if(!empty(BOT_ACCESS)) {
-	$chat_id = BOT_ACCESS;
+    if(!empty($access_type)) {
+	$all_chats = '';
+	$all_chats .= !empty(MAINTAINER_ID) ? MAINTAINER_ID . ',' : '';
+	$all_chats .= $access_type;
 
-	// Check each admin chat defined in BOT_ACCESS 
-	$chats = explode(',', $chat_id);
+	// Check each admin chat defined in $access_type 
+	$chats = explode(',', $all_chats);
    	foreach($chats as $chat) {
-    
+	    // Get chat object 
+	    $chat_obj = get_chat($chat);
+            debug_log("Getting chat object for '" . $chat . "'");
+
+	    // Check chat object for proper response.
+	    if ($chat_obj['ok'] == true) {
+		$allow_access = false;
+		// ID matching $chat and private chat type?
+		if ($chat_obj['result']['id'] == $chat && $chat_obj['result']['type'] == "private") {
+		    $allow_access = true;
+		    break;
+		}
+	    } else {
+		debug_log('Chat ' . $chat . ' does not exist! Continuing with next chat...');
+		continue;
+	    }
+
 	    // Get administrators from chat
     	    $response = get_admins($chat);
             debug_log("Getting administrators from chat '" . $chat . "'");
 
     	    // Make sure we get a proper response
     	    if ($response['ok'] == true) { 
-                $allow_access = false;
 	        foreach($response['result'] as $admin) {
 	                // If user is found as administrator allow access to the bot
 	                if ($admin['user']['id'] == $update['message']['from']['id'] || $admin['user']['id'] == $update['inline_query']['from']['id']) {
 		            $allow_access = true;
-		            break;
+		            break 2;
 		        }
-                    }
-            }
+                }
+	    }
 	}
 
         // Prepare logging of username, first_name and/or id
@@ -45,7 +62,7 @@ function bot_access_check($update)
             debug_log("Allowing access to the bot for user:" . CR . $msg);
         } else {
             debug_log("Denying access to the bot for user:" . CR . $msg);
-            $response_msg = '<b>You are not allowed to use this bot!</b>';
+            $response_msg = '<b>You are not allowed to use this command or bot!</b>';
 	    sendMessage($update['message']['chat']['id'], $response_msg);
             exit;
         }
@@ -1174,7 +1191,8 @@ function show_raid_poll($raid)
                         sum(team = 'valor')         AS count_valor,
                         sum(team = 'instinct')      AS count_instinct,
                         sum(team IS NULL)           AS count_no_team,
-                        sum(extra_people)           AS extra
+                        sum(extra_people)           AS extra,
+			attend_time
         FROM            attendance
           WHERE         raid_id = {$raid['id']}
             AND         attend_time IS NOT NULL
