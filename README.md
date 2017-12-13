@@ -190,13 +190,10 @@ Check your bot logfile and other related log files, e.g. apache/httpd log, php l
 
 # TODO:
 
-* Cleanup logic to delete raid polls once a raid ended.
-
-	arrived - set and show time
-
-	create raid - check permissions (in group)
-	create raid moderators - allow create any raid
-	
-	geofencing - auto publish to chat
-	timezones
-	create api / command
+* Moderators support: Add, remove and list moderators - only specified BOT_ADMINS are allowed to add, remove and list moderators
+* Multilanguage support: Supporting multiple languages
+* New gyms: Adding gyms to database without creating a raid via /raid
+* Duplication check 2.0: Add support to notify user that a raid is already in the database when creating one via /start
+* Preferred pokemon raid boss: When multiple level 5 raids are available, e.g. Lugia and Zapdos, add buttons to tell that you're coming a) only if Lugia, b) only if Zapdos, c) independently of the pokemon
+* Delete raids: Allow BOT_ADMINS to delete raids
+* Delete incomplete raids automatically: When a bot user starts to create a raid via /start, but does not finish the raid creation, incomplete raid data is stored in the raids table. A method to automatically delete them without interfering with raids just being created would be nice.
