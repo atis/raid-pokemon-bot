@@ -2,7 +2,7 @@
 /**
  * Bot access check.
  * @param $update
- * @param $chat_id
+ * @param $access_type
  */
 function bot_access_check($update, $access_type = BOT_ACCESS)
 {
@@ -244,6 +244,139 @@ function get_gym($id)
 }
 
 /**
+ * Get user.
+ * @param $id
+ * @return message
+ */
+function get_user($id)
+{
+    // Get user details.
+    $rs = my_query(
+        "
+        SELECT    * 
+                FROM      users
+                  WHERE   id = {$id}
+        "
+    );
+
+    // Fetch the row.
+    $row = $rs->fetch_assoc();
+
+    // Build message string.
+    $msg = '';
+
+    // Add name.
+    $msg .= 'Name: <a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>' . CR;
+
+    // Unknown team.
+    if ($row['team'] === NULL) {
+        $msg .= 'Team: ' . $GLOBALS['teams']['unknown'] . CR;
+
+    // Known team.
+    } else {
+        $msg .= 'Team: ' . $GLOBALS['teams'][$row['team']] . CR;
+    }
+
+    // Add level.
+    if ($row['level'] != 0) {
+        $msg .= 'Level: ' . $row['level'] . CR;
+    }
+
+    return $msg;
+}
+
+/**
+ * Moderator keys.
+ * @param $limit
+ * @param $action
+ * @return array
+ */
+function edit_moderator_keys($limit, $action)
+{
+    // Number of entries to display at once.
+    $entries = 10;
+
+    // Init empty keys array.
+    $keys = array();
+
+    // Get moderators from database
+    if ($action == "list" || $action == "delete") {
+        $rs = my_query(
+                "
+                SELECT    *
+                FROM      users
+                WHERE     moderator = 1 
+	        ORDER BY  name
+	        LIMIT     $limit, $entries
+                "
+            );
+
+	// Number of entries
+        $cnt = my_query(
+                "
+                SELECT    COUNT(*)
+                FROM      users
+                WHERE     moderator = 1 
+                "
+            );
+    } else if ($action == "add") {
+        $rs = my_query(
+                "
+                SELECT    *
+                FROM      users
+                WHERE     (moderator = 0 OR moderator IS NULL)
+                ORDER BY  name
+                LIMIT     $limit, $entries
+                "
+            );
+
+	// Number of entries
+        $cnt = my_query(
+                "
+                SELECT    COUNT(*)
+                FROM      users
+                WHERE     (moderator = 0 OR moderator IS NULL)
+                "
+            );
+    }
+
+    // Number of database entries found.
+    $sum = $cnt->fetch_row();
+    $count = $sum['0'];
+
+    // List users / moderators
+    while ($mod = $rs->fetch_assoc()) {
+        $keys[] = array(
+            'text'          => $mod['name'],
+            'callback_data' => '0:mods_' . $action . ':' . $mod['id']
+        );
+    }
+
+    // Add back key.
+    if ($limit > 0) {
+	$new_limit = $limit - $entries;
+	$empty_back_key = array();
+	$key_back = back_key($empty_back_key, $new_limit, "mods", $action);
+	$key_back = $key_back[0];
+	$keys = array_merge($key_back, $keys);
+    }
+
+    // Add next key.
+    if (($limit + $entries) < $count) {
+	$new_limit = $limit + $entries;
+	$empty_next_key = array();
+	$key_next = next_key($empty_next_key, $new_limit, "mods", $action);
+	$key_next = $key_next[0];
+	$keys = array_merge($keys, $key_next);
+    }
+
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 1);
+
+    return $keys;
+}
+
+/**
  * Inline key array.
  * @param $buttons
  * @param $columns
@@ -425,6 +558,26 @@ function back_key($keys, $id, $action, $arg)
     $keys[] = [
             array(
                 'text'          => 'Zurück',
+                'callback_data' => $id . ':' . $action . ':' . $arg
+            )
+        ];
+
+    return $keys;
+}
+
+/**
+ * Next key.
+ * @param $keys
+ * @param $id
+ * @param $action
+ * @param $arg
+ * @return array
+ */
+function next_key($keys, $id, $action, $arg) 
+{
+    $keys[] = [
+            array(
+                'text'          => 'Weiter',
                 'callback_data' => $id . ':' . $action . ':' . $arg
             )
         ];
