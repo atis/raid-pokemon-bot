@@ -5,7 +5,7 @@ debug_log($update);
 debug_log($data);
 
 // Set the id.
-$id = $data['arg'];
+$user_id = $data['arg'];
 
 if ($update['message']['chat']['type'] == 'private' || $update['callback_query']['message']['chat']['type'] == 'private') {
     // Update the user.
@@ -13,15 +13,14 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
         "
         UPDATE	  users 
         SET       moderator = 0
-                  WHERE   id = {$id}
+                  WHERE   user_id = {$user_id}
         "
     );
 
     // Build message string.
     $msg = '';
-    $msg .= '<b>Moderator entfernt!</b>' . CR . CR;
-    $msg .= 'Infos zum ehemaligen Moderator:' . CR;
-    $msg .= get_user($id);
+    $msg .= '<b>Moderator entfernt!</b>' . CR;
+    $msg .= get_user($user_id);
 
     // Create the keys.
     $keys = [];

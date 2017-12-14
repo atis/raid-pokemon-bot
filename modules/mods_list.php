@@ -5,7 +5,7 @@ debug_log($update);
 debug_log($data);
 
 // Set the id.
-$id = $data['arg'];
+$user_id = $data['arg'];
 
 if ($update['message']['chat']['type'] == 'private' || $update['callback_query']['message']['chat']['type'] == 'private') {
     // Build message string.
@@ -13,7 +13,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     $msg .= 'Infos zum Moderator:' . CR;
 
     // Add name.
-    $msg .= get_user($id);
+    $msg .= get_user($user_id);
 
     // Create the keys.
     $keys = [];
