@@ -93,6 +93,71 @@ if($gym_id > 0) {
     $fullAddress .= (!empty($addr['district']) ? $addr['district'] : "");
 }
 
+// Insert new raid or warn about existing raid?
+$raid_id = raid_duplication_check($gym_name,0);
+
+// Insert new raid
+if ($raid_id != 0) {
+    // Check raid ID
+    // Positive ID: Raid is completely created
+    // Negative ID: Raid is being created at the moment
+    $raid_status = (substr($raid_id, 0, 1) == '-') ? 'start' : 'end';
+
+    // Change negative raid ID to positive ID
+    $raid_id = ($raid_status == "start") ? (ltrim($raid_id, '-')) : $raid_id;
+
+    // Get the raid data by id.
+    $rs = my_query(
+        "
+        SELECT  *,
+                UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+        FROM    raids
+          WHERE id = {$raid_id}
+        "
+    );
+
+    // Fetch raid data.
+    $raid = $rs->fetch_assoc(); 
+
+    // Create the keys.
+    if ($raid_status == "end") {
+	// Update pokemon?
+        $keys = [
+            [
+                [
+                    'text'          => 'Pokemon aktualisieren',
+                    'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
+                ]
+            ],
+            [
+                [
+                    'text'                => 'Teilen',
+                    'switch_inline_query' => strval($raid['id'])
+                ]
+            ]
+        ];
+    } else {
+        $keys = [];
+    }
+
+    // Build message string.
+    $msg = ($raid_status == "start") ? ('Raid wird gerade angelegt von:' . CR . get_user($raid['user_id'])) : ('Raid existiert bereits!' . CR . show_raid_poll_small($raid));
+
+    // Edit the message.
+    edit_message($update, $msg, $keys);
+
+    // Build callback message string.
+    $callback_response = 'OK';
+
+    // Answer callback.
+    answerCallbackQuery($update['callback_query']['id'], $callback_response);
+
+    exit();
+}
+
 // Address found.
 if (!empty($fullAddress)) {
     // Create raid with address.
