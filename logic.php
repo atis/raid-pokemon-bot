@@ -9,8 +9,10 @@ function bot_access_check($update, $access_type = BOT_ACCESS)
     // Restricted or public access
     if(!empty($access_type)) {
 	$all_chats = '';
+	// Always add maintainer and admins.
 	$all_chats .= !empty(MAINTAINER_ID) ? MAINTAINER_ID . ',' : '';
-	$all_chats .= $access_type;
+	$all_chats .= !empty(BOT_ADMINS) ? BOT_ADMINS . ',' : '';
+	$all_chats .= ($access_type == BOT_ADMINS) ? '' : $access_type;
 
 	// Check each admin chat defined in $access_type 
 	$chats = explode(',', $all_chats);
