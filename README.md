@@ -122,6 +122,27 @@ OR
 
 `curl -k -d '{"cleanup":{"secret":"your-cleanup-secret/passphrase","telegram":"2","database":"1"}}' https://localhost/index.php?apikey=111111111:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP123`
 
+# Access permissions
+
+With BOT_ADMINS and BOT_ACCESS being used to restrict access, there are several access roles / types. When you do not configure BOT_ACCESS, everyone will have access to your bot (public access).  
+
+As MAINTAINER_ID and as a member of BOT_ADMINS you have the permissions to do anything. But for some actions you'll need to make yourself a moderator.
+(#TODO: MAINTAINER_ID and BOT_ADMINS should be able to do anything even when they're not moderator)
+
+As a member of BOT_ACCESS you can create raid polls, update your own raid polls' pokemon and change the gym team of your last raid poll. BOT_ACCESS members who are moderators can change the gym name and update raid polls' pokemon of others.
+
+Telegram Users can only vote on raid polls, but have no access to other bot functions.
+
+
+| Access        | Database  | Raid poll |                                      |                  | Pokemon                       |                               | Gym             |                  | Moderators       |                 |                    | Help             |
+|---------------|-----------|-----------|--------------------------------------|------------------|-------------------------------|-------------------------------|-----------------|------------------|------------------|-----------------|--------------------|------------------|
+|               |           | **Vote**  | **Create** `/start`, `/raid`, `/new` | **List** `/list` | **All raid polls** `/pokemon` | **Own raid polls** `/pokemon` | **Name** `/gym` | **Team** `/team` | **List** `/mods` | **Add** `/mods` | **Delete** `/mods` | **Show** `/help` |
+| MAINTAINER_ID |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
+| BOT_ADMINS    |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
+| BOT_ACCESS    | Moderator | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              |                  |                 |                    | Yes              |
+| BOT_ACCESS    | User      | Yes       | Yes                                  | Yes              |                               | Yes                           |                 | Yes              |                  |                 |                    | Yes              |
+| Telegram      | User      | Yes       |                                      |                  |                               |                               |                 |                  |                  |                 |                    |                  |
+
 # Usage
 
 ## Bot commands
