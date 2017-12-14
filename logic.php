@@ -145,42 +145,63 @@ function raid_duplication_check($gym,$end)
 	// Timezone - maybe there's a more elegant solution as date_default_timezone_set?!
         $tz = TIMEZONE;
         date_default_timezone_set($tz);
+	
+	// Now
+	$now = time();
 
-        // Now + $end = endtime of new raid
-        $end = time() + $end*60;
+	// Compare time - check minutes before and after database value
+	$beforeAfter = 15;
+	$extendBefore = 180;
 
-        // Compare end time - check 15 minutes before and after database value
-        $ts_end_before = $raid['ts_end'] - (15*60);
-        $ts_end_after = $raid['ts_end'] + (15*60);
+	// Seems raid is being created at the moment
+        if ($raid['ts_end'] === NULL) {
+	    // Compare via start_time.
+	    $compare = "start";
+	    $time4compare = $now;
 
-	// Debug log unix times
-	debug_log("Unix timestamp of endtime new raid: " . $end);
-	debug_log("Unix timestamp of endtime-15 existing raid: " . $ts_end_before);
-	debug_log("Unix timestamp of endtime+15 existing raid: " . $ts_end_after);
+	    // Set compare values.
+	    $ts_compare_before = $raid['ts_start'] - ($beforeAfter*60);
+	    $ts_compare_after = $raid['ts_start'] + ($beforeAfter*60);
+	} else {
+	    // Compare via end_time.
+	    $compare = "end";
+	    $time4compare = $now + $end*60;
+
+	    // Set compare values.
+	    // Extend compare time for raid times if $time4compare is equal to $now which means $end must be 0
+	    $ts_compare_before = ($time4compare == $now) ? ($raid['ts_end'] - ($extendBefore*60)) : ($raid['ts_end'] - ($beforeiAfter*60));
+	    $ts_compare_after = $raid['ts_end'] + ($beforeAfter*60);
+	}
+
+        // Debug log unix times
+        debug_log('Unix timestamp of ' . $compare . 'time new raid: ' . $time4compare);
+        debug_log('Unix timestamp of ' . $compare . 'time -' . (($time4compare == $now) ? $extendBefore : $beforeAfter) . ' minutes of existing raid: ' . $ts_compare_before);
+        debug_log('Unix timestamp of ' . $compare . 'time +' . $beforeAfter . ' minutes of existing raid: ' . $ts_compare_after);
 
         // Debug log
-        debug_log("Searched database for raids at " . $raid['gym_name']);
-        debug_log("Database raid ID of last raid at ". $raid['gym_name'] . ": " . $raid['id']);
-        debug_log("New raid at " . $raid['gym_name'] . " will end: " . unix2tz($end,$tz));
-        debug_log("Existing raid at " . $raid['gym_name'] . " will end between " . unix2tz($ts_end_before,$tz) . " and " . unix2tz($ts_end_after,$tz));
+        debug_log('Searched database for raids at ' . $raid['gym_name']);
+        debug_log('Database raid ID of last raid at '. $raid['gym_name'] . ': ' . $raid['id']);
+        debug_log('New raid at ' . $raid['gym_name'] . ' will ' . $compare . ': ' . unix2tz($time4compare,$tz));
+        debug_log('Existing raid at ' . $raid['gym_name'] . ' will ' . $compare . ' between ' . unix2tz($ts_compare_before,$tz) . ' and ' . unix2tz($ts_compare_after,$tz));
 
-        // Check if end_time of new raid is between plus minus 5 minutes of existing raid
-        if($end >= $ts_end_before && $end <= $ts_end_after){
+        // Check if end_time of new raid is between plus minus the specified minutes of existing raid
+        if($time4compare >= $ts_compare_before && $time4compare <= $ts_compare_after){
 	    // Update existing raid.
-	    $duplicate_id = $raid['id'];
-	    debug_log("New raid matches end_time of existing raid!");
-	    debug_log("Updating raid ID: " . $duplicate_id);
+	    // Negative raid ID if compare method is start and not end time
+	    $duplicate_id = ($compare == "start") ? (0-$raid['id']) : $raid['id'];
+	    debug_log('New raid matches ' . $compare . 'time of existing raid!');
+	    debug_log('Updating raid ID: ' . $duplicate_id);
     	} else {
 	    // Create new raid.
-	    debug_log("New raid end_time does not match the end_time of existing raid.");
-	    debug_log("Creating new raid at gym: " . $raid['gym_name']);
+	    debug_log('New raid ' . $compare . 'time does not match the ' . $compare . 'time of existing raid.');
+	    debug_log('Creating new raid at gym: ' . $raid['gym_name']);
         }
     } else {
 	debug_log("Gym '" . $gym . "' not found in database!");
 	debug_log("Creating new raid at gym: " . $gym);
     }
 
-    // Return ID or 0
+    // Return ID, -ID or 0
     return $duplicate_id;
 }
 
@@ -245,17 +266,17 @@ function get_gym($id)
 
 /**
  * Get user.
- * @param $id
+ * @param $user_id
  * @return message
  */
-function get_user($id)
+function get_user($user_id)
 {
     // Get user details.
     $rs = my_query(
         "
         SELECT    * 
                 FROM      users
-                  WHERE   id = {$id}
+                  WHERE   user_id = {$user_id}
         "
     );
 
@@ -348,7 +369,7 @@ function edit_moderator_keys($limit, $action)
     while ($mod = $rs->fetch_assoc()) {
         $keys[] = array(
             'text'          => $mod['name'],
-            'callback_data' => '0:mods_' . $action . ':' . $mod['id']
+            'callback_data' => '0:mods_' . $action . ':' . $mod['user_id']
         );
     }
 
