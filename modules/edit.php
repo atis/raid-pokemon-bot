@@ -31,6 +31,8 @@
 				'text' => 'Entei', 'callback_data' => $id.':edit_poke:entei',
 			],[
 				'text' => 'Suicune', 'callback_data' => $id.':edit_poke:suicune',
+			],[
+				'text' => 'Groudon', 'callback_data' => $id.':edit_poke:groudon',
 		]],[[
 				'text' => 'Legendary (unknown)', 'callback_data' => $id.':edit_poke:legendary',
 		]]];
