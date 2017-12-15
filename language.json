@@ -214,6 +214,11 @@
 		"DE": "Arktos",
 		"EN": "Articuno"		
 	},
+  "groudon" : {
+    "NL": "Groudon",
+    "DE": "Groudon",
+    "EN": "Groudon"
+  },
 	"egg_5" : {
 		"NL": "Level 5 Ei",
 		"DE": "Level 5 Ei",
