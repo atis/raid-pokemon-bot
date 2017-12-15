@@ -723,7 +723,7 @@ function keys_vote($raid)
     $keys = [
         [
             [
-                'text'          => getTranslation('alleen'),
+                'text'          => getTranslation('alone'),
                 'callback_data' => $raid['id'] . ':vote:1'
             ],
             [
