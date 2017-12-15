@@ -28,3 +28,5 @@ define('CLEANUP_TELEGRAM',  true);
 define('CLEANUP_TIME_TG',   '10'); // minutes after RAID ended
 define('CLEANUP_DATABASE',  true);
 define('CLEANUP_TIME_DB',   '10080'); // minutes after RAID ended
+
+define('LANGUAGE', 'EN'); // language for the text EN, DE or NL

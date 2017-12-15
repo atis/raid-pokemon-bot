@@ -46,10 +46,10 @@ if (!$keys) {
 }
 
 // Edit the message.
-edit_message($update, 'Bitte Anfangsbuchstabe der Arena auswählen:', $keys);
+edit_message($update, getTranslation('select_gym_first_letter'), $keys);
 
 // Build callback message string.
-$callback_response = 'Anfangsbuchstabe ausgewählt.';
+$callback_response = getTranslation('select_gym');
 
 // Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);

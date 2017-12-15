@@ -24,7 +24,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     $keys = [
         [
             [
-                'text'                => 'Teilen',
+                'text'                => getTranslation('share'),
                 'switch_inline_query' => strval($id)
             ]
         ]
@@ -48,23 +48,23 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
 
     // Build message string.
     $msg = '';
-    $msg .= 'Raid gespeichert:' . CR;
+    $msg .= getTranslation('raid_saved') . CR;
     $msg .= show_raid_poll_small($raid) . CR;
 
     // Gym Name
     if(!empty($raid['gym_name'])) {
-	$msg .= 'Optional - Arena Team setzen:' . CR2;
+	$msg .= getTranslation('set_gym_and_team') . CR2;
     } else {
-        $msg .= 'Optional - Arena Name und Arena Team:' . CR2;
-        $msg .= '/gym <code>Name der Arena</code>' . CR;
+        $msg .= getTranslation('set_gym_name_and_team') . CR2;
+        $msg .= getTranslation('set_gym_team') . CR;
     }
-    $msg .= '/team <code>Mystic/Valor/Instinct/Blau/Rot/Gelb</code>';
+    $msg .= getTranslation('set_team');
 
     // Edit message.
     edit_message($update, $msg, $keys, false);
 
     // Build callback message string.
-    $callback_response = 'Ablaufzeit gesetzt auf ' . $data['arg'] . ' Minuten';
+    $callback_response = getTranslation('end_time') . $data['arg'] . getTranslation('minutes');
 
     // Answer callback.
     answerCallbackQuery($update['callback_query']['id'], $callback_response);

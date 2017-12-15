@@ -50,7 +50,7 @@ if (!$keys) {
     $keys = [
         [
             [
-                'text'          => 'Not supported',
+                'text'          => getTranslation('not_supported'),
                 'callback_data' => 'edit:not_supported'
             ]
         ]
@@ -58,10 +58,10 @@ if (!$keys) {
 }
 
 // Edit the message.
-edit_message($update, 'Wann <b>beginnt</b> der Raid?' . CR . CR . 'Raid läuft schon?' . CR .'Einfach 0:00 auswählen!', $keys);
+edit_message($update, getTranslation('raid_starts_when') . CR . CR . getTranslation('is_raid_active') . CR . getTranslation('select_0'), $keys);
 
 // Build callback message string.
-$callback_response = 'Pokemon gespeichert: ' . $data['arg'];
+$callback_response = getTranslation('pokemon_saved') . $data['arg'];
 
 // Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);

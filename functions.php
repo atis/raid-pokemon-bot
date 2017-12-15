@@ -484,3 +484,20 @@ function curl_json_request($json)
     // Return response.
     return $response;
 }
+
+/**
+ * Gets a table translation out of the json file.
+ * @param $text
+ * @return translation
+ */
+function getTranslation($text)
+{
+	debug_log($text);
+	
+	$str = file_get_contents('./language.json');
+	
+	$json = json_decode($str, true);
+	$translation = $json[$text][LANGUAGE];	
+	
+	return $translation;
+}

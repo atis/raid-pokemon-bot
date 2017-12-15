@@ -23,7 +23,7 @@ if (!$keys) {
     $keys = [
         [
             [
-                'text'          => 'Nicht unterstützt',
+                'text'          => getTranslation('not_supported'),
                 'callback_data' => 'edit:not_supported'
             ]
         ]
@@ -31,9 +31,9 @@ if (!$keys) {
 }
 
 if (isset($update['callback_query']['inline_message_id'])) {
-    editMessageText($update['callback_query']['inline_message_id'], 'Raid Boss auswählen:', $keys);
+    editMessageText($update['callback_query']['inline_message_id'], getTranslation('select_raid_boss') . ':', $keys);
 } else {
-    editMessageText($update['callback_query']['message']['message_id'], 'Raid Boss auswählen:', $keys, $update['callback_query']['message']['chat']['id'], $keys);
+    editMessageText($update['callback_query']['message']['message_id'], getTranslation('select_raid_boss') . ':', $keys, $update['callback_query']['message']['chat']['id'], $keys);
 }
 
 // Build callback message string.

@@ -10,8 +10,8 @@ $start = microtime(true);
 // Include files.
 require_once('config.php');
 require_once('debug.php');
-require_once('constants.php');
 require_once('functions.php');
+require_once('constants.php');
 require_once('logic.php');
 require_once('geo_api.php');
 
@@ -201,6 +201,6 @@ if (isset($update['callback_query'])) {
         }
 
         // Echo bot response.
-        sendMessage($update['message']['chat']['id'], '<b>Bitte sende mir zuerst einen Standort.</b>');
+        sendMessage($update['message']['chat']['id'], '<b>' . getTranslation('send_location') . '</b>');
     }
 }

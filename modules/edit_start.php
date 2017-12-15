@@ -55,10 +55,10 @@ if (true) {
 }
 
 // Edit the message.
-edit_message($update, 'Wie lange <b>dauert</b> der Raid?', $keys);
+edit_message($update, getTranslation('how_long_raid'), $keys);
 
 // Build callback message string.
-$callback_response = 'Vorlaufzeit gesetzt auf ' . $data['arg'] . ' Minuten';
+$callback_response = getTranslation('lead_time_set_to') . $data['arg'] . getTranslation('minutes');
 
 // Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);

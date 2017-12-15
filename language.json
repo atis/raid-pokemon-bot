@@ -1,0 +1,517 @@
+{
+	"5stars" : {
+		"NL": "5 Sterren Raid",
+		"DE": "5 Stern Raid",
+		"EN": "5 Stars Raid"		
+	},
+	"4stars" : {
+		"NL": "4 Sterren Raid",
+		"DE": "4 Stern Raid",
+		"EN": "4 Stars Raid"		
+	},
+	"3stars" : {
+		"NL": "3 Sterren Raid",
+		"DE": "3 Stern Raid",
+		"EN": "3 Stars Raid"		
+	},
+	"2stars" : {
+		"NL": "2 Sterren Raid",
+		"DE": "2 Stern Raid",
+		"EN": "2 Stars Raid"		
+	},
+	"1stars" : {
+		"NL": "1 Sterren Raid",
+		"DE": "1 Stern Raid",
+		"EN": "1 Stars Raid"		
+	},
+	"back" : {
+		"NL": "Terug",
+		"DE": "Zurück",
+		"EN": "Back"		
+	},
+	"alone" : {
+		"NL": "Alleen",
+		"DE": "Alleine",
+		"EN": "Alone"		
+	},
+	"raid_done" : {
+		"NL": "Raid beëindigd",
+		"DE": "Raid beendet.",
+		"EN": "Raid done"		
+	},
+	"here" : {
+		"NL": "Ik ben er",
+		"DE": "Bin da",
+		"EN": "Here"		
+	},
+	"done" : {
+		"NL": "Klaar",
+		"DE": "Fertig",
+		"EN": "Done"		
+	},
+	"absent" : {
+		"NL": "Afwezig",
+		"DE": "Absage",
+		"EN": "Absent"		
+	},
+	"vote_updated" : {
+		"NL": "Stem geüpdatet",
+		"DE": "Montag",
+		"EN": "vote updated"		
+	},
+	"monday" : {
+		"NL": "Maandag",
+		"DE": "Abstimmung aktualisiert",
+		"EN": "Monday"		
+	},
+	"tuesday" : {
+		"NL": "Dinsdag",
+		"DE": "Dienstag",
+		"EN": "Tuesday"		
+	},
+	"wensday" : {
+		"NL": "Woensdag",
+		"DE": "Mittwoch",
+		"EN": "Wensday"		
+	},
+	"thursday" : {
+		"NL": "Donderdag",
+		"DE": "Donnerstag",
+		"EN": "Thursday"		
+	},
+	"friday" : {
+		"NL": "Vrijdag",
+		"DE": "Freitag",
+		"EN": "Friday"		
+	},
+	"saterday" : {
+		"NL": "Zaterdag",
+		"DE": "Samstag",
+		"EN": "Saterday"		
+	},
+	"sunday" : {
+		"NL": "Zondag",
+		"DE": "Sonntag",
+		"EN": "Sunday"		
+	},
+	"still" : {
+		"NL": "nog",
+		"DE": "noch",
+		"EN": "still"		
+	},
+	"raid_egg_opens" : {
+		"NL": "Raid ei gaat open",
+		"DE": "Raid-Ei öffnet sich um",
+		"EN": "Raid egg opens up"		
+	},
+	"exraid_pass" : {
+		"NL": "DEELNAME IS ALLEEN MOGELIJK MET EX-RAID PASS",
+		"DE": "TEILNAHME IST NUR MIT EX-RAID-PASS MÖGLICH",
+		"EN": "PARTICIPATION IS POSSIBLE ONLY WITH EX-RAID PASS"		
+	},
+	"no_participants_yet" : {
+		"NL": "Nog geen deelnemers",
+		"DE": "Noch keine Teilnehmer.",
+		"EN": "No participants yet"		
+	},
+	"finished" : {
+		"NL": "Klaar",
+		"DE": "Fertig",
+		"EN": "Finished"		
+	},
+	"cancel" : {
+		"NL": "Annuleren",
+		"DE": "Abgesagt",
+		"EN": "Cancel"		
+	},
+	"created_by" : {
+		"NL": "Aangemaakt door",
+		"DE": "Erstellt von",
+		"EN": "Created by"		
+	},
+	"updated" : {
+		"NL": "Bijgewerkt",
+		"DE": "Aktualisiert",
+		"EN": "Updated"		
+	},
+	"from" : {
+		"NL": "van",
+		"DE": "von",
+		"EN": "from"		
+	},
+	"to" : {
+		"NL": "tot",
+		"DE": "bis",
+		"EN": "to"		
+	},
+	"no_participants" : {
+		"NL": "Geen deelnemers",
+		"DE": "Keine Teilnehmer",
+		"EN": "No participants"		
+	},
+	"send_location" : {
+		"NL": "Stuur me alsjeblieft eerst een locatie.",
+		"DE": "Bitte sende mir zuerst einen Standort.",
+		"EN": "Please send me a location first"		
+	},
+	"mew" : {
+		"NL": "Mew",
+		"DE": "Mew",
+		"EN": "Mew"		
+	},
+	"mewtwo" : {
+		"NL": "Mewtwo",
+		"DE": "Mewtu",
+		"EN": "Mewtwo"		
+	},
+	"lugia" : {
+		"NL": "Lugia",
+		"DE": "Lugia",
+		"EN": "Lugia"		
+	},
+	"zapdos" : {
+		"NL": "Zapdos",
+		"DE": "Zapdos",
+		"EN": "Zapdos"		
+	},
+	"hooh" : {
+		"NL": "Ho-oh",
+		"DE": "Ho-oh",
+		"EN": "Ho-oh"		
+	},
+	"zapdos" : {
+		"NL": "Zapdos",
+		"DE": "Zapdos",
+		"EN": "Zapdos"		
+	},
+	"celebi" : {
+		"NL": "Celebi",
+		"DE": "Celebi",
+		"EN": "Celebi"		
+	},
+	"raikou" : {
+		"NL": "Raikou",
+		"DE": "Raikou",
+		"EN": "Raikou"		
+	},
+	"entei" : {
+		"NL": "Entei",
+		"DE": "Entei",
+		"EN": "Entei"		
+	},
+	"suicune" : {
+		"NL": "Suicune",
+		"DE": "Suicune",
+		"EN": "Suicune"		
+	},
+	"moltres" : {
+		"NL": "Moltres",
+		"DE": "Lavados",
+		"EN": "Moltres"		
+	},
+	"articuno" : {
+		"NL": "Articuno",
+		"DE": "Arktos",
+		"EN": "Articuno"		
+	},
+	"egg_5" : {
+		"NL": "Level 5 Ei",
+		"DE": "Level 5 Ei",
+		"EN": "Level 5 Egg"		
+	},
+	"egg_4" : {
+		"NL": "Level 4 Ei",
+		"DE": "Level 4 Ei",
+		"EN": "Level 4 Egg"		
+	},
+	"egg_3" : {
+		"NL": "Level 3 Ei",
+		"DE": "Level 3 Ei",
+		"EN": "Level 3 Egg"		
+	},
+	"lapras" : {
+		"NL": "Lapras",
+		"DE": "Lapras",
+		"EN": "Lapras"		
+	},
+	"nidoqueen" : {
+		"NL": "Nidoqueen",
+		"DE": "Nidoqueen",
+		"EN": "Nidoqueen"		
+	},
+	"nidoking" : {
+		"NL": "Nidoking",
+		"DE": "Nidoking",
+		"EN": "Nidoking"		
+	},
+	"absol" : {
+		"NL": "Absol",
+		"DE": "Absol",
+		"EN": "Absol"		
+	},
+	"tyranitar" : {
+		"NL": "Tyranitar",
+		"DE": "Despotar",
+		"EN": "Tyranitar"		
+	},
+	"snorlax" : {
+		"NL": "Snorlax",
+		"DE": "Relaxo",
+		"EN": "Snorlax"		
+	},
+	"golem" : {
+		"NL": "Golem",
+		"DE": "Geowaz",
+		"EN": "Golem"		
+	},
+	"rhydon" : {
+		"NL": "Rhydon",
+		"DE": "Rizeros",
+		"EN": "Rhydon"		
+	},
+	"porygon" : {
+		"NL": "Porygon",
+		"DE": "Porygon",
+		"EN": "Porygon"		
+	},
+	"gengar" : {
+		"NL": "Gengar",
+		"DE": "Gengar",
+		"EN": "Gengar"		
+	},
+	"poliwrath" : {
+		"NL": "Poliwrath",
+		"DE": "Quappo",
+		"EN": "Poliwrath"		
+	},
+	"victreebel" : {
+		"NL": "Victreebel",
+		"DE": "Sarzenia",
+		"EN": "Victreebel"		
+	},
+	"arcanine" : {
+		"NL": "Arcanine",
+		"DE": "Arkani",
+		"EN": "Arcanine"		
+	},
+	"machamp" : {
+		"NL": "Machamp",
+		"DE": "Machomei",
+		"EN": "Machamp"		
+	},
+	"alakazam" : {
+		"NL": "Alakazam",
+		"DE": "Simsala",
+		"EN": "Alakazam"		
+	},
+	"scyther" : {
+		"NL": "Scyther",
+		"DE": "Sichlor",
+		"EN": "Scyther"		
+	},
+	"omastar" : {
+		"NL": "Omastar",
+		"DE": "Amoroso",
+		"EN": "Omastar"		
+	},
+	"ninetails" : {
+		"NL": "Ninetails",
+		"DE": "Vulnona",
+		"EN": "Ninetails"		
+	},
+	"forrest" : {
+		"NL": "Ergens in het bos",
+		"DE": "Irgendwo im Wald",
+		"EN": "Somewhere in the forrest"		
+	},
+	"select_gym_first_letter" : {
+		"NL": "Selecteer alstublieft de eerste letter van de gym:",
+		"DE": "Bitte Anfangsbuchstabe der Arena auswählen:",
+		"EN": "Please select the first letter of the gym:"		
+	},
+	"select_gym" : {
+		"NL": "Beginletter geselecteerd.",
+		"DE": "Anfangsbuchstabe ausgewählt.",
+		"EN": "First letter selected."		
+	},
+	"create_raid" : {
+		"NL": "Begin Raid in",
+		"DE": "Erstelle Raid in",
+		"EN": "Create Raid in"		
+	},
+	"select_raid_level" : {
+		"NL": "Selecteer Raid level",
+		"DE": "Bitte Raid Level auswählen",
+		"EN": "Select Raid level"		
+	},
+	"gym_saved" : {
+		"NL": "Gym opgeslagen.",
+		"DE": "Arena gespeichert.",
+		"EN": "Gym saved."		
+	},
+	"select_raid_boss" : {
+		"NL": "Selecteer Raid baas",
+		"DE": "Raid Boss auswählen",
+		"EN": "Select Raid boss"		
+	},
+	"select_pokemon" : {
+		"NL": "Selecteer Pokemon",
+		"DE": "Pokemon auswählen",
+		"EN": "Select Pokemon"		
+	},
+	"raid_saved" : {
+		"NL": "Raid opgeslagen:",
+		"DE": "Raid gespeichert:",
+		"EN": "Raid saved:"		
+	},
+	"raid_boss_saved" : {
+		"NL": "Raid baas opgeslagen!",
+		"DE": "Raid-Boss gespeichert!",
+		"EN": "Raid boss saved!"		
+	},
+	"not_supported" : {
+		"NL": "Niet ondersteund",
+		"DE": "Nicht unterstützt",
+		"EN": "Not supported"		
+	},
+	"share" : {
+		"NL": "Delen",
+		"DE": "Teilen",
+		"EN": "Share"		
+	},
+	"set_gym_name_and_team" : {
+		"NL": "Optioneel - Gym naam and Gym Team:",
+		"DE": "Optional - Arena Name und Arena Team:",
+		"EN": "Optional - Gym name and Gym Team:"		
+	},
+	"set_gym_team" : {
+		"NL": "/gym <code>Naam van de Gym</code>",
+		"DE": "/gym <code>Name der Arena</code>",
+		"EN": "/gym <code>Name of the Gym</code>"		
+	},
+	"set_gym_team" : {
+		"NL": "/gym <code>Naam van de Gym</code>",
+		"DE": "/gym <code>Name der Arena</code>",
+		"EN": "/gym <code>Name of the Gym</code>"		
+	},
+	"set_gym_and_team" : {
+		"NL": "Optioneel - zet Gym en Team",
+		"DE": "Optional - Arena Team setzen",
+		"EN": "Optional - set Gym and Team"		
+	},
+	"end_time" : {
+		"NL": "Eindtijd gezet op ",
+		"DE": "Ablaufzeit gesetzt auf ",
+		"EN": "Endtime set to "		
+	},
+	"minutes" : {
+		"NL": " minuten",
+		"DE": " Minuten",
+		"EN": " minutes"		
+	},
+	"set_team" : {
+		"NL": " /team <code>Mystic/Valor/Instinct/Blauw/Rood/Geel</code>",
+		"DE": " /team <code>Mystic/Valor/Instinct/Blau/Rot/Gelb</code>",
+		"EN": " /team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>"		
+	},
+	"raid_starts_when" : {
+		"NL": "Wanneer <b>begint</b> de Raid?",
+		"DE": "Wann <b>beginnt</b> der Raid?",
+		"EN": "When will the Raid <b>begin</b>?"		
+	},
+	"is_raid_active" : {
+		"NL": "Is de Raid al actief?",
+		"DE": "Raid läuft schon?",
+		"EN": "Is the Raid already active?"		
+	},
+	"select_0" : {
+		"NL": "Selecteer dan gewoon 0:00!",
+		"DE": "Einfach 0:00 auswählen!",
+		"EN": "Select then 0:00!"		
+	},
+	"pokemon_saved" : {
+		"NL": "Pokemon opgeslagen: ",
+		"DE": "Pokemon gespeichert: ",
+		"EN": "Pokemon saved: "		
+	},
+	"how_long_raid" : {
+		"NL": "Hoe lang <b>duurt</b> de Raid?",
+		"DE": "Wie lange <b>dauert</b> der Raid?",
+		"EN": "How long will the raid <b>last</b>?"		
+	},
+	"lead_time_set_to" : {
+		"NL": "Doorlooptijd ingesteld op ",
+		"DE": "Vorlaufzeit gesetzt auf ",
+		"EN": "Lead time set to "		
+	},
+	"select_gym_name" : {
+		"NL": "Selecteer Gym:",
+		"DE": "Bitte Arena auswählen:",
+		"EN": "Select Gym:"		
+	},
+	"here_we_go" : {
+		"NL": "Hier gaan we!",
+		"DE": "Los gehts!",
+		"EN": "Here we go!"		
+	},
+	"create_a_raid" : {
+		"NL": "Maak een Raid",
+		"DE": "Raid anlegen",
+		"EN": "Create a Raid"		
+	},
+	"coordination_succes" : {
+		"NL": "Coördinatie geslaagd!",
+		"DE": "Koordination erfolgreich übermittelt!",
+		"EN": "Coordination successfully transmitted!"		
+	},
+	"refresh_pokemon" : {
+		"NL": "Pokemon vernieuwen",
+		"DE": "Pokemon aktualisieren",
+		"EN": "Refresh Pokemon"		
+	},
+	"send_location" : {
+		"NL": "Stuur me alsjeblieft eerst een locatie.",
+		"DE": "Bitte sende mir zuerst einen Standort.",
+		"EN": "Please send me a location first."		
+	},
+	"raid_by_gym" : {
+		"NL": "Of maak een raid door een Gym te selecteren:",
+		"DE": "Oder lege ein Raid per Arena-Auswahl an:",
+		"EN": "Or make a raid per arena selection:"		
+	},
+	"red" : {
+		"NL": "rood",
+		"DE": "rot",
+		"EN": "red"		
+	},
+	"yellow" : {
+		"NL": "geel",
+		"DE": "gelb",
+		"EN": "yellow"		
+	},
+	"blue" : {
+		"NL": "blauw",
+		"DE": "blau",
+		"EN": "blue"		
+	},
+	"gym_team_set_to" : {
+		"NL": "Gym Team gezet op: ",
+		"DE": "Arena Team gesetzt auf: ",
+		"EN": "Gym Team set to: "		
+	},
+	"invalid_team" : {
+		"NL": "Ongeldige team naam: schrijf: Mystic, Valor, Instinct or Blauw, Rood, Geel ",
+		"DE": "Ungültiger Team Name - schreibe: Mystic, Valor, Instinct oder Blau, Rot, Gelb",
+		"EN": "Invalid team name - write: Mystic, Valor, Instinct or Blue, Red, Yellow "		
+	},
+	"gym_name_updated" : {
+		"NL": "Gym naam aangepast.",
+		"DE": "Der Arena Name wurde aktualisiert.",
+		"EN": "Gym name updated."		
+	}
+	
+	
+	 
+	
+	
+}
