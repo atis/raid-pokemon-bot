@@ -14,28 +14,28 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     // List moderators.
     if ($action == "list") {
 	// Set message.
-	$msg = "Liste aller Moderatoren." . CR . "Für Details Moderator auswählen:";
+	$msg = getTranslation('mods_list_of_all') . CR . getTranslation('mods_details');
         // Get moderators.
         $keys = edit_moderator_keys($limit, $action);
 
     // Add modertor.
     } else if ($action == "add" ) {
 	// Set message.
-	$msg = "Neuen Moderator hinzufügen:";
+	$msg = getTranslation('mods_add_new');
 	// Get users.
         $keys = edit_moderator_keys($limit, $action);
 
     // Delete moderator.
     } else if ($action == "delete" ) {
 	// Set message.
-	$msg = "Moderator löschen:";
+	$msg = getTranslation('mods_delete');
 	// Get users.
         $keys = edit_moderator_keys($limit, $action);
     }
 
     // Empty keys?
     if (!$keys) {
-	$msg = "Fehler! Keine Moderatoren oder Benutzer gefunden!";
+	$msg = getTranslation('mods_not_found');
     }
 
     // Edit message.

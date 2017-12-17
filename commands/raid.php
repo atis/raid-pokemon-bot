@@ -199,7 +199,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     $keys = [
         [
             [
-                'text'                => 'Teilen',
+                'text'                => getTranslation('share'),
                 'switch_inline_query' => strval($id),
             ]
         ]

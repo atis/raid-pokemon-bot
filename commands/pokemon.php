@@ -52,7 +52,7 @@ while ($raid = $request->fetch_assoc()) {
     $keys = [
         [
             [
-                'text'          => 'Pokemon aktualisieren',
+                'text'          => getTranslation('refresh_pokemon'),
                 'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
             ]
         ]

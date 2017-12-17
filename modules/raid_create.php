@@ -215,15 +215,15 @@ if (!$keys) {
 }
 
 // Build message.
-$msg = 'Erstelle Raid in: <i>' . $fullAddress . '</i>';
+$msg = getTranslation('create_raid') . ': <i>' . $fullAddress . '</i>';
 
 // Answer callback or send message based on input prior raid creation
 if($gym_id != 0) {
     // Edit the message.
-    edit_message($update, $msg . CR . 'Bitte Raid Level auswählen:', $keys);
+    edit_message($update, $msg . CR . getTranslation('select_raid_level') . ':', $keys);
 
     // Build callback message string.
-    $callback_response = 'Arena gespeichert.';
+    $callback_response = getTranslation('gym_saved');
 
     // Answer callback.
     answerCallbackQuery($update['callback_query']['id'], $callback_response);
@@ -232,7 +232,7 @@ if($gym_id != 0) {
     if ($chattype == 'private') {
         // Send the message.
         //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys);
-        send_message($chatid, $msg . CR . 'Bitte Raid Level auswählen:', $keys);
+        send_message($chatid, $msg . CR . getTranslation('select_raid_level') . ':', $keys);
 
     } else {
         //$reply_to = $update['message']['chat']['id'];
@@ -243,7 +243,7 @@ if($gym_id != 0) {
 
         // Send the message.
         //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
-        send_message($chatid, $msg . CR . 'Bitte Raid Level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
+        send_message($chatid, $msg . CR . getTranslation('select_raid_level') . ':', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
     }
 
     exit();

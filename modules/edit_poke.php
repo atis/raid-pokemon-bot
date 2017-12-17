@@ -14,7 +14,7 @@ $id = $data['id'];
 $arg = $data['arg'];
 
 if (true || $arg == "minutes" || $arg == "clocktime") {
-    if ($arg != "minutes" || $arg != "clocktime") {
+    if ($arg != "minutes" && $arg != "clocktime") {
         // Update pokemon in the raid table.
         my_query(
             "
@@ -30,7 +30,7 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
 
     if ($arg == "minutes") {
 	// Set switch view.
-	$switch_text = "Uhrzeit-Ansicht";
+	$switch_text = getTranslation('raid_starts_when_clocktime_view');
 	$switch_view = "clocktime";
 
         for ($i = 1; $i <= 60; $i = $i + 1) {
@@ -44,7 +44,7 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
         }
     } else {
 	// Set switch view.
-	$switch_text = "Minuten-Ansicht";
+	$switch_text = getTranslation('raid_starts_when_minutes_view');
 	$switch_view = "minutes";
 
         // Timezone - maybe there's a more elegant solution as date_default_timezone_set?!
@@ -68,7 +68,7 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
 
     // Raid already running
     $keys[] = array(
-        'text'	        => "Raid läuft schon!",
+        'text'	        => getTranslation('is_raid_active'),
         'callback_data' => $id . ':edit_start:0' 
     );
 
@@ -95,7 +95,7 @@ if (!$keys) {
     $keys = [
         [
             [
-                'text'          => 'Not supported',
+                'text'          => getTranslation('not_supported'),
                 'callback_data' => 'edit:not_supported'
             ]
         ]
@@ -104,16 +104,16 @@ if (!$keys) {
 
 // Edit the message.
 if ($arg == "minutes") {
-    edit_message($update, 'In wie viel Minuten <b>beginnt</b> der Raid?', $keys);
+    edit_message($update, getTranslation('raid_starts_when_minutes'), $keys);
 } else {
-    edit_message($update, 'Wann <b>beginnt</b> der Raid?', $keys);
+    edit_message($update, getTranslation('raid_starts_when'), $keys);
 }
 
 // Build callback message string.
 if ($arg == "minutes" || $arg == "clocktime") {
-    $callback_response = 'Ansicht geändert!';
+    $callback_response = getTranslation('raid_starts_when_view_changed');
 } else {
-    $callback_response = 'Pokemon gespeichert: ' . $data['arg'];
+    $callback_response = getTranslation('pokemon_saved') . $data['arg'];
 }
 
 // Answer callback.

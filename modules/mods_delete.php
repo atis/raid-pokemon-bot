@@ -19,7 +19,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
 
     // Build message string.
     $msg = '';
-    $msg .= '<b>Moderator entfernt!</b>' . CR;
+    $msg .= '<b>' . getTranslation('mods_delete_mod') . '</b>' . CR;
     $msg .= get_user($user_id);
 
     // Create the keys.
@@ -29,7 +29,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     edit_message($update, $msg, $keys, false);
 
     // Build callback message string.
-    $callback_response = 'Moderator entfernt!';
+    $callback_response = getTranslation('mods_delete_mod');
 
     // Answer callback.
     answerCallbackQuery($update['callback_query']['id'], $callback_response);

@@ -18,7 +18,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     );
 
     // Send the message.
-    sendMessage($update['message']['chat']['id'], 'Der Arena Name wurde aktualisiert.');
+    sendMessage($update['message']['chat']['id'], getTranslation('gym_name_updated'));
 
 } else {
     if ($update['message']['reply_to_message']['text']) {

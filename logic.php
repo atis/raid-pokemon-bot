@@ -171,7 +171,7 @@ function raid_duplication_check($gym,$end)
 
 	    // Set compare values.
 	    // Extend compare time for raid times if $time4compare is equal to $now which means $end must be 0
-	    $ts_compare_before = ($time4compare == $now) ? ($raid['ts_end'] - ($extendBefore*60)) : ($raid['ts_end'] - ($beforeiAfter*60));
+	    $ts_compare_before = ($time4compare == $now) ? ($raid['ts_end'] - ($extendBefore*60)) : ($raid['ts_end'] - ($beforeAfter*60));
 	    $ts_compare_after = $raid['ts_end'] + ($beforeAfter*60);
 	}
 
@@ -433,28 +433,28 @@ function raid_edit_start_keys($id)
     $keys = [
         [
             [
-                'text'          => '5 Sterne Raid',
+                'text'          => getTranslation('5stars'),
                 'callback_data' => $id . ':edit:5'
             ]
         ],
         [
             [
-                'text'          => '4 Sterne Raid',
+                'text'          => getTranslation('4stars'),
                 'callback_data' => $id . ':edit:4'
             ],
             [
-                'text'          => '3 Sterne Raid',
+                'text'          => getTranslation('3stars'),
                 'callback_data' => $id . ':edit:3'
             ]
 // No raids for level 2 or 1
 /*        ],
         [
             [
-                'text'          => '2 Sterne Raid',
+                'text'          => getTranslation('2stars'),
                 'callback_data' => $id . ':edit:2'
             ],
             [
-                'text'          => '1 Stern Raid',
+                'text'          => getTranslation('5stars'),
                 'callback_data' => $id . ':edit:1'
             ]
 */        ]
@@ -580,7 +580,7 @@ function back_key($keys, $id, $action, $arg)
 {
     $keys[] = [
             array(
-                'text'          => 'Zurück',
+                'text'          => getTranslation('back'),
                 'callback_data' => $id . ':' . $action . ':' . $arg
             )
         ];
@@ -600,7 +600,7 @@ function next_key($keys, $id, $action, $arg)
 {
     $keys[] = [
             array(
-                'text'          => 'Weiter',
+                'text'          => getTranslation('next'), 
                 'callback_data' => $id . ':' . $action . ':' . $arg
             )
         ];
@@ -916,7 +916,7 @@ function keys_vote($raid)
     $keys = [
         [
             [
-                'text'          => 'alleine',
+                'text'          => getTranslation('alone'),
                 'callback_data' => $raid['id'] . ':vote:1'
             ],
             [
@@ -963,7 +963,7 @@ function keys_vote($raid)
     if ($end_time < $now) {
         $keys[] = [
             array(
-                'text'          => 'Raid beendet.',
+                'text'          => getTranslation('raid_done'),
                 'callback_data' => $raid['id'] . ':vote_time:' . (ceil(time() / 900) * 900)
             )
         ];
@@ -1016,15 +1016,15 @@ function keys_vote($raid)
             'callback_data' => $raid['id'] . ':vote_refresh:0'
         ],
         [
-            'text'          => 'Bin da',
+            'text'          => getTranslation('here'),
             'callback_data' => $raid['id'] . ':vote_arrived:0'
         ],
         [
-            'text'          => 'Fertig',
+            'text'          => getTranslation('done'),
             'callback_data' => $raid['id'] . ':vote_done:0'
         ],
         [
-            'text'          => 'Absage',
+            'text'          => getTranslation('cancellation'),
             'callback_data' => $raid['id'] . ':vote_cancel:0'
         ],
     ];
@@ -1033,7 +1033,7 @@ function keys_vote($raid)
         $keys = [
             [
                 [
-                    'text'          => 'Raid beendet',
+                    'text'          => getTranslation('raid_done'),
                     'callback_data' => $raid['id'] . ':vote_refresh:0'
                 ]
             ]
@@ -1151,7 +1151,7 @@ function send_response_vote($update, $data, $new = false)
         // Edit the message.
         edit_message($update, $msg, $keys);
         // Change message string.
-        $msg = 'Abstimmung aktualisiert';
+        $msg = getTranslation('vote_updated');
         // Answer the callback.
         answerCallbackQuery($update['callback_query']['id'], $msg);
     }
@@ -1194,25 +1194,25 @@ function weekday_number2name ($weekdaynumber)
     if(is_numeric($weekdaynumber) && $weekdaynumber <= 7) {
 	switch($weekdaynumber) {
 	    case 1: 
-		$weekday = "Montag";
+		$weekday = getTranslation('monday');
 		break;
 	    case 2: 
-		$weekday = "Dienstag";
+		$weekday = getTranslation('tuesday');
 		break;
 	    case 3: 
-		$weekday = "Mittwoch";
+		$weekday = getTranslation('wensday');
 		break;
 	    case 4: 
-		$weekday = "Donnerstag";
+		$weekday = getTranslation('thursday');
 		break;
 	    case 5: 
-		$weekday = "Freitag";
+		$weekday = getTranslation('friday');
 		break;
 	    case 6: 
-		$weekday = "Samstag";
+		$weekday = getTranslation('saterday');
 		break;
 	    case 7: 
-		$weekday = "Sonntag";
+		$weekday = getTranslation('sunday');
 		break;
 	}
     }
@@ -1234,7 +1234,7 @@ function show_raid_poll($raid)
     if ($raid['gym_name'] || $raid['gym_team']) {
         // Add gym name to message.
         if ($raid['gym_name']) {
-            $msg .= 'Arena: <b>' . $raid['gym_name'] . '</b>';
+            $msg .= getTranslation('gym') . ': <b>' . $raid['gym_name'] . '</b>';
         }
         // Add team to message.
         if ($raid['gym_team']) {
@@ -1261,15 +1261,15 @@ function show_raid_poll($raid)
     }
 
     // Display raid boss name.
-    $msg .= 'Raid Boss: <b>' . ucfirst($raid['pokemon']) . '</b>' . CR;
+    $msg .= getTranslation('raid_boss') . ': <b>' . ucfirst($raid['pokemon']) . '</b>' . CR;
 
     $time_left = floor($raid['t_left'] / 60);
     if ( strpos(str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) , '-' ) !== false ) {
 	// $time_left = 'beendet'; <-- REPLACED BY $tl_msg, so if clause below is still working ($time_left < 0)
-        $tl_msg = '<b>Raid beendet.</b>';
+        $tl_msg = '<b> ' . getTranslation('raid_done') . '</b>';
     } else {
 	// Replace $time_left with $tl_msg too
-        $tl_msg = ' — <b>noch ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>';
+        $tl_msg = ' — <b>' . getTranslation('still') . ' ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>';
     }
 
     // Raid has not started yet - adjust time left message
@@ -1278,9 +1278,9 @@ function show_raid_poll($raid)
 	$weekday_start = date('N', $raid['ts_start']);
 	$raid_day = weekday_number2name ($weekday_start);
 	if ($weekday_now == $weekday_start) {
-	    $msg .= '<b>Raid-Ei öffnet sich um ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	    $msg .= '<b>' . getTranslation('raid_egg_opens') . ' ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	} else {
-	    $msg .= '<b>Raid-Ei öffnet sich am ' . $raid_day .' um ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	    $msg .= '<b>' . getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	}
 
     // Raid has started and active or already ended
@@ -1293,7 +1293,7 @@ function show_raid_poll($raid)
 
             // Add time left message.
         } else {
-            $msg .= 'Raid bis ' . unix2tz($raid['ts_end'], $raid['timezone']);
+            $msg .= getTranslation('raid_egg_opens') . ' ' . unix2tz($raid['ts_end'], $raid['timezone']);
 	    $msg .= $tl_msg . CR;
         }
     }
@@ -1347,7 +1347,7 @@ function show_raid_poll($raid)
         if($level == "X") {
             foreach($levelmons as $key => $pokemon) {
 		if(strtolower($pokemon) == strtolower($raid['pokemon'])) {
-		    $msg.= CR . EMOJI_WARN . ' <b>TEILNAHME IST NUR MIT EX-RAID-PASS MÖGLICH</b> ' . EMOJI_WARN;
+		    $msg.= CR . EMOJI_WARN . ' <b>' . getTranslation('exraid_pass') . '</b> ' . EMOJI_WARN;
 		    break 2;
 	        }
 	    }
@@ -1356,7 +1356,7 @@ function show_raid_poll($raid)
 
     // Add no attendance found message.
     if (count($data) == 0) {
-        $msg .= CR . 'Noch keine Teilnehmer.' . CR;
+        $msg .= CR . getTranslation('no_participants_yet') . CR;
     }
 
     $rs = my_query(
@@ -1487,7 +1487,7 @@ function show_raid_poll($raid)
     if (isset($data['done']) ? count($data['done']) : '' ) {
     //if (count($data['done'])) {
         // Add to message.
-        $msg .= CR . TEAM_DONE . ' <b>Fertig: </b>' . ' [' . count($data['done']) . ']' . CR;
+        $msg .= CR . TEAM_DONE . ' <b>' . getTranslation('finished') . ': </b>' . ' [' . count($data['done']) . ']' . CR;
 
         foreach ($data['done'] as $vv) {
 
@@ -1510,7 +1510,7 @@ function show_raid_poll($raid)
 
             // Done.
             if ($vv['raid_done']) {
-                $msg .= '[Fertig ' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                $msg .= '[' . getTranslation('finished') . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
             }
             // Add extra people.
             if ($vv['extra_people']) {
@@ -1525,7 +1525,7 @@ function show_raid_poll($raid)
     if (isset($data['cancel']) ? count($data['cancel']) : '' ) {
     //if (count($data['cancel'])) {
         // Add to message.
-        $msg .= CR . TEAM_CANCEL . ' <b>Abgesagt: </b>' . ' [' . count($data['cancel']) . ']' . CR;
+        $msg .= CR . TEAM_CANCEL . ' <b>' . getTranslation('cancel') . ': </b>' . ' [' . count($data['cancel']) . ']' . CR;
 
         foreach ($data['cancel'] as $vv) {
 
@@ -1547,7 +1547,7 @@ function show_raid_poll($raid)
 
             // Cancel.
             if ($vv['cancel']) {
-                $msg .= '[Abgesagt ' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                $msg .= '[' . getTranslation('cancel') . ' ' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
             }
             // Add extra people.
             if ($vv['extra_people']) {
@@ -1573,11 +1573,11 @@ function show_raid_poll($raid)
 
     // Display creator.
     if ($row['user_id'] && $row['name']) {
-        $msg .= CR . 'Erstellt von: <a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
+        $msg .= CR . getTranslation('created_by') . ': <a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
     }
 
     // Add update time and raid id to message.
-    $msg .= CR . '<i>Aktualisiert: ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>';
+    $msg .= CR . '<i>' . getTranslation('updated') . ': ' . unix2tz(time(), $raid['timezone'], 'H:i:s') . '</i>';
     $msg .= '  ID = ' . $raid['id']; // DO NOT REMOVE! --> NEEDED FOR CLEANUP PREPARATION!
 
     // Return the message.
@@ -1603,7 +1603,7 @@ function show_raid_poll_small($raid)
     }
     // Start time and end time
     if(!empty($raid['ts_start']) && !empty($raid['ts_end'])) {
-        $msg .= '<b>von ' . unix2tz($raid['ts_start'], $raid['timezone']) . ' bis ' . unix2tz($raid['ts_end'], $raid['timezone'])  . '</b>' . CR;
+        $msg .= '<b>' . getTranslation('from') . ' ' . unix2tz($raid['ts_start'], $raid['timezone']) . ' ' . getTranslation('to') . ' ' . unix2tz($raid['ts_end'], $raid['timezone'])  . '</b>' . CR;
     }
     // Gym Name
     if(!empty($raid['gym_name'])) {
@@ -1654,7 +1654,7 @@ function show_raid_poll_small($raid)
     }
 
     if (!$total) {
-        $msg .= 'Keine Teilnehmer' . CR;
+        $msg .= getTranslation('no_participants') . CR;
     } else {
         $msg .= EMOJI_GROUP . '<b> ' . $total . '</b> — ' . $msg_teams;
     }

@@ -15,7 +15,7 @@ function get_address($lat, $lon)
     $location['district'] = '';
 
     // Set maps geocode url.
-    $url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&language=de';
+    $url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&language=' . strtolower( LANGUAGE );
 
     $googleApiKey = GOOGLE_API_KEY;
 
@@ -112,7 +112,7 @@ function get_address($lat, $lon)
         // Rename street responses.
         switch ($location['street']) {
             case 'Unnamed Road':
-                $location['street'] = 'Irgendwo im Wald';
+                $location['street'] = getTranslation('forest');
                 break;
         }
 

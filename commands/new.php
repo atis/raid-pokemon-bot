@@ -20,13 +20,13 @@ $coords = trim(substr($update['message']['text'], 4));
 $keys = [
 	    [
 	        [
-	            'text'          => 'Raid anlegen',
+	            'text'          => getTranslation('create_a_raid'),
 	            'callback_data' => $userid . ',' . $chattype . ':raid_create:' . $coords,
 	        ]
 	    ]
 	];
 
-$msg = "Koordination erfolgreich übermittelt!";
+$msg = getTranslation('coordination_succes');
 
 // Send message.
 send_message($update['message']['from']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);

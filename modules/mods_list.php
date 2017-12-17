@@ -10,7 +10,7 @@ $user_id = $data['arg'];
 if ($update['message']['chat']['type'] == 'private' || $update['callback_query']['message']['chat']['type'] == 'private') {
     // Build message string.
     $msg = '';
-    $msg .= 'Infos zum Moderator:' . CR;
+    $msg .= getTranslation('mods_info_about_mod') . CR;
 
     // Add name.
     $msg .= get_user($user_id);

@@ -45,7 +45,7 @@ if (!$keys) {
     $keys = [
         [
             [
-                'text'          => 'Not supported',
+                'text'          => getTranslation('not_supported'),
                 'callback_data' => 'edit:not_supported'
             ]
         ]
@@ -55,10 +55,10 @@ if (!$keys) {
 }
 
 // Edit the message.
-edit_message($update, 'Bitte Arena auswählen:', $keys);
+edit_message($update, getTranslation('select_gym_name'), $keys);
 
 // Build callback message string.
-$callback_response = 'Los gehts!';
+$callback_response = getTranslation('here_we_go');
 
 // Answer callback.
 answerCallbackQuery($update['callback_query']['id'], $callback_response);

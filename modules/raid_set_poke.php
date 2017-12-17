@@ -41,14 +41,14 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
 
     // Build message string.
     $msg = '';
-    $msg .= 'Raid gespeichert:' . CR;
+    $msg .= getTranslation('raid_saved') . CR;
     $msg .= show_raid_poll_small($raid);
 
     // Edit message.
     edit_message($update, $msg, $keys, false);
 
     // Build callback message string.
-    $callback_response = 'Raid-Boss gespeichert!';
+    $callback_response = getTranslation('raid_boss_saved');
 
     // Answer callback.
     answerCallbackQuery($update['callback_query']['id'], $callback_response);
