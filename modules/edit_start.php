@@ -26,10 +26,10 @@ if (true) {
 
     // 1 Minute or 5 minute time slots
     if ($data['arg'] == 0) {
-	$slotmax = 60;
+	$slotmax = RAID_POKEMON_DURATION;
 	$slotsize = 1;
     } else {
-	$slotmax = 120;
+	$slotmax = RAID_POKEMON_DURATION;
 	$slotsize = 5;
     }
 
