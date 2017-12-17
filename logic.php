@@ -1041,7 +1041,7 @@ function show_raid_poll($raid)
     if ($raid['gym_name'] || $raid['gym_team']) {
         // Add gym name to message.
         if ($raid['gym_name']) {
-            $msg .= 'Arena: <b>' . $raid['gym_name'] . '</b>';
+            $msg .= getTranslation('gym') . ': <b>' . $raid['gym_name'] . '</b>';
         }
         // Add team to message.
         if ($raid['gym_team']) {
@@ -1100,7 +1100,7 @@ function show_raid_poll($raid)
 
             // Add time left message.
         } else {
-            $msg .= 'Raid bis ' . unix2tz($raid['ts_end'], $raid['timezone']);
+            $msg .= getTranslation('raid_to') . unix2tz($raid['ts_end'], $raid['timezone']);
 	    $msg .= $tl_msg . CR;
         }
     }
@@ -1174,7 +1174,8 @@ function show_raid_poll($raid)
                         sum(team = 'valor')         AS count_valor,
                         sum(team = 'instinct')      AS count_instinct,
                         sum(team IS NULL)           AS count_no_team,
-                        sum(extra_people)           AS extra
+                        sum(extra_people)           AS extra,
+						attend_time
         FROM            attendance
           WHERE         raid_id = {$raid['id']}
             AND         attend_time IS NOT NULL
@@ -1273,11 +1274,11 @@ function show_raid_poll($raid)
             if ($vv['arrived']) {
 		// No time is displayed, but undefined_index error in log, so changed it:
                 //$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
-                $msg .= '[Bin da] ';
+                $msg .= getTranslation('here') . ' ';
 
             // Cancelled.
             } else if ($vv['cancel']) {
-                $msg .= '[abgesagt] ';
+                $msg .= getTranslation('cancel') . ' ';
             }
 
             // Add extra people.
