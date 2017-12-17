@@ -23,7 +23,7 @@ if (true) {
     // Init empty keys array.
     $keys = array();
 
-    for ($i = 60; $i >= 0; $i = $i - 1) {
+    for ($i = RAID_EGG_DURATION; $i >= 0; $i = $i - 1) {
         // Create the keys.
         $keys[] = array(
 	    // Just show the time, no text - not everyone has a phone or tablet with a large screen...
