@@ -99,7 +99,7 @@ function raid_access_check($update, $data)
             SELECT    COUNT(*)
             FROM      users
               WHERE   user_id = {$update['callback_query']['from']['id']}
-                AND   moderator = 1
+                OR    moderator = 1
             "
         );
 

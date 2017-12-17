@@ -35,7 +35,13 @@ $request = my_query(
               UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
     FROM      raids
       WHERE   end_time>NOW()
-        AND   user_id = {$update['message']['from']['id']}
+        AND   (user_id = {$update['message']['from']['id']}
+	 	  OR user_id IN (
+			SELECT user_id 
+			FROM users 
+			WHERE moderator = 1
+		  )
+	      )
         AND   timezone='{$row['timezone']}'
     ORDER BY  end_time ASC LIMIT 20
     "
