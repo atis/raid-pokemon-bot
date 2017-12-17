@@ -22,6 +22,9 @@ define('RAID_LOCATION',     false); // send location as message in addition to r
 define('RAID_SLOTS',        '15'); // minutes
 define('RAID_LAST_START',   '10'); // minutes before RAID ends
 
+define ('RAID_EGG_DURATION',    '60'); //minutes till egg comes out
+define ('RAID_POKEMON_DURATION', '45'); //minutes till pokemon leave
+
 define('CLEANUP',           false); // must be true for cleanup
 define('CLEANUP_SECRET',    'your-cleanup-secret/passphrase');
 define('CLEANUP_TELEGRAM',  true);
