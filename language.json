@@ -479,6 +479,16 @@
 		"DE": "Sie haben keine Berechtigung dieses Raid zu bearbeiten!",
 		"EN": "You are not allowed to edit this raid!"		
 	},
+	"no_active_raids_found" : {
+		"NL": "No active raids found in the system!",
+		"DE": "Aktuell sind keine laufenden Raids im System!",
+		"EN": "No active raids found in the system!"		
+	},
+	"expand" : {
+		"NL": "Expand",
+		"DE": "Ausklappen",
+		"EN": "Expand"		
+	},
 	"pokemon_saved" : {
 		"NL": "Pokemon opgeslagen: ",
 		"DE": "Pokemon gespeichert: ",
