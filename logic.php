@@ -1491,11 +1491,11 @@ function show_raid_poll($raid)
             if ($vv['arrived']) {
 		// No time is displayed, but undefined_index error in log, so changed it:
                 //$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
-                $msg .= '[Bin da] ';
+                $msg .= '[' . getTranslation('here') . '] ';
 
             // Cancelled.
             } else if ($vv['cancel']) {
-                $msg .= '[abgesagt] ';
+                $msg .= '[' . getTranslation('cancel') . '] ';
             }
 
             // Add extra people.
@@ -1534,7 +1534,7 @@ function show_raid_poll($raid)
 
             // Done.
             if ($vv['raid_done']) {
-                $msg .= '[' . getTranslation('finished') . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                $msg .= '[' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
             }
             // Add extra people.
             if ($vv['extra_people']) {
@@ -1571,7 +1571,7 @@ function show_raid_poll($raid)
 
             // Cancel.
             if ($vv['cancel']) {
-                $msg .= '[' . getTranslation('cancel') . ' ' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                $msg .= '[' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
             }
             // Add extra people.
             if ($vv['extra_people']) {
