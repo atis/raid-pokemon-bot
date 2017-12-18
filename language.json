@@ -62,7 +62,7 @@
 	"vote_updated" : {
 		"NL": "Stem geüpdatet",
 		"DE": "Abstimmung aktualisiert",
-		"EN": "vote updated"		
+		"EN": "Vote updated"		
 	},
 	"monday" : {
 		"NL": "Maandag",
@@ -349,6 +349,16 @@
 		"DE": "Anfangsbuchstabe ausgewählt.",
 		"EN": "First letter selected."		
 	},
+	"raid_being_created_by_other_user" : {
+		"NL": "Another user is currently creating a raid for this gym:",
+		"DE": "Ein Raid für diese Arena wird gerade angelegt von:",
+		"EN": "Another user is currently creating a raid for this gym:"
+	},
+	"raid_already_exists" : {
+		"NL": "Raid already exists!",
+		"DE": "Raid existiert bereits!",
+		"EN": "Raid already exists!"
+	},
 	"create_raid" : {
 		"NL": "Begin Raid in",
 		"DE": "Erstelle Raid in",
@@ -420,9 +430,9 @@
 		"EN": "Optional - set Gym and Team"		
 	},
 	"set_gym_team_command" : {
-		"NL": " /team <code>Mystic/Valor/Instinct/Blauw/Rood/Geel</code>",
-		"DE": " /team <code>Mystic/Valor/Instinct/Blau/Rot/Gelb</code>",
-		"EN": " /team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>"		
+		"NL": "/team <code>Mystic/Valor/Instinct/Blauw/Rood/Geel</code>",
+		"DE": "/team <code>Mystic/Valor/Instinct/Blau/Rot/Gelb</code>",
+		"EN": "/team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>"		
 	},
 	"end_time" : {
 		"NL": "Eindtijd gezet op ",
@@ -430,9 +440,9 @@
 		"EN": "Endtime set to "		
 	},
 	"minutes" : {
-		"NL": " minuten",
-		"DE": " Minuten",
-		"EN": " minutes"		
+		"NL": "minuten",
+		"DE": "Minuten",
+		"EN": "minutes"		
 	},
 	"raid_starts_when" : {
 		"NL": "Wanneer <b>begint</b> de Raid?",
@@ -464,6 +474,11 @@
 		"DE": "Raid läuft schon!",
 		"EN": "Raid is already active!"		
 	},
+	"raid_access_denied" : {
+		"NL": "You are not allowed to edit this raid!",
+		"DE": "Sie haben keine Berechtigung dieses Raid zu bearbeiten!",
+		"EN": "You are not allowed to edit this raid!"		
+	},
 	"pokemon_saved" : {
 		"NL": "Pokemon opgeslagen: ",
 		"DE": "Pokemon gespeichert: ",
@@ -475,9 +490,9 @@
 		"EN": "How long will the raid <b>last</b>?"		
 	},
 	"lead_time_set_to" : {
-		"NL": "Doorlooptijd ingesteld op ",
-		"DE": "Vorlaufzeit gesetzt auf ",
-		"EN": "Lead time set to "		
+		"NL": "Doorlooptijd ingesteld op",
+		"DE": "Vorlaufzeit gesetzt auf",
+		"EN": "Lead time set to"		
 	},
 	"select_gym_name" : {
 		"NL": "Selecteer Gym:",
@@ -496,13 +511,13 @@
 	},
 	"coordination_succes" : {
 		"NL": "Coördinatie geslaagd!",
-		"DE": "Koordination erfolgreich übermittelt!",
-		"EN": "Coordination successfully transmitted!"		
+		"DE": "Koordinaten erfolgreich übermittelt!",
+		"EN": "Coordinates successfully submitted!"		
 	},
-	"refresh_pokemon" : {
+	"update_pokemon" : {
 		"NL": "Pokemon vernieuwen",
 		"DE": "Pokemon aktualisieren",
-		"EN": "Refresh Pokemon"		
+		"EN": "Update Pokemon"		
 	},
 	"send_location" : {
 		"NL": "Stuur me alsjeblieft eerst een locatie.",
@@ -530,9 +545,9 @@
 		"EN": "blue"		
 	},
 	"gym_team_set_to" : {
-		"NL": "Gym Team gezet op: ",
-		"DE": "Arena Team gesetzt auf: ",
-		"EN": "Gym Team set to: "		
+		"NL": "Gym Team gezet op:",
+		"DE": "Arena Team gesetzt auf:",
+		"EN": "Gym Team set to:"		
 	},
 	"invalid_team" : {
 		"NL": "Ongeldige team naam: schrijf: Mystic, Valor, Instinct or Blauw, Rood, Geel ",

@@ -29,7 +29,7 @@ if ($teams[$gym_team]) {
     );
 
     // Send the message.
-    sendMessage($update['message']['chat']['id'], getTranslation('gym_team_set_to') . ucfirst($teams[$gym_team]));
+    sendMessage($update['message']['chat']['id'], getTranslation('gym_team_set_to') . ' ' . ucfirst($teams[$gym_team]));
 
 // Invalid team name.
 } else {

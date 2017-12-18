@@ -64,7 +64,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     edit_message($update, $msg, $keys, false);
 
     // Build callback message string.
-    $callback_response = getTranslation('end_time') . $data['arg'] . getTranslation('minutes');
+    $callback_response = getTranslation('end_time') . $data['arg'] . ' ' . getTranslation('minutes');
 
     // Answer callback.
     answerCallbackQuery($update['callback_query']['id'], $callback_response);
