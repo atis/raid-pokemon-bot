@@ -4,7 +4,7 @@
  * @param $update
  * @param $access_type
  */
-function bot_access_check($update, $access_type = BOT_ACCESS)
+function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = false)
 {
     // Restricted or public access
     if(!empty($access_type)) {
@@ -34,6 +34,9 @@ function bot_access_check($update, $access_type = BOT_ACCESS)
 		continue;
 	    }
 
+	    // Clear chat_obj since it did not match 
+	    $chat_obj = '';
+
 	    // Get administrators from chat
     	    $response = get_admins($chat);
             debug_log("Getting administrators from chat '" . $chat . "'");
@@ -52,16 +55,29 @@ function bot_access_check($update, $access_type = BOT_ACCESS)
 
         // Prepare logging of username, first_name and/or id
 	$msg = '';
-	$msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
-	$msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
-	$msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
-	$msg .= !empty($update['inline_query']['from']['id']) ? "Id: " . $update['inline_query']['from']['id'] . CR : '';
-	$msg .= !empty($update['inline_query']['from']['username']) ? "Username: " . $update['inline_query']['from']['username'] . CR : '';
-	$msg .= !empty($update['inline_query']['from']['first_name']) ? "First Name: " . $update['inline_query']['from']['first_name'] . CR : '';
+	if(!empty($chat_obj['result']['id'])) {
+	    $msg .= !empty($chat_obj['result']['id']) ? "Id: " . $chat_obj['result']['id'] . CR : '';
+	    $msg .= !empty($chat_obj['result']['username']) ? "Username: " . $chat_obj['result']['username'] . CR : '';
+	    $msg .= !empty($chat_obj['result']['first_name']) ? "First Name: " . $chat_obj['result']['first_name'] . CR : '';
+	} else if (!empty($update['message']['from']['id'])) {
+	    $msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
+	    $msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
+	    $msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
+	} else if (!empty($update['inline_query']['from']['id'])) {
+	    $msg .= !empty($update['inline_query']['from']['id']) ? "Id: " . $update['inline_query']['from']['id'] . CR : '';
+	    $msg .= !empty($update['inline_query']['from']['username']) ? "Username: " . $update['inline_query']['from']['username'] . CR : '';
+	    $msg .= !empty($update['inline_query']['from']['first_name']) ? "First Name: " . $update['inline_query']['from']['first_name'] . CR : '';
+	}
 
         // Allow or deny access to the bot and log result
-        if ($allow_access) {
+        if ($allow_access && !$return_result) {
             debug_log("Allowing access to the bot for user:" . CR . $msg);
+        } else if ($allow_access && $return_result) {
+            debug_log("Allowing access to the bot for user:" . CR . $msg);
+	    return $allow_access;
+        } else if (!$allow_access && $return_result) {
+            debug_log("Denying access to the bot for user:" . CR . $msg);
+	    return $allow_access;
         } else {
             debug_log("Denying access to the bot for user:" . CR . $msg);
             $response_msg = '<b>You are not allowed to use this command or bot!</b>';
@@ -99,16 +115,24 @@ function raid_access_check($update, $data)
             SELECT    COUNT(*)
             FROM      users
               WHERE   user_id = {$update['callback_query']['from']['id']}
-                OR    moderator = 1
+               AND    moderator = 1
             "
         );
 
         $row = $rs->fetch_row();
 
         if (empty($row['0'])) {
-            $callback_response = 'You are not allowed to edit this raid';
-            answerCallbackQuery($update['callback_query']['id'], $callback_response);
-            exit;
+	    $admin_access = bot_access_check($update, BOT_ADMINS, true);
+	    if (!$admin_access) {
+		$keys = [];
+		if (isset($update['callback_query']['inline_message_id'])) {
+    		    editMessageText($update['callback_query']['inline_message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys);
+		} else {
+    		    editMessageText($update['callback_query']['message']['message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys, $update['callback_query']['message']['chat']['id'], $keys);
+		}
+                answerCallbackQuery($update['callback_query']['id'], getTranslation('raid_access_denied'));
+                exit;
+	    }
         }
     }
 }
