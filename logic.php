@@ -25,9 +25,12 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
 	    if ($chat_obj['ok'] == true) {
 		$allow_access = false;
 		// ID matching $chat and private chat type?
-		if ($chat_obj['result']['id'] == $chat && $chat_obj['result']['type'] == "private") {
+		if ($chat_obj['result']['id'] == $update['message']['from']['id'] && $chat_obj['result']['type'] == "private") {
 		    $allow_access = true;
 		    break;
+		} else {
+		    // Result was ok, but access not granted. Continue then.
+		    continue;
 		}
 	    } else {
 		debug_log('Chat ' . $chat . ' does not exist! Continuing with next chat...');
@@ -85,6 +88,10 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
             exit;
         }
     } else {
+        $msg = '';
+        $msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
+        $msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
+        $msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
         debug_log("Bot access is not restricted! Allowing access for user: " . CR . $msg);
     }
 }
