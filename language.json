@@ -349,6 +349,11 @@
 		"DE": "Anfangsbuchstabe ausgewählt.",
 		"EN": "First letter selected."		
 	},
+	"raid_creation_started_at" : {
+		"NL": "Raid creation was started at",
+		"DE": "Das Raid wird angelegt seit",
+		"EN": "Raid creation was started at"
+	},
 	"raid_being_created_by_other_user" : {
 		"NL": "Another user is currently creating a raid for this gym:",
 		"DE": "Ein Raid für diese Arena wird gerade angelegt von:",
@@ -364,10 +369,25 @@
 		"DE": "Erstelle Raid in",
 		"EN": "Create Raid in"		
 	},
+	"raid_creation_in_progress_warning" : {
+		"NL": "You can continue with the raid creation, but this will overwrite the raid which is concurrently being created and is definitely NOT RECOMMENDED!",
+		"DE": "Das Raid kann weiter angelegt werden, aber dies wird das Raid welches gerade zeitgleich erstellt wird überschreiben und ist daher definitiv NICHT EMPFOHLEN!",
+		"EN": "You can continue with the raid creation, but this will overwrite the raid which is concurrently being created and is definitely NOT RECOMMENDED!"		
+	},
+	"raid_creation_in_progress" : {
+		"NL": "Raid creation in progress",
+		"DE": "Raid wird gerade erstellt",
+		"EN": "Raid creation in progress"		
+	},
+	"select_raid_level_to_continue" : {
+		"NL": "To really continue, please select raid level",
+		"DE": "Um wirklich fortzufahren, bitte Raid Level auswählen",
+		"EN": "To really continue, please select raid level"		
+	},
 	"select_raid_level" : {
 		"NL": "Selecteer Raid level",
 		"DE": "Bitte Raid Level auswählen",
-		"EN": "Select Raid level"		
+		"EN": "Select raid level"		
 	},
 	"gym" : {
 		"NL": "Gym",

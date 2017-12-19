@@ -126,7 +126,8 @@ if ($raid_id != 0) {
 
     // Create the keys.
     if ($raid_status == "end") {
-	// Update pokemon?
+	$msg = getTranslation('raid_already_exists') . CR . show_raid_poll_small($raid);
+	// Update pokemon or share raid?
         $keys = [
             [
                 [
@@ -142,11 +143,31 @@ if ($raid_id != 0) {
             ]
         ];
     } else {
-        $keys = [];
+	// Set message string
+	$msg_main = getTranslation('raid_being_created_by_other_user') . CR . get_user($raid['user_id']);
+	$msg_main .= getTranslation('raid_creation_started_at') . " " . unix2tz($raid['ts_start'], $raid['timezone']) . '.';
+	$access_msg_header = '';
+	$access_msg_footer = '';
+
+	// Check access to overwrite raid.
+	$admin_access = bot_access_check($update, BOT_ADMINS, true);
+	if ($admin_access) {
+	    $access_msg_header .= CR . EMOJI_WARN . "<b>" . getTranslation('raid_creation_in_progress') . "</b>" . EMOJI_WARN . CR;
+	    $access_msg_header .= CR . "<b>" . getTranslation('raid_creation_in_progress_warning') . "</b>" . CR . CR;
+	    $access_msg_footer .= CR . CR . getTranslation('select_raid_level_to_continue') . ':';
+	    $keys = raid_edit_start_keys($raid['id']);
+	} else {
+            $keys = [];
+	}
+
+	// Build message string.
+	$msg = $access_msg_header . $msg_main . $access_msg_footer;
     }
 
     // Build message string.
+    /*
     $msg = ($raid_status == "start") ? (getTranslation('raid_being_created_by_other_user') . CR . get_user($raid['user_id'])) : (getTranslation('raid_already_exists') . CR . show_raid_poll_small($raid));
+    */
 
     // Edit the message.
     edit_message($update, $msg, $keys);
