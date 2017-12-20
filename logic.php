@@ -1324,7 +1324,7 @@ function show_raid_poll($raid)
 
             // Add time left message.
         } else {
-            $msg .= getTranslation('raid_egg_opens') . ' ' . unix2tz($raid['ts_end'], $raid['timezone']);
+            $msg .= getTranslation('raid_until') . ' ' . unix2tz($raid['ts_end'], $raid['timezone']);
 	    $msg .= $tl_msg . CR;
         }
     }
