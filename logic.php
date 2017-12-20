@@ -2,54 +2,96 @@
 /**
  * Bot access check.
  * @param $update
- * @param $chat_id
+ * @param $access_type
  */
-function bot_access_check($update)
+function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = false)
 {
     // Restricted or public access
-    if(!empty(BOT_ACCESS)) {
-	$chat_id = BOT_ACCESS;
+    if(!empty($access_type)) {
+	$all_chats = '';
+	// Always add maintainer and admins.
+	$all_chats .= !empty(MAINTAINER_ID) ? MAINTAINER_ID . ',' : '';
+	$all_chats .= !empty(BOT_ADMINS) ? BOT_ADMINS . ',' : '';
+	$all_chats .= ($access_type == BOT_ADMINS) ? '' : $access_type;
 
-	// Check each admin chat defined in BOT_ACCESS 
-	$chats = explode(',', $chat_id);
+	// Check each admin chat defined in $access_type 
+	$chats = explode(',', $all_chats);
    	foreach($chats as $chat) {
-    
+	    // Get chat object 
+	    $chat_obj = get_chat($chat);
+            debug_log("Getting chat object for '" . $chat . "'");
+
+	    // Check chat object for proper response.
+	    if ($chat_obj['ok'] == true) {
+		$allow_access = false;
+		// ID matching $chat and private chat type?
+		if ($chat_obj['result']['id'] == $update['message']['from']['id'] && $chat_obj['result']['type'] == "private") {
+		    $allow_access = true;
+		    break;
+		} else {
+		    // Result was ok, but access not granted. Continue then.
+		    continue;
+		}
+	    } else {
+		debug_log('Chat ' . $chat . ' does not exist! Continuing with next chat...');
+		continue;
+	    }
+
+	    // Clear chat_obj since it did not match 
+	    $chat_obj = '';
+
 	    // Get administrators from chat
     	    $response = get_admins($chat);
             debug_log("Getting administrators from chat '" . $chat . "'");
 
     	    // Make sure we get a proper response
     	    if ($response['ok'] == true) { 
-                $allow_access = false;
 	        foreach($response['result'] as $admin) {
 	                // If user is found as administrator allow access to the bot
 	                if ($admin['user']['id'] == $update['message']['from']['id'] || $admin['user']['id'] == $update['inline_query']['from']['id']) {
 		            $allow_access = true;
-		            break;
+		            break 2;
 		        }
-                    }
-            }
+                }
+	    }
 	}
 
         // Prepare logging of username, first_name and/or id
 	$msg = '';
-	$msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
-	$msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
-	$msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
-	$msg .= !empty($update['inline_query']['from']['id']) ? "Id: " . $update['inline_query']['from']['id'] . CR : '';
-	$msg .= !empty($update['inline_query']['from']['username']) ? "Username: " . $update['inline_query']['from']['username'] . CR : '';
-	$msg .= !empty($update['inline_query']['from']['first_name']) ? "First Name: " . $update['inline_query']['from']['first_name'] . CR : '';
+	if(!empty($chat_obj['result']['id'])) {
+	    $msg .= !empty($chat_obj['result']['id']) ? "Id: " . $chat_obj['result']['id'] . CR : '';
+	    $msg .= !empty($chat_obj['result']['username']) ? "Username: " . $chat_obj['result']['username'] . CR : '';
+	    $msg .= !empty($chat_obj['result']['first_name']) ? "First Name: " . $chat_obj['result']['first_name'] . CR : '';
+	} else if (!empty($update['message']['from']['id'])) {
+	    $msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
+	    $msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
+	    $msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
+	} else if (!empty($update['inline_query']['from']['id'])) {
+	    $msg .= !empty($update['inline_query']['from']['id']) ? "Id: " . $update['inline_query']['from']['id'] . CR : '';
+	    $msg .= !empty($update['inline_query']['from']['username']) ? "Username: " . $update['inline_query']['from']['username'] . CR : '';
+	    $msg .= !empty($update['inline_query']['from']['first_name']) ? "First Name: " . $update['inline_query']['from']['first_name'] . CR : '';
+	}
 
         // Allow or deny access to the bot and log result
-        if ($allow_access) {
+        if ($allow_access && !$return_result) {
             debug_log("Allowing access to the bot for user:" . CR . $msg);
+        } else if ($allow_access && $return_result) {
+            debug_log("Allowing access to the bot for user:" . CR . $msg);
+	    return $allow_access;
+        } else if (!$allow_access && $return_result) {
+            debug_log("Denying access to the bot for user:" . CR . $msg);
+	    return $allow_access;
         } else {
             debug_log("Denying access to the bot for user:" . CR . $msg);
-            $response_msg = '<b>You are not allowed to use this bot!</b>';
+            $response_msg = '<b>You are not allowed to use this command or bot!</b>';
 	    sendMessage($update['message']['chat']['id'], $response_msg);
             exit;
         }
     } else {
+        $msg = '';
+        $msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
+        $msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
+        $msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
         debug_log("Bot access is not restricted! Allowing access for user: " . CR . $msg);
     }
 }
@@ -80,16 +122,24 @@ function raid_access_check($update, $data)
             SELECT    COUNT(*)
             FROM      users
               WHERE   user_id = {$update['callback_query']['from']['id']}
-                AND   moderator = 1
+               AND    moderator = 1
             "
         );
 
         $row = $rs->fetch_row();
 
         if (empty($row['0'])) {
-            $callback_response = 'You are not allowed to edit this raid';
-            answerCallbackQuery($update['callback_query']['id'], $callback_response);
-            exit;
+	    $admin_access = bot_access_check($update, BOT_ADMINS, true);
+	    if (!$admin_access) {
+		$keys = [];
+		if (isset($update['callback_query']['inline_message_id'])) {
+    		    editMessageText($update['callback_query']['inline_message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys);
+		} else {
+    		    editMessageText($update['callback_query']['message']['message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys, $update['callback_query']['message']['chat']['id'], $keys);
+		}
+                answerCallbackQuery($update['callback_query']['id'], getTranslation('raid_access_denied'));
+                exit;
+	    }
         }
     }
 }
@@ -128,42 +178,63 @@ function raid_duplication_check($gym,$end)
 	// Timezone - maybe there's a more elegant solution as date_default_timezone_set?!
         $tz = TIMEZONE;
         date_default_timezone_set($tz);
+	
+	// Now
+	$now = time();
 
-        // Now + $end = endtime of new raid
-        $end = time() + $end*60;
+	// Compare time - check minutes before and after database value
+	$beforeAfter = 15;
+	$extendBefore = 180;
 
-        // Compare end time - check 15 minutes before and after database value
-        $ts_end_before = $raid['ts_end'] - (15*60);
-        $ts_end_after = $raid['ts_end'] + (15*60);
+	// Seems raid is being created at the moment
+        if ($raid['ts_end'] === NULL) {
+	    // Compare via start_time.
+	    $compare = "start";
+	    $time4compare = $now;
 
-	// Debug log unix times
-	debug_log("Unix timestamp of endtime new raid: " . $end);
-	debug_log("Unix timestamp of endtime-15 existing raid: " . $ts_end_before);
-	debug_log("Unix timestamp of endtime+15 existing raid: " . $ts_end_after);
+	    // Set compare values.
+	    $ts_compare_before = $raid['ts_start'] - ($beforeAfter*60);
+	    $ts_compare_after = $raid['ts_start'] + ($beforeAfter*60);
+	} else {
+	    // Compare via end_time.
+	    $compare = "end";
+	    $time4compare = $now + $end*60;
+
+	    // Set compare values.
+	    // Extend compare time for raid times if $time4compare is equal to $now which means $end must be 0
+	    $ts_compare_before = ($time4compare == $now) ? ($raid['ts_end'] - ($extendBefore*60)) : ($raid['ts_end'] - ($beforeAfter*60));
+	    $ts_compare_after = $raid['ts_end'] + ($beforeAfter*60);
+	}
+
+        // Debug log unix times
+        debug_log('Unix timestamp of ' . $compare . 'time new raid: ' . $time4compare);
+        debug_log('Unix timestamp of ' . $compare . 'time -' . (($time4compare == $now) ? $extendBefore : $beforeAfter) . ' minutes of existing raid: ' . $ts_compare_before);
+        debug_log('Unix timestamp of ' . $compare . 'time +' . $beforeAfter . ' minutes of existing raid: ' . $ts_compare_after);
 
         // Debug log
-        debug_log("Searched database for raids at " . $raid['gym_name']);
-        debug_log("Database raid ID of last raid at ". $raid['gym_name'] . ": " . $raid['id']);
-        debug_log("New raid at " . $raid['gym_name'] . " will end: " . unix2tz($end,$tz));
-        debug_log("Existing raid at " . $raid['gym_name'] . " will end between " . unix2tz($ts_end_before,$tz) . " and " . unix2tz($ts_end_after,$tz));
+        debug_log('Searched database for raids at ' . $raid['gym_name']);
+        debug_log('Database raid ID of last raid at '. $raid['gym_name'] . ': ' . $raid['id']);
+        debug_log('New raid at ' . $raid['gym_name'] . ' will ' . $compare . ': ' . unix2tz($time4compare,$tz));
+        debug_log('Existing raid at ' . $raid['gym_name'] . ' will ' . $compare . ' between ' . unix2tz($ts_compare_before,$tz) . ' and ' . unix2tz($ts_compare_after,$tz));
 
-        // Check if end_time of new raid is between plus minus 5 minutes of existing raid
-        if($end >= $ts_end_before && $end <= $ts_end_after){
+        // Check if end_time of new raid is between plus minus the specified minutes of existing raid
+        if($time4compare >= $ts_compare_before && $time4compare <= $ts_compare_after){
 	    // Update existing raid.
-	    $duplicate_id = $raid['id'];
-	    debug_log("New raid matches end_time of existing raid!");
-	    debug_log("Updating raid ID: " . $duplicate_id);
+	    // Negative raid ID if compare method is start and not end time
+	    $duplicate_id = ($compare == "start") ? (0-$raid['id']) : $raid['id'];
+	    debug_log('New raid matches ' . $compare . 'time of existing raid!');
+	    debug_log('Updating raid ID: ' . $duplicate_id);
     	} else {
 	    // Create new raid.
-	    debug_log("New raid end_time does not match the end_time of existing raid.");
-	    debug_log("Creating new raid at gym: " . $raid['gym_name']);
+	    debug_log('New raid ' . $compare . 'time does not match the ' . $compare . 'time of existing raid.');
+	    debug_log('Creating new raid at gym: ' . $raid['gym_name']);
         }
     } else {
 	debug_log("Gym '" . $gym . "' not found in database!");
 	debug_log("Creating new raid at gym: " . $gym);
     }
 
-    // Return ID or 0
+    // Return ID, -ID or 0
     return $duplicate_id;
 }
 
@@ -224,6 +295,139 @@ function get_gym($id)
     $gym = $rs->fetch_assoc();
 
     return $gym;
+}
+
+/**
+ * Get user.
+ * @param $user_id
+ * @return message
+ */
+function get_user($user_id)
+{
+    // Get user details.
+    $rs = my_query(
+        "
+        SELECT    * 
+                FROM      users
+                  WHERE   user_id = {$user_id}
+        "
+    );
+
+    // Fetch the row.
+    $row = $rs->fetch_assoc();
+
+    // Build message string.
+    $msg = '';
+
+    // Add name.
+    $msg .= 'Name: <a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>' . CR;
+
+    // Unknown team.
+    if ($row['team'] === NULL) {
+        $msg .= 'Team: ' . $GLOBALS['teams']['unknown'] . CR;
+
+    // Known team.
+    } else {
+        $msg .= 'Team: ' . $GLOBALS['teams'][$row['team']] . CR;
+    }
+
+    // Add level.
+    if ($row['level'] != 0) {
+        $msg .= 'Level: ' . $row['level'] . CR;
+    }
+
+    return $msg;
+}
+
+/**
+ * Moderator keys.
+ * @param $limit
+ * @param $action
+ * @return array
+ */
+function edit_moderator_keys($limit, $action)
+{
+    // Number of entries to display at once.
+    $entries = 10;
+
+    // Init empty keys array.
+    $keys = array();
+
+    // Get moderators from database
+    if ($action == "list" || $action == "delete") {
+        $rs = my_query(
+                "
+                SELECT    *
+                FROM      users
+                WHERE     moderator = 1 
+	        ORDER BY  name
+	        LIMIT     $limit, $entries
+                "
+            );
+
+	// Number of entries
+        $cnt = my_query(
+                "
+                SELECT    COUNT(*)
+                FROM      users
+                WHERE     moderator = 1 
+                "
+            );
+    } else if ($action == "add") {
+        $rs = my_query(
+                "
+                SELECT    *
+                FROM      users
+                WHERE     (moderator = 0 OR moderator IS NULL)
+                ORDER BY  name
+                LIMIT     $limit, $entries
+                "
+            );
+
+	// Number of entries
+        $cnt = my_query(
+                "
+                SELECT    COUNT(*)
+                FROM      users
+                WHERE     (moderator = 0 OR moderator IS NULL)
+                "
+            );
+    }
+
+    // Number of database entries found.
+    $sum = $cnt->fetch_row();
+    $count = $sum['0'];
+
+    // List users / moderators
+    while ($mod = $rs->fetch_assoc()) {
+        $keys[] = array(
+            'text'          => $mod['name'],
+            'callback_data' => '0:mods_' . $action . ':' . $mod['user_id']
+        );
+    }
+
+    // Add back key.
+    if ($limit > 0) {
+	$new_limit = $limit - $entries;
+	$empty_back_key = array();
+	$key_back = back_key($empty_back_key, $new_limit, "mods", $action);
+	$key_back = $key_back[0];
+	$keys = array_merge($key_back, $keys);
+    }
+
+    // Add next key.
+    if (($limit + $entries) < $count) {
+	$new_limit = $limit + $entries;
+	$empty_next_key = array();
+	$key_next = next_key($empty_next_key, $new_limit, "mods", $action);
+	$key_next = $key_next[0];
+	$keys = array_merge($keys, $key_next);
+    }
+
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 1);
+
+    return $keys;
 }
 
 /**
@@ -408,6 +612,26 @@ function back_key($keys, $id, $action, $arg)
     $keys[] = [
             array(
                 'text'          => getTranslation('back'),
+                'callback_data' => $id . ':' . $action . ':' . $arg
+            )
+        ];
+
+    return $keys;
+}
+
+/**
+ * Next key.
+ * @param $keys
+ * @param $id
+ * @param $action
+ * @param $arg
+ * @return array
+ */
+function next_key($keys, $id, $action, $arg) 
+{
+    $keys[] = [
+            array(
+                'text'          => getTranslation('next'), 
                 'callback_data' => $id . ':' . $action . ':' . $arg
             )
         ];
@@ -831,7 +1055,7 @@ function keys_vote($raid)
             'callback_data' => $raid['id'] . ':vote_done:0'
         ],
         [
-            'text'          => getTranslation('absent'),
+            'text'          => getTranslation('cancellation'),
             'callback_data' => $raid['id'] . ':vote_cancel:0'
         ],
     ];
@@ -1068,7 +1292,7 @@ function show_raid_poll($raid)
     }
 
     // Display raid boss name.
-    $msg .= 'Raid Boss: <b>' . ucfirst($raid['pokemon']) . '</b>' . CR;
+    $msg .= getTranslation('raid_boss') . ': <b>' . ucfirst($raid['pokemon']) . '</b>' . CR;
 
     $time_left = floor($raid['t_left'] / 60);
     if ( strpos(str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) , '-' ) !== false ) {
@@ -1087,7 +1311,7 @@ function show_raid_poll($raid)
 	if ($weekday_now == $weekday_start) {
 	    $msg .= '<b>' . getTranslation('raid_egg_opens') . ' ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	} else {
-	    $msg .= '<b>' . getTranslation('raid_egg_opens') . ' ' .  $raid_day .' um ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	    $msg .= '<b>' . getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	}
 
     // Raid has started and active or already ended
@@ -1100,7 +1324,7 @@ function show_raid_poll($raid)
 
             // Add time left message.
         } else {
-            $msg .= getTranslation('raid_to') . unix2tz($raid['ts_end'], $raid['timezone']);
+            $msg .= getTranslation('raid_until') . ' ' . unix2tz($raid['ts_end'], $raid['timezone']);
 	    $msg .= $tl_msg . CR;
         }
     }
@@ -1175,7 +1399,7 @@ function show_raid_poll($raid)
                         sum(team = 'instinct')      AS count_instinct,
                         sum(team IS NULL)           AS count_no_team,
                         sum(extra_people)           AS extra,
-						attend_time
+			attend_time
         FROM            attendance
           WHERE         raid_id = {$raid['id']}
             AND         attend_time IS NOT NULL
@@ -1274,11 +1498,11 @@ function show_raid_poll($raid)
             if ($vv['arrived']) {
 		// No time is displayed, but undefined_index error in log, so changed it:
                 //$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
-                $msg .= getTranslation('here') . ' ';
+                $msg .= '[' . getTranslation('here') . '] ';
 
             // Cancelled.
             } else if ($vv['cancel']) {
-                $msg .= getTranslation('cancel') . ' ';
+                $msg .= '[' . getTranslation('cancel') . '] ';
             }
 
             // Add extra people.
@@ -1317,7 +1541,7 @@ function show_raid_poll($raid)
 
             // Done.
             if ($vv['raid_done']) {
-                $msg .= '[' . getTranslation('finished') . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                $msg .= '[' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
             }
             // Add extra people.
             if ($vv['extra_people']) {
@@ -1354,7 +1578,7 @@ function show_raid_poll($raid)
 
             // Cancel.
             if ($vv['cancel']) {
-                $msg .= '[' . getTranslation('cancel') . ' ' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                $msg .= '[' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
             }
             // Add extra people.
             if ($vv['extra_people']) {

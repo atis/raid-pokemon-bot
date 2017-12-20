@@ -53,18 +53,18 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
 
     // Gym Name
     if(!empty($raid['gym_name'])) {
-	$msg .= getTranslation('set_gym_and_team') . CR2;
+	$msg .= getTranslation('set_gym_team') . CR2;
     } else {
         $msg .= getTranslation('set_gym_name_and_team') . CR2;
-        $msg .= getTranslation('set_gym_team') . CR;
+        $msg .= getTranslation('set_gym_name_command') . CR;
     }
-    $msg .= getTranslation('set_team');
+    $msg .= getTranslation('set_gym_team_command');
 
     // Edit message.
     edit_message($update, $msg, $keys, false);
 
     // Build callback message string.
-    $callback_response = getTranslation('end_time') . $data['arg'] . getTranslation('minutes');
+    $callback_response = getTranslation('end_time') . $data['arg'] . ' ' . getTranslation('minutes');
 
     // Answer callback.
     answerCallbackQuery($update['callback_query']['id'], $callback_response);

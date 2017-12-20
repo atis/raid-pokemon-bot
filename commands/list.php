@@ -21,8 +21,11 @@ $row = $rs->fetch_assoc();
 
 // No data found.
 if (!$row) {
-    sendMessage($update['message']['from']['id'], 'Can\'t determine your location, please participate in at least 1 raid');
-    exit;
+    //sendMessage($update['message']['from']['id'], 'Can\'t determine your location, please participate in at least 1 raid');
+    //exit;
+    $tz = TIMEZONE;
+} else {
+    $tz = $row['timezone'];
 }
 
 // Build query.
@@ -34,17 +37,22 @@ $request = my_query(
               UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
     FROM      raids
       WHERE   end_time>NOW()
-        AND   timezone='{$row['timezone']}'
+        AND   timezone='{$tz}'
     ORDER BY  end_time ASC LIMIT 20
     "
 );
 
 while ($raid = $request->fetch_assoc()) {
+    if(!$raid) {
+	sendMessage($update['message']['from']['id'], '<b>' . getTranslation('no_active_raids_found') . '</b>');
+	exit;
+    }
+
     // Create keys array.
     $keys = [
         [
             [
-                'text'          => 'Expand',
+                'text'          => getTranslation('expand'),
                 'callback_data' => $raid['id'] . ':vote_refresh:0',
             ]
         ]

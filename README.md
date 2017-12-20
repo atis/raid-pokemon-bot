@@ -122,6 +122,26 @@ OR
 
 `curl -k -d '{"cleanup":{"secret":"your-cleanup-secret/passphrase","telegram":"2","database":"1"}}' https://localhost/index.php?apikey=111111111:AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPP123`
 
+# Access permissions
+
+With BOT_ADMINS and BOT_ACCESS being used to restrict access, there are several access roles / types. When you do not configure BOT_ACCESS, everyone will have access to your bot (public access).  
+
+With your MAINTAINER_ID and as a member of BOT_ADMINS you have the permissions to do anything. **For performance improvements, it's recommended to add the MAINTAINER and all members of BOT_ADMINS as moderator via /mods command!** 
+
+As a member of BOT_ACCESS you can create raid polls, update your own raid polls' pokemon and change the gym team of your last raid poll. BOT_ACCESS members who are moderators can change the gym name and update raid polls' pokemon of others.
+
+Telegram Users can only vote on raid polls, but have no access to other bot functions.
+
+
+| Access        | Database  | Raid poll |                                      |                  | Pokemon                       |                               | Gym             |                  | Moderators       |                 |                    | Help             |
+|---------------|-----------|-----------|--------------------------------------|------------------|-------------------------------|-------------------------------|-----------------|------------------|------------------|-----------------|--------------------|------------------|
+|               |           | **Vote**  | **Create** `/start`, `/raid`, `/new` | **List** `/list` | **All raid polls** `/pokemon` | **Own raid polls** `/pokemon` | **Name** `/gym` | **Team** `/team` | **List** `/mods` | **Add** `/mods` | **Delete** `/mods` | **Show** `/help` |
+| MAINTAINER_ID |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
+| BOT_ADMINS    |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
+| BOT_ACCESS    | Moderator | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              |                  |                 |                    | Yes              |
+| BOT_ACCESS    | User      | Yes       | Yes                                  | Yes              |                               | Yes                           |                 | Yes              |                  |                 |                    | Yes              |
+| Telegram      | User      | Yes       |                                      |                  |                               |                               |                 |                  |                  |                 |                    |                  |
+
 # Usage
 
 ## Bot commands
@@ -138,6 +158,11 @@ The bot will guide you through the creation of the raid poll by asking you for t
 #### Command: /help
 
 The bot will answer you "This is a private bot" so you can verify the bot is working and accepting input.
+
+
+#### Command: /mods
+
+The bot allows you to set some users as moderators. You can list, add and delete moderators from the bot. Note that when you have restricted the access to your bot via BOT_ADMINS and BOT_ACCESS, you need to add the users as administrators of a chat or their Telegram IDs to either BOT_ADMINS or BOT_ACCESS. Otherwise they won't have access to the bot, even though you have added them as moderators! 
 
 
 #### Command: /raid
@@ -190,13 +215,7 @@ Check your bot logfile and other related log files, e.g. apache/httpd log, php l
 
 # TODO:
 
-* Cleanup logic to delete raid polls once a raid ended.
-
-	arrived - set and show time
-
-	create raid - check permissions (in group)
-	create raid moderators - allow create any raid
-	
-	geofencing - auto publish to chat
-	timezones
-	create api / command
+* New gyms: Adding gyms to database without creating a raid via /raid
+* Preferred pokemon raid boss: When multiple level 5 raids are available, e.g. Lugia and Zapdos, add buttons to tell that you're coming a) only if Lugia, b) only if Zapdos, c) independently of the pokemon
+* Delete raids: Allow BOT_ADMINS to delete raids
+* Delete incomplete raids automatically: When a bot user starts to create a raid via /start, but does not finish the raid creation, incomplete raid data is stored in the raids table. A method to automatically delete them without interfering with raids just being created would be nice.

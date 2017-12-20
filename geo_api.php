@@ -112,7 +112,7 @@ function get_address($lat, $lon)
         // Rename street responses.
         switch ($location['street']) {
             case 'Unnamed Road':
-                $location['street'] = getTranslation('forrest');
+                $location['street'] = getTranslation('forest');
                 break;
         }
 

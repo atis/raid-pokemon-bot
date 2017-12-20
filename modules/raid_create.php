@@ -93,6 +93,94 @@ if($gym_id > 0) {
     $fullAddress .= (!empty($addr['district']) ? $addr['district'] : "");
 }
 
+// Insert new raid or warn about existing raid?
+if (!empty($gym_name)) { 
+    $raid_id = raid_duplication_check($gym_name,0);
+}
+
+// Insert new raid
+if ($raid_id != 0) {
+    // Check raid ID
+    // Positive ID: Raid is completely created
+    // Negative ID: Raid is being created at the moment
+    $raid_status = (substr($raid_id, 0, 1) == '-') ? 'start' : 'end';
+
+    // Change negative raid ID to positive ID
+    $raid_id = ($raid_status == "start") ? (ltrim($raid_id, '-')) : $raid_id;
+
+    // Get the raid data by id.
+    $rs = my_query(
+        "
+        SELECT  *,
+                UNIX_TIMESTAMP(end_time)                        AS ts_end,
+                UNIX_TIMESTAMP(start_time)                      AS ts_start,
+                UNIX_TIMESTAMP(NOW())                           AS ts_now,
+                UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
+        FROM    raids
+          WHERE id = {$raid_id}
+        "
+    );
+
+    // Fetch raid data.
+    $raid = $rs->fetch_assoc(); 
+
+    // Create the keys.
+    if ($raid_status == "end") {
+	$msg = getTranslation('raid_already_exists') . CR . show_raid_poll_small($raid);
+	// Update pokemon or share raid?
+        $keys = [
+            [
+                [
+                    'text'          => getTranslation('update_pokemon'),
+                    'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
+                ]
+            ],
+            [
+                [
+                    'text'                => getTranslation('share'),
+                    'switch_inline_query' => strval($raid['id'])
+                ]
+            ]
+        ];
+    } else {
+	// Set message string
+	$msg_main = getTranslation('raid_being_created_by_other_user') . CR . get_user($raid['user_id']);
+	$msg_main .= getTranslation('raid_creation_started_at') . " " . unix2tz($raid['ts_start'], $raid['timezone']) . '.';
+	$access_msg_header = '';
+	$access_msg_footer = '';
+
+	// Check access to overwrite raid.
+	$admin_access = bot_access_check($update, BOT_ADMINS, true);
+	if ($admin_access) {
+	    $access_msg_header .= CR . EMOJI_WARN . "<b>" . getTranslation('raid_creation_in_progress') . "</b>" . EMOJI_WARN . CR;
+	    $access_msg_header .= CR . "<b>" . getTranslation('raid_creation_in_progress_warning') . "</b>" . CR . CR;
+	    $access_msg_footer .= CR . CR . getTranslation('select_raid_level_to_continue') . ':';
+	    $keys = raid_edit_start_keys($raid['id']);
+	} else {
+            $keys = [];
+	}
+
+	// Build message string.
+	$msg = $access_msg_header . $msg_main . $access_msg_footer;
+    }
+
+    // Build message string.
+    /*
+    $msg = ($raid_status == "start") ? (getTranslation('raid_being_created_by_other_user') . CR . get_user($raid['user_id'])) : (getTranslation('raid_already_exists') . CR . show_raid_poll_small($raid));
+    */
+
+    // Edit the message.
+    edit_message($update, $msg, $keys);
+
+    // Build callback message string.
+    $callback_response = 'OK';
+
+    // Answer callback.
+    answerCallbackQuery($update['callback_query']['id'], $callback_response);
+
+    exit();
+}
+
 // Address found.
 if (!empty($fullAddress)) {
     // Create raid with address.
@@ -142,7 +230,7 @@ if (!$keys) {
     $keys = [
         [
             [
-                'text'          => 'Not supported',
+                'text'          => getTranslation('not_supported'),
                 'callback_data' => 'edit:not_supported'
             ]
         ]
@@ -153,7 +241,7 @@ if (!$keys) {
 $msg = getTranslation('create_raid') . ': <i>' . $fullAddress . '</i>';
 
 // Answer callback or send message based on input prior raid creation
-if($gym_id != 0) {
+if($gym_id != 0 || (empty($update['message']['location']['latitude']) && empty($update['message']['location']['longitude']))) {
     // Edit the message.
     edit_message($update, $msg . CR . getTranslation('select_raid_level') . ':', $keys);
 
@@ -166,7 +254,6 @@ if($gym_id != 0) {
     // Private chat type.
     if ($chattype == 'private') {
         // Send the message.
-        //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys);
         send_message($chatid, $msg . CR . getTranslation('select_raid_level') . ':', $keys);
 
     } else {
@@ -177,7 +264,6 @@ if($gym_id != 0) {
         }
 
         // Send the message.
-        //send_message($update['message']['chat']['id'], $msg . CR . 'Bitte Raid level auswählen:', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
         send_message($chatid, $msg . CR . getTranslation('select_raid_level') . ':', $keys, ['reply_to_message_id' => $reply_to, 'reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
     }
 

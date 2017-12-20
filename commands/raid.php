@@ -75,7 +75,7 @@ if (!empty($data[8])) {
 // Insert new raid or update existing raid?
 $raid_id = raid_duplication_check($name,($endtime + $countdown));
 
-if ($raid_id != 0){
+if ($raid_id > 0){
     // Update pokemon and team in raids table.
     my_query(
         "

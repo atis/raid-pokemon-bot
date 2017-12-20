@@ -16,6 +16,7 @@ define('DB_PASSWORD',       'your_database_password');
 define('MAINTAINER',        '@your_tg_username');
 define('MAINTAINER_ID',     'your_tg_integer');
 define('BOT_NAME',          '@RaidPokemonBot');
+define('BOT_ADMINS',        ''); // optional
 define('BOT_ACCESS',        ''); // optional
 
 define('RAID_LOCATION',     false); // send location as message in addition to raid poll message
@@ -23,8 +24,9 @@ define('RAID_SLOTS',        '15'); // minutes
 define('RAID_LAST_START',   '10'); // minutes before RAID ends
 
 define ('RAID_EGG_DURATION',    '60'); //minutes till egg comes out
-define ('RAID_POKEMON_DURATION_LONG', '45'); //minutes till pokemon leave
+define ('RAID_POKEMON_DURATION_LONG', '90'); //minutes till pokemon leave
 define ('RAID_POKEMON_DURATION_SHORT', '45'); //minutes till pokemon leave
+define ('RAID_DURATION_CLOCK_STYLE',    true); // True: Clocktime style, e.g. "18:34" --- False: Minute style, e.g. "still 0:34"
 
 define('CLEANUP',           false); // must be true for cleanup
 define('CLEANUP_SECRET',    'your-cleanup-secret/passphrase');

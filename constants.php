@@ -26,7 +26,7 @@ $teams = array(
 // Raid boss pokemon.
 $pokemon = array(
     'X' => array(
-	    getTranslation('mewtwo')
+        getTranslation('mewtwo')
     ),
     '5' => array(
         getTranslation('articuno'),
@@ -40,7 +40,7 @@ $pokemon = array(
         getTranslation('entei'),
         getTranslation('suicune'),
         getTranslation('groudon'),
-		getTranslation('egg_5')
+        getTranslation('egg_5')
     ),
     '4' => array(
         getTranslation('tyranitar'),
@@ -53,7 +53,7 @@ $pokemon = array(
         getTranslation('rhydon'),
         getTranslation('golem'),
         getTranslation('absol'),
-		getTranslation('egg_4')
+        getTranslation('egg_4')
     ),
     '3' => array(
         getTranslation('arcanine'),
@@ -64,7 +64,7 @@ $pokemon = array(
         getTranslation('porygon'),
         getTranslation('omastar'),
         getTranslation('ninetails'),
-		getTranslation('egg_3')
+        getTranslation('egg_3')
     )
 );
 

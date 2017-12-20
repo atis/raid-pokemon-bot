@@ -387,6 +387,32 @@ function delete_message($chat_id, $message_id)
 }
 
 /**
+ * GetChat
+ * @param $chatid
+ */
+function get_chat($chat_id)
+{
+    // Create response content array.
+    $reply_content = [
+        'method'     => 'getChat',
+        'chat_id'    => $chat_id,
+        'parse_mode' => 'HTML',
+    ];
+
+    // Encode data to json.
+    $reply_json = json_encode($reply_content);
+
+    // Set header to json.
+    header('Content-Type: application/json');
+
+    // Write to log.
+    debug_log($reply_json, '>');
+
+    // Send request to telegram api.
+    return curl_json_request($reply_json);
+}
+
+/**
  * GetChatAdministrators
  * @param $chatid
  */
