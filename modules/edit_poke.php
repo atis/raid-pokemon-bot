@@ -23,6 +23,13 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
               WHERE   id = {$id}
             "
         );
+
+	// Get default raid duration style from config
+	if (RAID_DURATION_CLOCK_STYLE == true) {
+	    $arg = "clocktime";
+	} else {
+	    $arg = "minutes";
+	}
     }
 
     // Init empty keys array.
@@ -32,13 +39,13 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
 	// Set switch view.
 	$switch_text = getTranslation('raid_starts_when_clocktime_view');
 	$switch_view = "clocktime";
+	$key_count = 5;
 
-        for ($i = 1; $i <= 60; $i = $i + 1) {
+        for ($i = 1; $i <= RAID_EGG_DURATION; $i = $i + 1) {
             // Create the keys.
             $keys[] = array(
                 // Just show the time, no text - not everyone has a phone or tablet with a large screen...
                 'text'          => floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
-                //'text'          => unix2tz($now_plus_i,$tz,"H:i"),
                 'callback_data' => $id . ':edit_start:' . $i
             );
         }
@@ -46,6 +53,8 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
 	// Set switch view.
 	$switch_text = getTranslation('raid_starts_when_minutes_view');
 	$switch_view = "minutes";
+	// Small screen fix
+	$key_count = 4;
 
         // Timezone - maybe there's a more elegant solution as date_default_timezone_set?!
         $tz = TIMEZONE;
@@ -54,12 +63,11 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
         // Now 
         $now = time();
 
-        for ($i = 1; $i <= 60; $i = $i + 1) {
+        for ($i = 1; $i <= RAID_EGG_DURATION; $i = $i + 1) {
 	    $now_plus_i = $now + $i*60;
             // Create the keys.
             $keys[] = array(
 	        // Just show the time, no text - not everyone has a phone or tablet with a large screen...
-                //'text'          => floor($i / 60) . ':' . str_pad($i % 60, 2, '0', STR_PAD_LEFT),
 	        'text'	        => unix2tz($now_plus_i,$tz,"H:i"),
                 'callback_data' => $id . ':edit_start:' . $i
             );
@@ -79,7 +87,7 @@ if (true || $arg == "minutes" || $arg == "clocktime") {
     );
 
     // Get the inline key array.
-    $keys = inline_key_array($keys, 5);
+    $keys = inline_key_array($keys, $key_count);
 
     // Write to log.
     debug_log($keys);

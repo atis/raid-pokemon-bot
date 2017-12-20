@@ -45,7 +45,7 @@
 		"EN": "Raid done"		
 	},
 	"here" : {
-		"NL": "Ik ben er",
+		"DE": "Ben er",
 		"DE": "Bin da",
 		"EN": "Here"		
 	},
@@ -465,7 +465,7 @@
 		"EN": "minutes"		
 	},
 	"raid_starts_when" : {
-		"NL": "Wanneer <b>begint</b> de Raid?",
+		"NL": "Wanneer gaat het Raid ei <b>open</b>?",
 		"DE": "Wann <b>beginnt</b> der Raid?",
 		"EN": "When will the Raid <b>begin</b>?"		
 	},
