@@ -96,6 +96,7 @@ function get_address($lat, $lon)
                     }
                 }
             }
+            break;
         }
 
         // Set district by priority.
