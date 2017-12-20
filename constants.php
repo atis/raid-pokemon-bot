@@ -34,6 +34,7 @@ $pokemon = array(
         getTranslation('moltres'),
         getTranslation('zapdos'),
         getTranslation('mew'),
+        getTranslation('mewtwo'),
         getTranslation('hooh'),
         getTranslation('celebi'),
         getTranslation('raikou'),
