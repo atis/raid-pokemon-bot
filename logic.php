@@ -273,6 +273,18 @@ function insert_gym($name, $lat, $lon, $address)
                               address = '{$db->real_escape_string($address)}'
             "
         );
+    } else {
+        // Update gyms table to reflect gym changes.
+        debug_log('Gym found in database gym list! Updating gym "' . $name . '" now.');
+        $rs = my_query(
+            "
+            UPDATE        gyms
+            SET           lat = '{$lat}',
+                              lon = '{$lon}',
+                              address = '{$db->real_escape_string($address)}'
+               WHERE      gym_name = '{$name}'
+            "
+        );
     }
 }
 
