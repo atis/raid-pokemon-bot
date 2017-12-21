@@ -29,8 +29,10 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
 		    $allow_access = true;
 		    break;
 		} else {
-		    // Result was ok, but access not granted. Continue then.
-		    continue;
+		    // Result was ok, but access not granted. Continue with next chat if type is private.
+		    if ($chat_obj['result']['type'] == "private") {
+		    	continue;
+		    }
 		}
 	    } else {
 		debug_log('Chat ' . $chat . ' does not exist! Continuing with next chat...');
