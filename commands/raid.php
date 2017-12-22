@@ -58,7 +58,7 @@ if(!empty(GOOGLE_API_KEY)){
     $address = "";
     $address .= (!empty($addr['street']) ? $addr['street'] : "");
     $address .= (!empty($addr['street_number']) ? " " . $addr['street_number'] : "");
-    $address .= ", ";
+    $address .= (!empty($fullAddress) ? ", " : "");
     $address .= (!empty($addr['postal_code']) ? $addr['postal_code'] . " " : "");
     $address .= (!empty($addr['district']) ? $addr['district'] : "");
 } else {

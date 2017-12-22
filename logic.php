@@ -29,8 +29,10 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
 		    $allow_access = true;
 		    break;
 		} else {
-		    // Result was ok, but access not granted. Continue then.
-		    continue;
+		    // Result was ok, but access not granted. Continue with next chat if type is private.
+		    if ($chat_obj['result']['type'] == "private") {
+		    	continue;
+		    }
 		}
 	    } else {
 		debug_log('Chat ' . $chat . ' does not exist! Continuing with next chat...');
@@ -271,6 +273,18 @@ function insert_gym($name, $lat, $lon, $address)
                               lon = '{$lon}',
                               gym_name = '{$db->real_escape_string($name)}',
                               address = '{$db->real_escape_string($address)}'
+            "
+        );
+    } else {
+        // Update gyms table to reflect gym changes.
+        debug_log('Gym found in database gym list! Updating gym "' . $name . '" now.');
+        $rs = my_query(
+            "
+            UPDATE        gyms
+            SET           lat = '{$lat}',
+                              lon = '{$lon}',
+                              address = '{$db->real_escape_string($address)}'
+               WHERE      gym_name = '{$name}'
             "
         );
     }
