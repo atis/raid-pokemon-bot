@@ -45,7 +45,7 @@
 		"EN": "Raid done"		
 	},
 	"here" : {
-		"DE": "Ben er",
+		"NL": "Ben er",
 		"DE": "Bin da",
 		"EN": "Here"		
 	},
@@ -115,12 +115,12 @@
 		"EN": "Raid egg opens on"		
 	},
 	"raid_egg_opens_at" : {
-		"NL": "at",
+		"NL": "om",
 		"DE": "um",
 		"EN": "at"		
 	},
 	"raid_until" : {
-		"NL": "Raid until",
+		"NL": "Raid tot",
 		"DE": "Raid bis",
 		"EN": "Raid until"		
 	},
@@ -350,17 +350,17 @@
 		"EN": "First letter selected."		
 	},
 	"raid_creation_started_at" : {
-		"NL": "Raid creation was started at",
+		"NL": "Raid aanmaak is gestart om",
 		"DE": "Das Raid wird angelegt seit",
 		"EN": "Raid creation was started at"
 	},
 	"raid_being_created_by_other_user" : {
-		"NL": "Another user is currently creating a raid for this gym:",
+		"NL": "Een andere gebruiker is een raid voor deze gym aan het maken:",
 		"DE": "Ein Raid für diese Arena wird gerade angelegt von:",
 		"EN": "Another user is currently creating a raid for this gym:"
 	},
 	"raid_already_exists" : {
-		"NL": "Raid already exists!",
+		"NL": "Raid bestaat al!",
 		"DE": "Raid existiert bereits!",
 		"EN": "Raid already exists!"
 	},
@@ -370,17 +370,17 @@
 		"EN": "Create Raid in"		
 	},
 	"raid_creation_in_progress_warning" : {
-		"NL": "You can continue with the raid creation, but this will overwrite the raid which is concurrently being created and is definitely NOT RECOMMENDED!",
+		"NL": "Je kan een raid aanmaken, maar de huidig aangemaakte raid zal worden overscheven. Deze wijziging kunnen niet ongedaan gemaakt worden dit is NIET AAN TE RADEN!",
 		"DE": "Das Raid kann weiter angelegt werden, aber dies wird das Raid welches gerade zeitgleich erstellt wird überschreiben und ist daher definitiv NICHT EMPFOHLEN!",
 		"EN": "You can continue with the raid creation, but this will overwrite the raid which is concurrently being created and is definitely NOT RECOMMENDED!"		
 	},
 	"raid_creation_in_progress" : {
-		"NL": "Raid creation in progress",
+		"NL": "Raid wordt momenteel aangemaakt",
 		"DE": "Raid wird gerade erstellt",
 		"EN": "Raid creation in progress"		
 	},
 	"select_raid_level_to_continue" : {
-		"NL": "To really continue, please select raid level",
+		"NL": "Om echt door te gaan, selecteer een raid level",
 		"DE": "Um wirklich fortzufahren, bitte Raid Level auswählen",
 		"EN": "To really continue, please select raid level"		
 	},
@@ -475,17 +475,17 @@
 		"EN": "In how many minutes does the raid <b>begin</b>?"		
 	},
 	"raid_starts_when_clocktime_view" : {
-		"NL": "Clock time view",
+		"NL": "klok",
 		"DE": "Uhrzeit-Ansicht",
 		"EN": "Clock time view"
 	},
 	"raid_starts_when_minutes_view" : {
-		"NL": "Minutes view",
+		"NL": "Minuten",
 		"DE": "Minuten-Ansicht",
 		"EN": "Minutes view"
 	},
 	"raid_starts_when_view_changed" : {
-		"NL": "View changed!",
+		"NL": "Overzicht verandert!",
 		"DE": "Ansicht geändert!",
 		"EN": "View changed!"
 	},
@@ -495,17 +495,17 @@
 		"EN": "Raid is already active!"		
 	},
 	"raid_access_denied" : {
-		"NL": "You are not allowed to edit this raid!",
+		"NL": "Je hebt geen rechten om deze raid aan te passen!",
 		"DE": "Sie haben keine Berechtigung dieses Raid zu bearbeiten!",
 		"EN": "You are not allowed to edit this raid!"		
 	},
 	"no_active_raids_found" : {
-		"NL": "No active raids found in the system!",
+		"NL": "Geen actieve raids gevonden!",
 		"DE": "Aktuell sind keine laufenden Raids im System!",
 		"EN": "No active raids found in the system!"		
 	},
 	"expand" : {
-		"NL": "Expand",
+		"NL": "Uitklappen",
 		"DE": "Ausklappen",
 		"EN": "Expand"		
 	},
@@ -590,62 +590,62 @@
 		"EN": "Gym name updated."		
 	},
 	"mods_details" : {
-		"NL": "Select moderator for details:",
+		"NL": "Selecteer moderator voor meer informatie:",
 		"DE": "Für Details Moderator auswählen:",
 		"EN": "Select moderator for details:"
 	},
 	"mods_add_new" : {
-		"NL": "Add new moderator:",
+		"NL": "Nieuwe moderator toevoegen:",
 		"DE": "Neuen Moderator hinzufügen:",
 		"EN": "Add new moderator:"
 	},
 	"mods_delete" : {
-		"NL": "Delete moderator:",
+		"NL": "Moderator verwijderen:",
 		"DE": "Moderator löschen:",
 		"EN": "Delete moderator:"
 	},
 	"mods_list_of_all" : {
-		"NL": "List of all moderators.",
+		"NL": "Lijst met alle moderators.",
 		"DE": "Liste aller Moderatoren.",
 		"EN": "List of all moderators."
 	},
 	"mods_list_add_delete" : {
-		"NL": "List, add or remove moderators",
+		"NL": "Lijst, toevoegen of verwijderen van moderators",
 		"DE": "Moderatoren anzeigen, hinzufügen oder löschen",
 		"EN": "List, add or remove moderators"		
 	},
 	"mods_not_found" : {
-		"NL": "Error! No moderators or users found!",
+		"NL": "Error! Geen Moderator of gebruiker gevonden!",
 		"DE": "Fehler! Keine Moderatoren oder Benutzer gefunden!",
 		"EN": "Error! No moderators or users found!"
 	},
 	"mods_saved_mod" : {
-		"NL": "Moderator saved!",
+		"NL": "Moderator opgeslagen!",
 		"DE": "Moderator gespeichert!",
 		"EN": "Moderator saved!"
 	},
 	"mods_delete_mod" : {
-		"NL": "Moderator deleted!",
+		"NL": "Moderator verwijderd!",
 		"DE": "Moderator gelöscht!",
 		"EN": "Moderator deleted!"
 	},
 	"mods_info_about_mod" : {
-		"NL": "Info about this moderator:",
+		"NL": "Informatie over deze moderator:",
 		"DE": "Infos zum diesem Moderator:",
 		"EN": "Info about this moderator:"
 	},
 	"list" : {
-		"NL": "List",
+		"NL": "Lijst",
 		"DE": "Anzeigen",
 		"EN": "List"		
 	},
 	"add" : {
-		"NL": "Add",
+		"NL": "Toevoegen",
 		"DE": "Hinzufügen",
 		"EN": "Add"		
 	},
 	"delete" : {
-		"NL": "Delete",
+		"NL": "Verwijder",
 		"DE": "Löschen",
 		"EN": "Delete"		
 	}
