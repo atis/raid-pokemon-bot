@@ -58,7 +58,7 @@ if(!empty(GOOGLE_API_KEY)){
     $address = "";
     $address .= (!empty($addr['street']) ? $addr['street'] : "");
     $address .= (!empty($addr['street_number']) ? " " . $addr['street_number'] : "");
-    $address .= (!empty($fullAddress) ? ", " : "");
+    $address .= (!empty($addr) ? ", " : "");
     $address .= (!empty($addr['postal_code']) ? $addr['postal_code'] . " " : "");
     $address .= (!empty($addr['district']) ? $addr['district'] : "");
 } else {
@@ -72,19 +72,45 @@ if (!empty($data[8])) {
     $countdown = $data[8];
 }
 
-// Insert new raid or update existing raid?
+// Insert new raid or update existing raid/ex-raid?
 $raid_id = raid_duplication_check($name,($endtime + $countdown));
+$ex_raid = false;
 
-if ($raid_id > 0){
-    // Update pokemon and team in raids table.
-    my_query(
-        "
-        UPDATE    raids
-        SET       pokemon = '{$db->real_escape_string($boss)}',
-		  gym_team = '{$db->real_escape_string($team)}'
-          WHERE   id = {$raid_id}
-        "
-    );
+if ($raid_id > 0) {
+    // Make sure it's not an Ex-Raid before updating the pokemon.
+    $pokemonlist = $GLOBALS['pokemon'];
+    foreach($pokemonlist as $level => $levelmons) {
+        if($level == "X") {
+            foreach($levelmons as $key => $pokemon) {
+                if(strtolower($pokemon) == strtolower($boss)) {
+                    $ex_raid = true;
+    		    debug_log('Ex-raid pokemon detected: ' . $boss);
+                    break 2;
+                }
+            }
+        }
+    }
+
+    if ($ex_raid) {
+        // Ex-Raid! Update only team in raids table.
+        my_query(
+            "
+            UPDATE    raids
+            SET	      gym_team = '{$db->real_escape_string($team)}'
+              WHERE   id = {$raid_id}
+            "
+        );
+    } else {
+        // Update pokemon and team in raids table.
+        my_query(
+            "
+            UPDATE    raids
+            SET       pokemon = '{$db->real_escape_string($boss)}',
+		      gym_team = '{$db->real_escape_string($team)}'
+              WHERE   id = {$raid_id}
+            "
+        );
+    }
 
     // Debug log
     debug_log('Updated raid ID: ' . $raid_id);
