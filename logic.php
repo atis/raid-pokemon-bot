@@ -1017,14 +1017,20 @@ function keys_vote($raid)
 	$timePerSlot = 60*RAID_SLOTS;
 	$timeBeforeEnd = 60*RAID_LAST_START;
         $col = 1;
+        // Old stuff, left for possible future use or in case of bugs:
         //for ($i = ceil($now / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
-        for ($i = ceil($start_time / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
+        //for ($i = ceil($start_time / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
+
+        // Make start_time a possible vote_time:
+        // start_time minus 60 for a voting option e.g. 13:30 when an egg opens right at 13:30. Without minus 60, the first voting option would be 13:45 for example (assuming RAID_SLOTS = 15)
+        for ($i = ceil(($start_time - 60) / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
 
             if ($col++ >= 4) {
                 $keys[] = $keys_time;
                 $keys_time = [];
                 $col = 1;
             }
+
 	    // Plus 60 seconds, so vote button for e.g. 10:00 will disappear after 10:00:59 / at 10:01:00 and not right after 09:59:59 / at 10:00:00
 	    if (($i + 60) > $now) {
 		// Display vote buttons for now + 1 additional minute
@@ -1325,7 +1331,7 @@ function show_raid_poll($raid)
 	if ($weekday_now == $weekday_start) {
 	    $msg .= '<b>' . getTranslation('raid_egg_opens') . ' ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	} else {
-	    $msg .= '<b>' . getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	    $msg .= '<b>' . getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . ' ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	}
 
     // Raid has started and active or already ended
