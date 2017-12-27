@@ -114,8 +114,11 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
  * @param $data
  * @return bool
  */
-function raid_access_check($update, $data)
+function raid_access_check($update, $data, $return_result = false)
 {
+    // Default: Deny access to raids
+    $raid_access = false;
+
     // Build query.
     $rs = my_query(
         "
@@ -142,17 +145,37 @@ function raid_access_check($update, $data)
 
         if (empty($row['0'])) {
 	    $admin_access = bot_access_check($update, BOT_ADMINS, true);
-	    if (!$admin_access) {
-		$keys = [];
-		if (isset($update['callback_query']['inline_message_id'])) {
-    		    editMessageText($update['callback_query']['inline_message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys);
-		} else {
-    		    editMessageText($update['callback_query']['message']['message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys, $update['callback_query']['message']['chat']['id'], $keys);
-		}
-                answerCallbackQuery($update['callback_query']['id'], getTranslation('raid_access_denied'));
-                exit;
+	    if ($admin_access) {
+	        // Allow raid access
+		$raid_access = true;
 	    }
+        } else {
+	    // Allow raid access
+	    $raid_access = true;
         }
+    } else {
+        // Allow raid access
+        $raid_access = true;
+    }
+
+    // Allow or deny access to the raid and log result
+    if ($raid_access && !$return_result) {
+        debug_log("Allowing access to the raid");
+    } else if ($raid_access && $return_result) {
+        debug_log("Allowing access to the raid");
+        return $raid_access;
+    } else if (!$raid_access && $return_result) {
+        debug_log("Denying access to the raid");
+        return $raid_access;
+    } else {
+        $keys = [];
+        if (isset($update['callback_query']['inline_message_id'])) {
+            editMessageText($update['callback_query']['inline_message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys);
+        } else {
+            editMessageText($update['callback_query']['message']['message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys, $update['callback_query']['message']['chat']['id'], $keys);
+        }
+        answerCallbackQuery($update['callback_query']['id'], getTranslation('raid_access_denied'));
+        exit;
     }
 }
 
