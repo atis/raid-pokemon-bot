@@ -190,6 +190,7 @@ function send_response_vote($update, $data, $new=false) {
 
 function unix2tz($unix, $tz, $format = 'H:i') {
 	if (!$unix) return false;
+	if (!$tz) return false;
 	$dt = new DateTime('@'.$unix);
 	$dt->setTimeZone(new DateTimeZone($tz));
 	return $dt->format($format);
@@ -221,7 +222,7 @@ function show_raid_poll($raid) {
 	}
 	$msg .= 'Location: https://maps.google.com/?q='.$raid['lat'].','.$raid['lon'].CR;
 	
-	$query = 'SELECT *, UNIX_TIMESTAMP(attend_time) AS ts_att  FROM attendance WHERE raid_id='.$raid['id'].' ORDER BY cancel ASC, raid_done DESC, team ASC, arrived DESC, attend_time ASC';
+	$query = 'SELECT *, UNIX_TIMESTAMP(attend_time) AS ts_att  FROM attendance WHERE raid_id='.intval($raid['id']).' ORDER BY cancel ASC, raid_done DESC, team ASC, arrived DESC, attend_time ASC';
 	$rs = my_query($query);
 	$data = array();
 	
