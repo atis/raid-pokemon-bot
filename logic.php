@@ -14,23 +14,40 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
 	$all_chats .= !empty(BOT_ADMINS) ? BOT_ADMINS . ',' : '';
 	$all_chats .= ($access_type == BOT_ADMINS) ? '' : $access_type;
 
+	// Make sure all_chats does not end with ,
+	$all_chats = rtrim($all_chats,',');
+
+	// Get telegram ID to check access from $update - either messagem callback_query or inline_query
+	$update_type = '';
+	$update_type = !empty($update['message']['from']['id']) ? 'message' : $update_type; 
+	$update_type = (empty($update_type) && !empty($update['callback_query']['from']['id'])) ? 'callback_query' : $update_type; 
+	$update_type = (empty($update_type) && !empty($update['inline_query']['from']['id'])) ? 'inline_query' : $update_type; 
+	$update_id = $update[$update_type]['from']['id'];
+
 	// Check each admin chat defined in $access_type 
+	debug_log('Telegram message type: ' . $update_type);
+	debug_log('Checking access for ID: ' . $update_id);
+	debug_log('Checking these chats now: ' . $all_chats);
 	$chats = explode(',', $all_chats);
    	foreach($chats as $chat) {
 	    // Get chat object 
-	    $chat_obj = get_chat($chat);
             debug_log("Getting chat object for '" . $chat . "'");
+	    $chat_obj = get_chat($chat);
 
 	    // Check chat object for proper response.
 	    if ($chat_obj['ok'] == true) {
+		debug_log('Proper chat object received, continuing with access check.');
 		$allow_access = false;
 		// ID matching $chat and private chat type?
-		if ($chat_obj['result']['id'] == $update['message']['from']['id'] && $chat_obj['result']['type'] == "private") {
+		//if ($chat_obj['result']['id'] == ($update['message']['from']['id'] || $update['callback_query']['from']['id']) && $chat_obj['result']['type'] == "private") {
+		if ($chat_obj['result']['id'] == $update_id && $chat_obj['result']['type'] == "private") {
+		    debug_log('Positive result on access check!');
 		    $allow_access = true;
 		    break;
 		} else {
 		    // Result was ok, but access not granted. Continue with next chat if type is private.
 		    if ($chat_obj['result']['type'] == "private") {
+		        debug_log('Negative result on access check! Continuing with next chat...');
 		    	continue;
 		    }
 		}
@@ -43,14 +60,16 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
 	    $chat_obj = '';
 
 	    // Get administrators from chat
-    	    $response = get_admins($chat);
             debug_log("Getting administrators from chat '" . $chat . "'");
+    	    $chat_obj = get_admins($chat);
 
     	    // Make sure we get a proper response
-    	    if ($response['ok'] == true) { 
-	        foreach($response['result'] as $admin) {
+    	    if ($chat_obj['ok'] == true) { 
+	        foreach($chat_obj['result'] as $admin) {
 	                // If user is found as administrator allow access to the bot
-	                if ($admin['user']['id'] == $update['message']['from']['id'] || $admin['user']['id'] == $update['inline_query']['from']['id']) {
+			// if ($admin['user']['id'] == $update['message']['from']['id'] || $admin['user']['id'] == $update['inline_query']['from']['id']) {
+	                if ($admin['user']['id'] == $update_id) {
+		            debug_log('Positive result on access check!');
 		            $allow_access = true;
 		            break 2;
 		        }
@@ -58,21 +77,11 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
 	    }
 	}
 
-        // Prepare logging of username, first_name and/or id
+        // Prepare logging of id, username and/or first_name
 	$msg = '';
-	if(!empty($chat_obj['result']['id'])) {
-	    $msg .= !empty($chat_obj['result']['id']) ? "Id: " . $chat_obj['result']['id'] . CR : '';
-	    $msg .= !empty($chat_obj['result']['username']) ? "Username: " . $chat_obj['result']['username'] . CR : '';
-	    $msg .= !empty($chat_obj['result']['first_name']) ? "First Name: " . $chat_obj['result']['first_name'] . CR : '';
-	} else if (!empty($update['message']['from']['id'])) {
-	    $msg .= !empty($update['message']['from']['id']) ? "Id: " . $update['message']['from']['id'] . CR : '';
-	    $msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
-	    $msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
-	} else if (!empty($update['inline_query']['from']['id'])) {
-	    $msg .= !empty($update['inline_query']['from']['id']) ? "Id: " . $update['inline_query']['from']['id'] . CR : '';
-	    $msg .= !empty($update['inline_query']['from']['username']) ? "Username: " . $update['inline_query']['from']['username'] . CR : '';
-	    $msg .= !empty($update['inline_query']['from']['first_name']) ? "First Name: " . $update['inline_query']['from']['first_name'] . CR : '';
-	}
+	$msg .= !empty($update[$update_type]['from']['id']) ? "Id: " . $update[$update_type]['from']['id']  . CR : '';
+	$msg .= !empty($update[$update_type]['from']['username']) ? "Username: " . $update[$update_type]['from']['username'] . CR : '';
+	$msg .= !empty($update[$update_type]['from']['first_name']) ? "First Name: " . $update[$update_type]['from']['first_name'] . CR : '';
 
         // Allow or deny access to the bot and log result
         if ($allow_access && !$return_result) {
@@ -95,6 +104,7 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
         $msg .= !empty($update['message']['from']['username']) ? "Username: " . $update['message']['from']['username'] . CR : '';
         $msg .= !empty($update['message']['from']['first_name']) ? "First Name: " . $update['message']['from']['first_name'] . CR : '';
         debug_log("Bot access is not restricted! Allowing access for user: " . CR . $msg);
+        return true;
     }
 }
 
@@ -104,8 +114,11 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
  * @param $data
  * @return bool
  */
-function raid_access_check($update, $data)
+function raid_access_check($update, $data, $return_result = false)
 {
+    // Default: Deny access to raids
+    $raid_access = false;
+
     // Build query.
     $rs = my_query(
         "
@@ -132,17 +145,37 @@ function raid_access_check($update, $data)
 
         if (empty($row['0'])) {
 	    $admin_access = bot_access_check($update, BOT_ADMINS, true);
-	    if (!$admin_access) {
-		$keys = [];
-		if (isset($update['callback_query']['inline_message_id'])) {
-    		    editMessageText($update['callback_query']['inline_message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys);
-		} else {
-    		    editMessageText($update['callback_query']['message']['message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys, $update['callback_query']['message']['chat']['id'], $keys);
-		}
-                answerCallbackQuery($update['callback_query']['id'], getTranslation('raid_access_denied'));
-                exit;
+	    if ($admin_access) {
+	        // Allow raid access
+		$raid_access = true;
 	    }
+        } else {
+	    // Allow raid access
+	    $raid_access = true;
         }
+    } else {
+        // Allow raid access
+        $raid_access = true;
+    }
+
+    // Allow or deny access to the raid and log result
+    if ($raid_access && !$return_result) {
+        debug_log("Allowing access to the raid");
+    } else if ($raid_access && $return_result) {
+        debug_log("Allowing access to the raid");
+        return $raid_access;
+    } else if (!$raid_access && $return_result) {
+        debug_log("Denying access to the raid");
+        return $raid_access;
+    } else {
+        $keys = [];
+        if (isset($update['callback_query']['inline_message_id'])) {
+            editMessageText($update['callback_query']['inline_message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys);
+        } else {
+            editMessageText($update['callback_query']['message']['message_id'], '<b>' . getTranslation('raid_access_denied') . '</b>', $keys, $update['callback_query']['message']['chat']['id'], $keys);
+        }
+        answerCallbackQuery($update['callback_query']['id'], getTranslation('raid_access_denied'));
+        exit;
     }
 }
 
@@ -1017,14 +1050,20 @@ function keys_vote($raid)
 	$timePerSlot = 60*RAID_SLOTS;
 	$timeBeforeEnd = 60*RAID_LAST_START;
         $col = 1;
+        // Old stuff, left for possible future use or in case of bugs:
         //for ($i = ceil($now / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
-        for ($i = ceil($start_time / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
+        //for ($i = ceil($start_time / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
+
+        // Make start_time a possible vote_time:
+        // start_time minus 60 for a voting option e.g. 13:30 when an egg opens right at 13:30. Without minus 60, the first voting option would be 13:45 for example (assuming RAID_SLOTS = 15)
+        for ($i = ceil(($start_time - 60) / $timePerSlot) * $timePerSlot; $i <= ($end_time - $timeBeforeEnd); $i = $i + $timePerSlot) {
 
             if ($col++ >= 4) {
                 $keys[] = $keys_time;
                 $keys_time = [];
                 $col = 1;
             }
+
 	    // Plus 60 seconds, so vote button for e.g. 10:00 will disappear after 10:00:59 / at 10:01:00 and not right after 09:59:59 / at 10:00:00
 	    if (($i + 60) > $now) {
 		// Display vote buttons for now + 1 additional minute
@@ -1325,7 +1364,7 @@ function show_raid_poll($raid)
 	if ($weekday_now == $weekday_start) {
 	    $msg .= '<b>' . getTranslation('raid_egg_opens') . ' ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	} else {
-	    $msg .= '<b>' . getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
+	    $msg .= '<b>' . getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . ' ' . unix2tz($raid['ts_start'], $raid['timezone']) . '</b>' . CR;
 	}
 
     // Raid has started and active or already ended
