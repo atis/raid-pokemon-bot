@@ -229,6 +229,11 @@
     		"DE": "Groudon",
     		"EN": "Groudon"
   	},
+  	"kyogre" : {
+    		"NL": "Kyogre",
+    		"DE": "Kyogre",
+    		"EN": "Kyogre"
+  	},
 	"egg_5" : {
 		"NL": "Level 5 Ei",
 		"DE": "Level 5 Ei",
