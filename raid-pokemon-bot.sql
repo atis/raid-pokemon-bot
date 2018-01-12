@@ -53,6 +53,15 @@ CREATE TABLE `gyms` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
+/*Table structure for table `overview` */
+
+CREATE TABLE `overview` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `chat_id` bigint(20) signed NOT NULL,
+  `message_id` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+
 /*Table structure for table `raids` */
 
 CREATE TABLE `raids` (
