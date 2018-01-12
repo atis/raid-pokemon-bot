@@ -2,67 +2,40 @@
 // Write to log.
 debug_log('LIST');
 
-// Build query.
-$rs = my_query(
-    "
-    SELECT    timezone
-    FROM      raids
-      WHERE   id = (
-                  SELECT    raid_id
-                  FROM      attendance
-                    WHERE   user_id = {$update['message']['from']['id']}
-                  ORDER BY  id DESC LIMIT 1
-              )
-    "
-);
+// Check access - user must be admin!
+bot_access_check($update, BOT_ADMINS);
 
-// Get row.
-$row = $rs->fetch_assoc();
+// Get the userid and chattype
+$userid = $update['message']['from']['id'];
+$chattype = $update['message']['chat']['type'];
 
-// No data found.
-if (!$row) {
-    //sendMessage($update['message']['from']['id'], 'Can\'t determine your location, please participate in at least 1 raid');
-    //exit;
-    $tz = TIMEZONE;
-} else {
-    $tz = $row['timezone'];
-}
+// Init empty keys array.
+$keys = array();
 
-// Build query.
-$request = my_query(
-    "
-    SELECT    *,
-              UNIX_TIMESTAMP(end_time)                        AS ts_end,
-              UNIX_TIMESTAMP(NOW())                           AS ts_now,
-              UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
-    FROM      raids
-      WHERE   end_time>NOW()
-        AND   timezone='{$tz}'
-    ORDER BY  end_time ASC LIMIT 20
-    "
-);
-
-while ($raid = $request->fetch_assoc()) {
-    if(!$raid) {
-	sendMessage($update['message']['from']['id'], '<b>' . getTranslation('no_active_raids_found') . '</b>');
-	exit;
-    }
-
-    // Create keys array.
-    $keys = [
+// Create keys array.
+$keys = [
+    [
         [
-            [
-                'text'          => getTranslation('expand'),
-                'callback_data' => $raid['id'] . ':vote_refresh:0',
-            ]
+            'text'          => getTranslation('list'),
+            'callback_data' => $userid . ',' . $chattype . ':list_raids:0'
         ]
-    ];
+    ],
+    [
+        [
+            'text'          => getTranslation('overview_share'),
+            'callback_data' => '0:overview_share:0'
+        ],
+        [
+            'text'          => getTranslation('overview_delete'),
+            'callback_data' => '0:overview_delete:0'
+        ]
+    ]
+];
 
-    // Get message.
-    $msg = show_raid_poll_small($raid);
+// Set message.
+$msg = '<b>' . getTranslation('raids_list_share_overview') . ':</b>';
 
-    // Send message.
-    send_message($update['message']['from']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
-}
+// Send message.
+send_message($update['message']['chat']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
 
 exit;
