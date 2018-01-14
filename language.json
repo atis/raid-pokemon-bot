@@ -514,6 +514,11 @@
 		"DE": "Aktuell sind keine laufenden Raids im System!",
 		"EN": "No active raids found in the system!"		
 	},
+	"no_active_raids_shared" : {
+		"NL": "Geen van de actieve raid is gedeeld!",
+		"DE": "Keines der aktiven Raids wurde geteilt!",
+		"EN": "None of the active raids was shared!"
+	},
 	"no_active_raids" : {
 		"NL": "Geen actieve raids!",
 		"DE": "Aktuell gibt es keine Raids!",
@@ -650,57 +655,57 @@
 		"EN": "Info about this moderator:"
 	},
 	"overview_share" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Overzicht delen",
 		"DE": "Übersicht teilen",
 		"EN": "Share overview"
 	},
 	"overview_delete" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Vewijder overzicht",
 		"DE": "Übersicht löschen",
 		"EN": "Delete overview"
 	},
 	"raids_list_share_overview" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Geef de actieve raid weer als een lijst of deel / verwijder het raid overzicht",
 		"DE": "Aktive Raids als Liste anzeigen oder die Raid-Übersicht pro Chat teilen / löschen",
 		"EN": "Show active raids as list or share / delete the raid overview per chat"
 	},
 	"list_all_active_raids" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Alle actieve raids",
 		"DE": "Alle aktiven Raids",
 		"EN": "All active raids"
 	},
 	"list_all_overviews" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Totaal raid overzicht",
 		"DE": "Alle Raid-Übersichten",
 		"EN": "All raid overviews"
 	},
 	"delete_raid_overview_for_chat" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Verwijder raid overzicht voor",
 		"DE": "Raid-Übersicht löschen für",
 		"EN": "Delete raid overview for"
 	},
 	"no_overviews_found" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Geen raid overzicht gevonden in het systeem!",
 		"DE": "Keine Raid-Übersichten im System gefunden!",
 		"EN": "No raid overviews found in the system!"
 	},
 	"overview_successfully_deleted" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Raid overzicht is succesvol verwijderd!",
 		"DE": "Raid-Übersicht wurde erfolgreich gelöscht!",
 		"EN": "Raid overview was successfully deleted!"
 	},
 	"overview_deletion_was_canceled" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Het verwijderen van het raid overzicht is gestopt!",
 		"DE": "Löschung der Raid-Übersicht wurde abgebrochen!",
 		"EN": "Deletion of the raid overview was canceled!"
 	},
 	"raid_overview_for_chat" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Raid overzicht voor",
 		"DE": "Raid-Übersicht für",
 		"EN": "Overview of raids for"
 	},
 	"successfully_shared" : {
-		"NL": "INSERT_TRANSLATION",
+		"NL": "Succesvol gedeeld!",
 		"DE": "Erfolgreich geteilt!",
 		"EN": "Successfully shared!"
 	},

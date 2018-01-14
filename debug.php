@@ -35,7 +35,7 @@ function my_query($query)
  * @param $val
  * @param string $type
  */
-function debug_log($val, $type = '*')
+function debug_log($val, $type = '*', $cleanup_log = false)
 {
     // Write to log only if debug is enabled.
     if (DEBUG === true) {
@@ -56,7 +56,22 @@ function debug_log($val, $type = '*')
         if (gettype($val) != 'string') $val = var_export($val, 1);
         $rows = explode("\n", $val);
         foreach ($rows as $v) {
-            error_log('[' . $date . '][' . getmypid() . '] ' . $bl . $type . ' ' . $v . "\n", 3, CONFIG_LOGFILE);
+            if ($cleanup_log == true) {
+                error_log('[' . $date . '][' . getmypid() . '] ' . $bl . $type . ' ' . $v . "\n", 3, CLEANUP_LOGFILE);
+            } else {
+                error_log('[' . $date . '][' . getmypid() . '] ' . $bl . $type . ' ' . $v . "\n", 3, CONFIG_LOGFILE);
+            }
         }
     }
+}
+
+/**
+ * Write cleanup log.
+ * @param $val
+ * @param string $type
+ * @param bool $cleanup_log
+ */
+function cleanup_log($val, $type = '*')
+{
+    debug_log($val, $type, $cleanup_log = true);
 }
