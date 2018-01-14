@@ -1355,7 +1355,7 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
             // Set the message.
             $msg = '<b>' . getTranslation('raid_overview_for_chat') . ' ' . $chat_title . ':</b>' .  CR . CR;
             $msg .= getTranslation('no_active_raids');
-            $msg .= CR . '<i>' . getTranslation('updated') . ': ' . unix2tz(time(), TIMEZONE, 'H:i:s') . '</i>';
+            $msg .= CR . CR . '<i>' . getTranslation('updated') . ': ' . unix2tz(time(), TIMEZONE, 'H:i:s') . '</i>';
 
             // Edit the message, but disable the web preview!
             debug_log('Updating overview:' . CR . 'Chat_ID: ' . $chat_id . CR . 'Message_ID: ' . $message_id);
