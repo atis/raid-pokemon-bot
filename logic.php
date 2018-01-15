@@ -770,8 +770,8 @@ function insert_cleanup($chat_id, $message_id, $raid_id)
 function run_cleanup ($telegram = 2, $database = 2) {
     // Check configuration, cleanup of telegram needs to happen before database cleanup!
     if (CLEANUP_TIME_TG > CLEANUP_TIME_DB) {
-	debug_log('Configuration issue! Cleanup time for telegram messages needs to be lower or equal to database cleanup time!');
-	debug_log('Stopping cleanup process now!');
+	cleanup_log('Configuration issue! Cleanup time for telegram messages needs to be lower or equal to database cleanup time!');
+	cleanup_log('Stopping cleanup process now!');
 	exit;
     }
 
@@ -809,7 +809,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
         }
 
         // Write to log.
-        debug_log($cleanup_jobs);
+        cleanup_log($cleanup_jobs);
 
         // Init previous raid id.
         $prev_raid_id = "FIRST_RUN";
@@ -819,10 +819,10 @@ function run_cleanup ($telegram = 2, $database = 2) {
 	    $current_raid_id = ($row['raid_id'] == 0) ? $row['cleaned'] : $row['raid_id'];
 
             // Write to log.
-            debug_log("Cleanup ID: " . $row['id']);
-            debug_log("Chat ID: " . $row['chat_id']);
-            debug_log("Message ID: " . $row['message_id']);
-            debug_log("Raid ID: " . $row['raid_id']);
+            cleanup_log("Cleanup ID: " . $row['id']);
+            cleanup_log("Chat ID: " . $row['chat_id']);
+            cleanup_log("Message ID: " . $row['message_id']);
+            cleanup_log("Raid ID: " . $row['raid_id']);
 
 	    // Get raid data only when raid_id changed compared to previous run
 	    if ($prev_raid_id != $current_raid_id) {
@@ -850,16 +850,17 @@ function run_cleanup ($telegram = 2, $database = 2) {
 	        $cleanup_time_db = 60*CLEANUP_TIME_DB;
 
 		// Write times to log.
-		debug_log("Raid end time: " . unix2tz($end,$tz,"Y-m-d H:i:s"));
-		debug_log("Raid cleanup time: " . unix2tz(($end + $cleanup_time),$tz,"Y-m-d H:i:s"));
-		debug_log("Current time: " . unix2tz($now,$tz,"Y-m-d H:i:s"));
+		cleanup_log("Current time: " . unix2tz($now,$tz,"Y-m-d H:i:s"));
+		cleanup_log("Raid end time: " . unix2tz($end,$tz,"Y-m-d H:i:s"));
+		cleanup_log("Telegram cleanup time: " . unix2tz(($end + $cleanup_time_tg),$tz,"Y-m-d H:i:s"));
+		cleanup_log("Database cleanup time: " . unix2tz(($end + $cleanup_time_db),$tz,"Y-m-d H:i:s"));
 
 		// Write unix timestamps to log.
-		debug_log("Unix timestamps:");
-		debug_log("Raid end time: " . $end);
-		debug_log("Telegram cleanup time: " . ($end + $cleanup_time_tg));
-		debug_log("Database cleanup time: " . ($end + $cleanup_time_db));
-		debug_log("Current time: " . $now);
+		cleanup_log(CR . "Unix timestamps:");
+		cleanup_log("Current time: " . $now);
+		cleanup_log("Raid end time: " . $end);
+		cleanup_log("Telegram cleanup time: " . ($end + $cleanup_time_tg));
+		cleanup_log("Database cleanup time: " . ($end + $cleanup_time_db));
 	    }
 
 	    // Time for telegram cleanup?
@@ -867,10 +868,10 @@ function run_cleanup ($telegram = 2, $database = 2) {
                 // Delete raid poll telegram message if not already deleted
 	        if ($telegram == 1 && $row['chat_id'] != 0 && $row['message_id'] != 0) {
 		    // Delete telegram message.
-                    debug_log('Deleting telegram message ' . $row['message_id'] . ' from chat ' . $row['chat_id'] . ' for raid ' . $row['raid_id']);
+                    cleanup_log('Deleting telegram message ' . $row['message_id'] . ' from chat ' . $row['chat_id'] . ' for raid ' . $row['raid_id']);
                     delete_message($row['chat_id'], $row['message_id']);
 		    // Set database values of chat_id and message_id to 0 so we know telegram message was deleted already.
-                    debug_log('Updating telegram cleanup inforamtion.');
+                    cleanup_log('Updating telegram cleanup inforamtion.');
 		    my_query(
     		    "
     		        UPDATE    cleanup
@@ -881,13 +882,13 @@ function run_cleanup ($telegram = 2, $database = 2) {
 		    );
 	        } else {
 		    if ($telegram == 1) {
-			debug_log('Telegram message is already deleted!');
+			cleanup_log('Telegram message is already deleted!');
 		    } else {
-			debug_log('Telegram cleanup was not triggered! Skipping...');
+			cleanup_log('Telegram cleanup was not triggered! Skipping...');
 		    }
 		}
 	    } else {
-		debug_log('Skipping cleanup of telegram for this raid! Cleanup time has not yet come...');
+		cleanup_log('Skipping cleanup of telegram for this raid! Cleanup time has not yet come...');
 	    }
 
 	    // Time for database cleanup?
@@ -896,7 +897,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
 	        // Make sure to delete only once - raid may be in multiple channels/supergroups, but only 1 time in database
 	        if (($database == 1) && $row['raid_id'] != 0 && ($prev_raid_id != $current_raid_id)) {
 		    // Delete raid from attendance table.
-                    debug_log('Deleting attendances for raid ' . $current_raid_id);
+                    cleanup_log('Deleting attendances for raid ' . $current_raid_id);
                     my_query(
                     "
                         DELETE FROM    attendance
@@ -906,7 +907,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
 
 		    // Set database value of raid_id to 0 so we know attendance info was deleted already
 		    // Use raid_id in where clause since the same raid_id can in cleanup more than once
-                    debug_log('Updating database cleanup inforamtion.');
+                    cleanup_log('Updating database cleanup inforamtion.');
                     my_query(
                     "
                         UPDATE    cleanup
@@ -917,9 +918,9 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     );
 	        } else {
 		    if ($database == 1) {
-		        debug_log('Attendances are already deleted!');
+		        cleanup_log('Attendances are already deleted!');
 		    } else {
-			debug_log('Attendance cleanup was not triggered! Skipping...');
+			cleanup_log('Attendance cleanup was not triggered! Skipping...');
 		    }
 		}
 
@@ -927,7 +928,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
 		// In addition trigger deletion only when previous and current raid_id are different to avoid unnecessary sql queries
 		if ($row['raid_id'] == 0 && $row['chat_id'] == 0 && $row['message_id'] == 0 && $row['cleaned'] != 0 && ($prev_raid_id != $current_raid_id)) {
 		    // Delete raid from raids table.
-		    debug_log('Deleting raid ' . $row['cleaned'] . ' from database.');
+		    cleanup_log('Deleting raid ' . $row['cleaned'] . ' from database.');
                     my_query(
                     "
                         DELETE FROM    raids
@@ -936,7 +937,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     );
 		    
 		    // Get all cleanup jobs which will be deleted now.
-                    debug_log('Removing cleanup info from database:');
+                    cleanup_log('Removing cleanup info from database:');
 		    $rs_cl = my_query(
                     "
                         SELECT *
@@ -947,7 +948,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
 
 		    // Log each cleanup ID which will be deleted.
 		    while($rs_cleanups = $rs_cl->fetch_assoc()) {
- 			debug_log('Cleanup ID: ' . $rs_cleanups['id'] . ', Former Raid ID: ' . $rs_cleanups['cleaned']);
+ 			cleanup_log('Cleanup ID: ' . $rs_cleanups['id'] . ', Former Raid ID: ' . $rs_cleanups['cleaned']);
 		    }
 
 		    // Finally delete from cleanup table.
@@ -959,13 +960,13 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     );
 		} else {
 		    if ($prev_raid_id != $current_raid_id) {
-			debug_log('Time for complete removal of raid from database has not yet come.');
+			cleanup_log('Time for complete removal of raid from database has not yet come.');
 		    } else {
-			debug_log('Complete removal of raid from database was already done!');
+			cleanup_log('Complete removal of raid from database was already done!');
 		    }
 		}
 	    } else {
-		debug_log('Skipping cleanup of database for this raid! Cleanup time has not yet come...');
+		cleanup_log('Skipping cleanup of database for this raid! Cleanup time has not yet come...');
 	    }
 	
 	    // Store current raid id as previous id for next loop
@@ -973,7 +974,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
         }
 
     // Write to log.
-    debug_log('Finished with cleanup process!');
+    cleanup_log('Finished with cleanup process!');
     }
 }
 
@@ -1233,7 +1234,7 @@ function send_response_vote($update, $data, $new = false)
 
     } else {
         // Edit the message.
-        edit_message($update, $msg, $keys);
+        edit_message($update, $msg, $keys, ['disable_web_page_preview' => 'true']);
         // Change message string.
         $msg = getTranslation('vote_updated');
         // Answer the callback.
@@ -1243,6 +1244,316 @@ function send_response_vote($update, $data, $new = false)
     exit;
 }
 
+/**
+ * Insert overview.
+ * @param $chat_id
+ * @param $message_id
+ */
+function insert_overview($chat_id, $message_id)
+{
+    global $db;
+
+    // Build query to check if overview details are already in database or not
+    $rs = my_query(
+        "
+        SELECT    COUNT(*)
+        FROM      overview
+          WHERE   chat_id = '{$chat_id}'
+         "
+        );
+
+    $row = $rs->fetch_row();
+
+    // Overview already in database or new
+    if (empty($row['0'])) {
+        // Build query for overview table to add overview info to database
+        debug_log('Adding new overview information to database overview list!');
+        $rs = my_query(
+            "
+            INSERT INTO   overview
+            SET           chat_id = '{$chat_id}',
+                          message_id = '{$message_id}'
+            "
+        );
+    } else {
+        // Nothing to do - overview information is already in database.
+        debug_log('Overview information is already in database! Nothing to do...');
+    }
+}
+
+/**
+ * Delete overview.
+ * @param $chat_id
+ * @param $message_id
+ */
+function delete_overview($chat_id, $message_id)
+{
+    global $db;
+
+    // Delete telegram message.
+    debug_log('Deleting overview telegram message ' . $message_id . ' from chat ' . $chat_id);
+    delete_message($chat_id, $message_id);
+
+    // Delete overview from database.
+    debug_log('Deleting overview information from database for Chat_ID: ' . $chat_id);
+    $rs = my_query(
+        "
+        DELETE FROM   overview 
+        WHERE   chat_id = '{$chat_id}'
+        "
+    );
+}
+
+/**
+ * Get overview data to Share or refresh.
+ * @param $update
+ * @param $chats_active
+ * @param $raids_active
+ * @param $action - refresh or share
+ * @param $chat_id
+ */
+function get_overview($update, $chats_active, $raids_active, $action = 'refresh', $chat_id = 0)
+{
+    // Add pseudo array for last run to active chats array
+    $last_run = array();
+    $last_run[chat_id] = 'LAST_RUN';
+    $chats_active[] = $last_run;
+
+    // Init previous chat_id
+    $previous = 'FIRST_RUN';
+
+    // Any active raids currently?
+    if (empty($raids_active)) {
+        // Init keys.
+        $keys = array();
+        $keys = [];
+
+        // Refresh active overview messages with 'no_active_raids_currently' or send 'no_active_raids_found' message to user.
+        $rs = my_query(
+            "
+            SELECT    *
+            FROM      overview
+            "
+        );
+
+        // Refresh active overview messages.
+        while ($row_overview = $rs->fetch_assoc()) {
+            $chat_id = $row_overview['chat_id'];
+            $message_id = $row_overview['message_id'];
+
+            // Get info about chat for title.
+            debug_log('Getting chat object for chat_id: ' . $row_overview['chat_id']);
+            $chat_obj = get_chat($row_overview['chat_id']);
+            $chat_title = '';
+
+            // Set title.
+            if ($chat_obj['ok'] == 'true') {
+                $chat_title = $chat_obj['result']['title'];
+                debug_log('Title of the chat: ' . $chat_obj['result']['title']);
+            }
+
+            // Set the message.
+            $msg = '<b>' . getTranslation('raid_overview_for_chat') . ' ' . $chat_title . ':</b>' .  CR . CR;
+            $msg .= getTranslation('no_active_raids');
+            $msg .= CR . CR . '<i>' . getTranslation('updated') . ': ' . unix2tz(time(), TIMEZONE, 'H:i:s') . '</i>';
+
+            // Edit the message, but disable the web preview!
+            debug_log('Updating overview:' . CR . 'Chat_ID: ' . $chat_id . CR . 'Message_ID: ' . $message_id);
+            editMessageText($message_id, $msg, $keys, $chat_id);
+        }
+
+        // Triggered from user or cronjob?
+        if (!empty($update['callback_query']['id'])) {
+            // Send no active raids message to the user.
+            $msg = getTranslation('no_active_raids');
+
+            // Edit the message, but disable the web preview!
+            edit_message($update, $msg, $keys);
+
+            // Answer the callback.
+            answerCallbackQuery($update['callback_query']['id'], $msg);
+        }
+    
+        // Exit here.
+        exit;
+    }
+
+    // Share or refresh each chat.
+    foreach ($chats_active as $row) {
+        $current = $row['chat_id'];
+
+        // Are any raids shared?
+        if ($previous == "FIRST_RUN" && $current == "LAST_RUN") {
+            // Send no active raids message to the user.
+            $msg = getTranslation('no_active_raids_shared');
+
+            // Edit the message, but disable the web preview!
+            edit_message($update, $msg, $keys);
+
+            // Answer the callback.
+            answerCallbackQuery($update['callback_query']['id'], $msg);
+        }
+
+        // Send message if not first run and previous not current
+        if ($previous !== 'FIRST_RUN' && $previous !== $current) {
+            // Add keys.
+	    $keys = array();
+
+            // Add update timestamp to msg.
+            $msg .= '<i>' . getTranslation('updated') . ': ' . unix2tz(time(), $tz, 'H:i:s') . '</i>';
+
+            // Share or refresh?
+            if ($action == 'share') {
+                if ($chat_id == 0) {
+                    // Make sure it's not already shared
+                    $rs = my_query(
+                        "
+                        SELECT    COUNT(*)
+                        FROM      overview
+                        WHERE      chat_id = '{$previous}'
+                        "
+                    );
+
+                    $row = $rs->fetch_row();
+
+                    if (empty($row['0'])) {
+                        // Not shared yet - Share button
+                        $keys[] = [
+                            [
+                                'text'          => getTranslation('share_with') . ' ' . $chat_obj['result']['title'],
+                                'callback_data' => '0:overview_share:' . $previous
+                            ]
+                        ];
+                    } else {
+                        // Already shared - refresh button
+                        $keys[] = [
+                            [
+                                'text'          => EMOJI_REFRESH,
+                                'callback_data' => '0:overview_refresh:' . $previous
+                            ]
+                        ];
+                    }
+
+                    // Send the message, but disable the web preview!
+                    send_message($update['callback_query']['message']['chat']['id'], $msg, $keys, ['disable_web_page_preview' => 'true']);
+
+                    // Set the callback message and keys
+                    $callback_keys = array();
+                    $callback_keys = [];
+                    $callback_msg = '<b>' . getTranslation('list_all_overviews') . ':</b>';
+
+                    // Edit the message.
+                    edit_message($update, $callback_msg, $callback_keys);
+
+                    // Answer the callback.
+                    answerCallbackQuery($update['callback_query']['id'], 'OK');
+                } else {
+                    // Shared overview
+                    $keys = [];
+
+                    // Set callback message string.
+                    $msg_callback = getTranslation('successfully_shared');
+
+                    // Edit the message, but disable the web preview!
+                    edit_message($update, $msg_callback, $keys, ['disable_web_page_preview' => 'true']);
+
+                    // Answer the callback.
+                    answerCallbackQuery($update['callback_query']['id'], $msg_callback);
+
+                    // Send the message, but disable the web preview!
+                    send_message($chat_id, $msg, $keys, ['disable_web_page_preview' => 'true']);
+                }
+	    } else {
+                // Refresh overview messages.
+                $keys = [];
+
+                // Get active overviews 
+                $rs = my_query(
+                    "
+                    SELECT    message_id
+                    FROM      overview
+                    WHERE      chat_id = '{$previous}'
+                    "
+                );
+
+                // Edit text for all messages, but disable the web preview!
+                while ($row_msg_id = $rs->fetch_assoc()) {
+                    // Set message_id.
+                    $message_id = $row_msg_id['message_id'];
+                    debug_log('Updating overview:' . CR . 'Chat_ID: ' . $previous . CR . 'Message_ID: ' . $message_id);
+                    editMessageText($message_id, $msg, $keys, $previous, ['disable_web_page_preview' => 'true']);
+                }
+
+                // Answer the callback.
+                answerCallbackQuery($update['callback_query']['id'], 'OK');
+            }
+        }
+
+        // End if last run
+        if ($current == 'LAST_RUN') {
+            break;
+        }
+
+        // Create message for each raid_id
+        if($previous !== $current) {
+            // Get info about chat for username.
+            debug_log('Getting chat object for chat_id: ' . $row['chat_id']);
+            $chat_obj = get_chat($row['chat_id']);
+            $chat_username = '';
+
+            // Set username if available.
+            if ($chat_obj['ok'] == 'true' && isset($chat_obj['result']['username'])) {
+                $chat_username = $chat_obj['result']['username'];
+                debug_log('Username of the chat: ' . $chat_obj['result']['username']);
+            }
+
+            $msg = '<b>' . getTranslation('raid_overview_for_chat') . ' ' . $chat_obj['result']['title'] . ':</b>' .  CR . CR;
+        }
+
+        // Set variables for easier message building.
+        $raid_id = $row['raid_id'];
+        $pokemon = $raids_active[$raid_id]['pokemon'];
+        $gym = $raids_active[$raid_id]['gym_name'];
+        $now = $raids_active[$raid_id]['ts_now'];
+        $tz = $raids_active[$raid_id]['timezone'];
+        $start_time = $raids_active[$raid_id]['ts_start'];
+        $time_left = floor($raids_active[$raid_id]['t_left'] / 60);
+
+        // Build message and add each gym in this format - link gym_name to raid poll chat_id + message_id if possible
+        /* Example:
+         * Raid Overview from 18:18h
+         *
+         * Train Station Gym
+         * Raikou - still 0:24h
+         *
+         * Bus Station Gym
+         * Level 5 Egg opens up 18:41h
+        */
+        // Gym name.
+        $msg .= !empty($chat_username) ? '<a href="https://t.me/' . $chat_username . '/' . $row['message_id'] . '">' . htmlspecialchars($gym) . '</a>' : $gym;
+        $msg .= CR;
+
+        // Raid has not started yet - adjust time left message
+        if ($now < $start_time) {
+            $weekday_now = date('N', $now);
+            $weekday_start = date('N', $start_time);
+            $raid_day = weekday_number2name ($weekday_start);
+            if ($weekday_now == $weekday_start) {
+                $msg .= getTranslation('raid_egg_opens') . ' ' . unix2tz($start_time, $tz) . CR . CR;
+            } else {
+                $msg .= getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . ' ' . unix2tz($start_time, $tz) . CR . CR;
+            }
+
+        // Raid has started already
+        } else {
+            // Add time left message.
+            $msg .= $pokemon . ' — <b>' . getTranslation('still') . ' ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>' . CR . CR;
+        }
+
+        // Prepare next iteration
+        $previous = $current;
+    }
+}
 /**
  * Convert unix timestamp to time string by timezone settings.
  * @param $unix
@@ -1350,7 +1661,7 @@ function show_raid_poll($raid)
     $time_left = floor($raid['t_left'] / 60);
     if ( strpos(str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) , '-' ) !== false ) {
 	// $time_left = 'beendet'; <-- REPLACED BY $tl_msg, so if clause below is still working ($time_left < 0)
-        $tl_msg = '<b> ' . getTranslation('raid_done') . '</b>';
+        $tl_msg = '<b>' . getTranslation('raid_done') . '</b>';
     } else {
 	// Replace $time_left with $tl_msg too
         $tl_msg = ' — <b>' . getTranslation('still') . ' ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>';

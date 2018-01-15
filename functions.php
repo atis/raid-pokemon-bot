@@ -70,7 +70,7 @@ function send_message($chat_id, $text = array(), $inline_keyboard = false, $merg
     debug_log($reply_json, '>');
 
     // Send request to telegram api.
-    curl_json_request($reply_json);
+    return curl_json_request($reply_json);
 }
 
 /**
@@ -503,6 +503,20 @@ function curl_json_request($json)
 	        } else {
 		    debug_log('Missing input! Cannot call cleanup preparation!');
 		}
+            }
+
+            // Check if text starts with getTranslation('raid_overview_for_chat') and inline keyboard is empty
+            $translation = getTranslation('raid_overview_for_chat');
+            $translation_length = strlen($translation);
+            $text = substr($response['result']['text'], 0, $translation_length);
+            if ($text == $translation && empty($json_message['reply_markup']['inline_keyboard'])) {
+                debug_log('Detected overview message!');
+                debug_log('Chat_ID: ' . $chat_id);
+                debug_log('Message_ID: ' . $message_id);
+
+                // Write raid overview data to database
+                debug_log('Adding overview info to database now!');
+                insert_overview($chat_id, $message_id);
             }
 	}
     }

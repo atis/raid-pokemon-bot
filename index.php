@@ -72,7 +72,7 @@ debug_log('Update user: ' . $userUpdate);
 
 // Cleanup request received.
 if (isset($update['cleanup']) && CLEANUP == true) {
-    debug_log('Cleanup process request received...');
+    cleanup_log('Cleanup process request received...');
     // Check access to cleanup of bot
     if ($update['cleanup']['secret'] == CLEANUP_SECRET) {
 	// Get telegram cleanup value if specified.
@@ -88,7 +88,7 @@ if (isset($update['cleanup']) && CLEANUP == true) {
 	    $database = 2;
 	}
         // Run cleanup
-        debug_log('Calling cleanup process now!');
+        cleanup_log('Calling cleanup process now!');
         run_cleanup($telegram, $database);
     }
     // Exit after cleanup

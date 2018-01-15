@@ -29,6 +29,7 @@ define ('RAID_POKEMON_DURATION_SHORT', '45'); //minutes till pokemon leave
 define ('RAID_DURATION_CLOCK_STYLE',    true); // True: Clocktime style, e.g. "18:34" --- False: Minute style, e.g. "still 0:34"
 
 define('CLEANUP',           false); // must be true for cleanup
+define('CLEANUP_LOGFILE',   '/var/log/tg-bots/dev-raid-bot-cleanup.log');
 define('CLEANUP_SECRET',    'your-cleanup-secret/passphrase');
 define('CLEANUP_TELEGRAM',  true);
 define('CLEANUP_TIME_TG',   '10'); // minutes after RAID ended
