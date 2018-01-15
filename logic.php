@@ -1550,6 +1550,55 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
             $msg .= $pokemon . ' — <b>' . getTranslation('still') . ' ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>' . CR . CR;
         }
 
+        // Build query to add attendances to message.
+        $rs = my_query(
+            "
+            SELECT      team,
+                        COUNT(*)                            AS cnt,
+                        SUM(extra_people)                   AS extra
+            FROM        attendance
+              WHERE     raid_id = {$raid_id}
+                AND     (cancel = 0 OR cancel IS NULL)
+                AND     (raid_done = 0 OR raid_done IS NULL)
+              GROUP BY  team
+            "
+        );
+
+        $total = 0;
+        $total_extra = 0;
+        $sep = '';
+        $msg_teams = '';
+
+        // Get attendances for each team and unknown
+        while ($row_att = $rs->fetch_assoc()) {
+            $sum = $row_att['cnt'];
+
+            if ($sum == 0) continue;
+
+            // Add to message.
+            $msg_teams .= $sep . $GLOBALS['teams'][$row_att['team']] . $sum;
+            $sep = '  ';
+            $total += $sum;
+
+            if ($row_att['extra'] > 0) {
+                $total_extra += $row_att['extra'];
+                $total += $row_att['extra'];
+            }
+        }
+
+        // Add team unknown count
+        if ($total_extra > 0) {
+            $msg_teams .= $sep . TEAM_UNKNOWN . $total_extra;
+        }
+
+        // Add attendances to message if there are some
+        if ($total > 0) {
+            $msg .= EMOJI_GROUP . '<b> ' . $total . '</b> — ' . $msg_teams . CR;
+        }
+
+        // Add CR to message now since we don't know if attendances got added or not
+        $msg .= CR;
+
         // Prepare next iteration
         $previous = $current;
     }
