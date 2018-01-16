@@ -165,8 +165,8 @@ function update_user($update) {
 function send_response_vote($update, $data, $new=false) {
 		$rs = my_query('SELECT *, 
 			UNIX_TIMESTAMP(end_time) AS ts_end, 
-			UNIX_TIMESTAMP(NOW()) as ts_now, 
-			UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW()) AS t_left 
+			GREATEST(UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(first_seen)) as ts_now, 
+			UNIX_TIMESTAMP(end_time)-GREATEST(UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(first_seen)) AS t_left 
 		FROM raids WHERE id='.$data['id'].'');
 		$raid = $rs->fetch_assoc();
 
@@ -321,8 +321,8 @@ function raid_list($update) {
 		/* By ID */
 		$request = my_query('SELECT *,
 			UNIX_TIMESTAMP(end_time) AS ts_end, 
-			UNIX_TIMESTAMP(NOW()) as ts_now, 
-			UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW()) AS t_left
+			GREATEST(UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(first_seen)) as ts_now, 
+			UNIX_TIMESTAMP(end_time)-GREATEST(UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(first_seen)) AS t_left 
 		 FROM raids WHERE id='.intval($update['inline_query']['query']));
 		$rows = array();
 		while($answer = $request->fetch_assoc()) {
@@ -334,8 +334,8 @@ function raid_list($update) {
 		/* By user */
 		$request = my_query('SELECT *,
 			UNIX_TIMESTAMP(end_time) AS ts_end, 
-			UNIX_TIMESTAMP(NOW()) as ts_now, 
-			UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW()) AS t_left
+			GREATEST(UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(first_seen)) as ts_now, 
+			UNIX_TIMESTAMP(end_time)-GREATEST(UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(first_seen)) AS t_left 
 		FROM raids WHERE user_id = '.$update['inline_query']['from']['id'].' ORDER BY id DESC LIMIT 3;');
 		$rows = array();
 		while($answer = $request->fetch_assoc()) {
