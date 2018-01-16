@@ -38,7 +38,7 @@ if (!$keys) {
     $keys = [
         [
             [
-                'text'          => 'Not supported',
+                'text'          => getTranslation('not_supported'),
                 'callback_data' => 'edit:not_supported'
             ]
         ]
