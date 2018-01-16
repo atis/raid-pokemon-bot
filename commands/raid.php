@@ -77,14 +77,30 @@ $raid_id = raid_duplication_check($name,($endtime + $countdown));
 $ex_raid = false;
 
 if ($raid_id > 0) {
+    // Get current pokemon from database for raid.
+    $rs_ex_raid = my_query(
+        "
+        SELECT    pokemon
+            FROM      raids
+              WHERE   id = {$raid_id}
+        "
+    );
+
+    // Get row.
+    $row_ex_raid = $rs_ex_raid->fetch_assoc();
+    $poke_name = $row_ex_raid['pokemon'];
+    debug_log('Comparing the current pokemon to pokemons from ex-raid list now...');
+    debug_log('Current Pokemon in database for this raid: ' . $poke_name);
+
     // Make sure it's not an Ex-Raid before updating the pokemon.
     $pokemonlist = $GLOBALS['pokemon'];
     foreach($pokemonlist as $level => $levelmons) {
         if($level == "X") {
             foreach($levelmons as $key => $pokemon) {
-                if(strtolower($pokemon) == strtolower($boss)) {
+                if(strtolower($pokemon) == strtolower($poke_name)) {
                     $ex_raid = true;
-    		    debug_log('Ex-raid pokemon detected: ' . $boss);
+    		    debug_log('Current pokemon is an ex-raid pokemon: ' . $poke_name);
+    		    debug_log('Pokemon "' .$poke_name . '" will NOT be updated to "' . $boss . '"!');
                     break 2;
                 }
             }
@@ -102,6 +118,8 @@ if ($raid_id > 0) {
         );
     } else {
         // Update pokemon and team in raids table.
+        debug_log('Current pokemon is NOT an ex-raid pokemon: ' . $poke_name);
+        debug_log('Pokemon "' .$poke_name . '" will be updated to "' . $boss . '"!');
         my_query(
             "
             UPDATE    raids
