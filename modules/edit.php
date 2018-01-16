@@ -34,6 +34,8 @@
 			],[
 				'text' => 'Groudon', 'callback_data' => $id.':edit_poke:groudon',
 		]],[[
+				'text' => 'Kyogre', 'callback_data' => $id.':edit_poke:kyogre',
+			],[
 				'text' => 'Legendary (unknown)', 'callback_data' => $id.':edit_poke:legendary',
 		]]];
 	
