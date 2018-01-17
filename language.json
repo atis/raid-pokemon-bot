@@ -2,102 +2,123 @@
 	"5stars" : {
 		"NL": "5 Sterren Raid",
 		"DE": "5 Sterne Raid",
-		"EN": "5 Star Raid"		
+		"EN": "5 Star Raid",
+		"PT-BR": "Raid nível 5"
 	},
 	"4stars" : {
 		"NL": "4 Sterren Raid",
 		"DE": "4 Sterne Raid",
-		"EN": "4 Star Raid"		
+		"EN": "4 Star Raid",
+		"PT-BR": "Raid nível 4"
 	},
 	"3stars" : {
 		"NL": "3 Sterren Raid",
 		"DE": "3 Sterne Raid",
-		"EN": "3 Star Raid"		
+		"EN": "3 Star Raid",
+		"PT-BR": "Raid nível 3"
 	},
 	"2stars" : {
 		"NL": "2 Sterren Raid",
 		"DE": "2 Sterne Raid",
-		"EN": "2 Star Raid"		
+		"EN": "2 Star Raid",
+		"PT-BR": "Raid nível 2"
 	},
 	"1stars" : {
 		"NL": "1 Sterren Raid",
 		"DE": "1 Sterne Raid",
-		"EN": "1 Star Raid"		
+		"EN": "1 Star Raid",
+		"PT-BR": "Raid nível 1"
 	},
 	"back" : {
 		"NL": "Terug",
 		"DE": "Zurück",
-		"EN": "Back"		
+		"EN": "Back",
+		"PT-BR": "Voltar"
 	},
 	"next" : {
 		"NL": "Next",
 		"DE": "Weiter",
-		"EN": "Next"		
+		"EN": "Next",
+		"PT-BR": "Próximo"
 	},
 	"alone" : {
 		"NL": "Alleen",
 		"DE": "Alleine",
-		"EN": "Alone"		
+		"EN": "Alone",
+		"PT-BR": "Sozinho"
 	},
 	"raid_done" : {
 		"NL": "Raid beëindigd",
 		"DE": "Raid beendet.",
-		"EN": "Raid done"		
+		"EN": "Raid done",
+		"PT-BR": "Raid completa"
 	},
 	"here" : {
 		"NL": "Ben er",
 		"DE": "Bin da",
-		"EN": "Here"		
+		"EN": "Here",
+		"PT-BR": "Aqui"
+		
 	},
 	"done" : {
 		"NL": "Klaar",
 		"DE": "Fertig",
-		"EN": "Done"		
+		"EN": "Done",
+		"PT-BR": "Feito"
 	},
 	"cancellation" : {
 		"NL": "Afwezig",
 		"DE": "Absage",
-		"EN": "Cancellation"		
+		"EN": "Cancellation",
+		"PT-BR": "Cancelada"
 	},
 	"vote_updated" : {
 		"NL": "Stem geüpdatet",
 		"DE": "Abstimmung aktualisiert",
-		"EN": "Vote updated"		
+		"EN": "Vote updated",
+		"PT-BR": "Votos atualizados"
 	},
 	"monday" : {
 		"NL": "Maandag",
 		"DE": "Montag",
-		"EN": "Monday"		
+		"EN": "Monday",
+		"PT-BR": "Segunda-feira"
 	},
 	"tuesday" : {
 		"NL": "Dinsdag",
 		"DE": "Dienstag",
-		"EN": "Tuesday"		
+		"EN": "Tuesday",
+		"PT-BR": "Terça-feira"
 	},
 	"wensday" : {
 		"NL": "Woensdag",
 		"DE": "Mittwoch",
-		"EN": "Wednesday"		
+		"EN": "Wednesday",
+		"PT-BR": "Quarta-feira"
 	},
 	"thursday" : {
 		"NL": "Donderdag",
 		"DE": "Donnerstag",
-		"EN": "Thursday"		
+		"EN": "Thursday",
+		"PT-BR": "Quinta-feira"
 	},
 	"friday" : {
 		"NL": "Vrijdag",
 		"DE": "Freitag",
-		"EN": "Friday"		
+		"EN": "Friday",
+		"PT-BR": "Sexta-feira"
 	},
 	"saterday" : {
 		"NL": "Zaterdag",
 		"DE": "Samstag",
-		"EN": "Saturday"		
+		"EN": "Saturday",
+		"PT-BR": "Sábado"
 	},
 	"sunday" : {
 		"NL": "Zondag",
 		"DE": "Sonntag",
-		"EN": "Sunday"		
+		"EN": "Sunday",
+		"PT-BR": "Domingo"
 	},
 	"still" : {
 		"NL": "nog",
@@ -107,631 +128,759 @@
 	"raid_egg_opens" : {
 		"NL": "Raid ei gaat open",
 		"DE": "Raid-Ei öffnet sich um",
-		"EN": "Raid egg opens up"		
+		"EN": "Raid egg opens up",
+		"PT-BR": "Ovo eclode"
 	},
 	"raid_egg_opens_day" : {
 		"NL": "Raid ei gaat open",
 		"DE": "Raid-Ei öffnet sich am",
-		"EN": "Raid egg opens on"		
+		"EN": "Raid egg opens on",
+		"PT-BR": "Ovo eclode em"
 	},
 	"raid_egg_opens_at" : {
 		"NL": "om",
 		"DE": "um",
-		"EN": "at"		
+		"EN": "at",
+		"PT-BR": "em"
 	},
 	"raid_until" : {
 		"NL": "Raid tot",
 		"DE": "Raid bis",
-		"EN": "Raid until"		
+		"EN": "Raid until",
+		"PT-BR": "Raid até"
 	},
 	"exraid_pass" : {
 		"NL": "DEELNAME IS ALLEEN MOGELIJK MET EX-RAID PASS",
 		"DE": "TEILNAHME IST NUR MIT EX-RAID-PASS MÖGLICH",
-		"EN": "PARTICIPATION IS POSSIBLE ONLY WITH EX-RAID PASS"		
+		"EN": "PARTICIPATION IS POSSIBLE ONLY WITH EX-RAID PASS",
+		"PT-BR": "PARTICIPAÇÃO APENAS COM PASSE EX"
 	},
 	"no_participants_yet" : {
 		"NL": "Nog geen deelnemers",
 		"DE": "Noch keine Teilnehmer.",
-		"EN": "No participants yet"		
+		"EN": "No participants yet",
+		"PT-BR": "Ainda sem participantes"
 	},
 	"finished" : {
 		"NL": "Klaar",
 		"DE": "Fertig",
-		"EN": "Finished"		
+		"EN": "Finished",
+		"PT-BR": "Finalizada"
 	},
 	"cancel" : {
 		"NL": "Annuleren",
 		"DE": "Abgesagt",
-		"EN": "Cancel"		
+		"EN": "Cancel",
+		"PT-BR": "Cancelar"
 	},
 	"created_by" : {
 		"NL": "Aangemaakt door",
 		"DE": "Erstellt von",
-		"EN": "Created by"		
+		"EN": "Created by",
+		"PT-BR": "Criada por"
 	},
 	"updated" : {
 		"NL": "Bijgewerkt",
 		"DE": "Aktualisiert",
-		"EN": "Updated"		
+		"EN": "Updated",
+		"PT-BR": "Atualizada"
 	},
 	"from" : {
 		"NL": "van",
 		"DE": "von",
-		"EN": "from"		
+		"EN": "from",
+		"PT-BR": "de"
 	},
 	"to" : {
 		"NL": "tot",
 		"DE": "bis",
-		"EN": "to"		
+		"EN": "to",
+		"PT-BR": "para"
 	},
 	"no_participants" : {
 		"NL": "Geen deelnemers",
 		"DE": "Keine Teilnehmer",
-		"EN": "No participants"		
+		"EN": "No participants",
+		"PT-BR": "Sem participantes"		
 	},
 	"mew" : {
 		"NL": "Mew",
 		"DE": "Mew",
-		"EN": "Mew"		
+		"EN": "Mew",
+		"PT-BR": "Mew"
 	},
 	"mewtwo" : {
 		"NL": "Mewtwo",
 		"DE": "Mewtu",
-		"EN": "Mewtwo"		
+		"EN": "Mewtwo",
+		"PT-BR": "Mewtwo"
 	},
 	"lugia" : {
 		"NL": "Lugia",
 		"DE": "Lugia",
-		"EN": "Lugia"		
+		"EN": "Lugia",
+		"PT-BR": "Lugia"
 	},
 	"zapdos" : {
 		"NL": "Zapdos",
 		"DE": "Zapdos",
-		"EN": "Zapdos"		
+		"EN": "Zapdos",
+		"PT-BR": "Zapdos"
 	},
 	"hooh" : {
 		"NL": "Ho-oh",
 		"DE": "Ho-oh",
-		"EN": "Ho-oh"		
+		"EN": "Ho-oh",
+		"PT-BR": "Ho-oh"
 	},
 	"celebi" : {
 		"NL": "Celebi",
 		"DE": "Celebi",
-		"EN": "Celebi"		
+		"EN": "Celebi",
+		"PT-BR": "Celebi"
 	},
 	"raikou" : {
 		"NL": "Raikou",
 		"DE": "Raikou",
-		"EN": "Raikou"		
+		"EN": "Raikou",
+		"PT-BR": "Raikou"
 	},
 	"entei" : {
 		"NL": "Entei",
 		"DE": "Entei",
-		"EN": "Entei"		
+		"EN": "Entei",
+		"PT-BR": "Entei"
 	},
 	"suicune" : {
 		"NL": "Suicune",
 		"DE": "Suicune",
-		"EN": "Suicune"		
+		"EN": "Suicune",
+		"PT-BR": "Suicune"
 	},
 	"moltres" : {
 		"NL": "Moltres",
 		"DE": "Lavados",
-		"EN": "Moltres"		
+		"EN": "Moltres",
+		"PT-BR": "Moltres"
 	},
 	"articuno" : {
 		"NL": "Articuno",
 		"DE": "Arktos",
-		"EN": "Articuno"		
+		"EN": "Articuno",
+		"PT-BR": "Articuno"
 	},
 	"groudon" : {
     		"NL": "Groudon",
     		"DE": "Groudon",
-    		"EN": "Groudon"
+    		"EN": "Groudon",
+		"PT-BR": "Groudon"
   	},
   	"kyogre" : {
     		"NL": "Kyogre",
     		"DE": "Kyogre",
-    		"EN": "Kyogre"
+    		"EN": "Kyogre",
+		"PT-BR": "Kyogre"
   	},
 	"egg_5" : {
 		"NL": "Level 5 Ei",
 		"DE": "Level 5 Ei",
-		"EN": "Level 5 Egg"		
+		"EN": "Level 5 Egg",
+		"PT-BR": "Ovo de Nível 5"
 	},
 	"egg_4" : {
 		"NL": "Level 4 Ei",
 		"DE": "Level 4 Ei",
-		"EN": "Level 4 Egg"		
+		"EN": "Level 4 Egg",
+		"PT-BR": "Ovo de Nível 4"
 	},
 	"egg_3" : {
 		"NL": "Level 3 Ei",
 		"DE": "Level 3 Ei",
-		"EN": "Level 3 Egg"		
+		"EN": "Level 3 Egg",
+		"PT-BR": "Ovo de Nível 3"
 	},
 	"lapras" : {
 		"NL": "Lapras",
 		"DE": "Lapras",
-		"EN": "Lapras"		
+		"EN": "Lapras",
+		"PT-BR": "Lapras"
 	},
 	"nidoqueen" : {
 		"NL": "Nidoqueen",
 		"DE": "Nidoqueen",
-		"EN": "Nidoqueen"		
+		"EN": "Nidoqueen",
+		"PT-BR": "Nidoqueen"
 	},
 	"nidoking" : {
 		"NL": "Nidoking",
 		"DE": "Nidoking",
-		"EN": "Nidoking"		
+		"EN": "Nidoking",
+		"PT-BR": "Nidoking"		
 	},
 	"absol" : {
 		"NL": "Absol",
 		"DE": "Absol",
-		"EN": "Absol"		
+		"EN": "Absol",
+		"PT-BR": "Absol"
 	},
 	"tyranitar" : {
 		"NL": "Tyranitar",
 		"DE": "Despotar",
-		"EN": "Tyranitar"		
+		"EN": "Tyranitar",
+		"PT-BR": "Tyranitar"
 	},
 	"snorlax" : {
 		"NL": "Snorlax",
 		"DE": "Relaxo",
-		"EN": "Snorlax"		
+		"EN": "Snorlax",
+		"PT-BR": "Snorlax"
 	},
 	"golem" : {
 		"NL": "Golem",
 		"DE": "Geowaz",
-		"EN": "Golem"		
+		"EN": "Golem",
+		"PT-BR": "Golem"
 	},
 	"rhydon" : {
 		"NL": "Rhydon",
 		"DE": "Rizeros",
-		"EN": "Rhydon"		
+		"EN": "Rhydon",
+		"PT-BR": "Rhydon"
 	},
 	"porygon" : {
 		"NL": "Porygon",
 		"DE": "Porygon",
-		"EN": "Porygon"		
+		"EN": "Porygon",
+		"PT-BR": "Porygon"
 	},
 	"gengar" : {
 		"NL": "Gengar",
 		"DE": "Gengar",
-		"EN": "Gengar"		
+		"EN": "Gengar",
+		"PT-BR": "Gengar"
 	},
 	"poliwrath" : {
 		"NL": "Poliwrath",
 		"DE": "Quappo",
-		"EN": "Poliwrath"		
+		"EN": "Poliwrath",
+		"PT-BR": "Poliwrath"
 	},
 	"victreebel" : {
 		"NL": "Victreebel",
 		"DE": "Sarzenia",
-		"EN": "Victreebel"		
+		"EN": "Victreebel",
+		"PT-BR": "Victreebel"
 	},
 	"arcanine" : {
 		"NL": "Arcanine",
 		"DE": "Arkani",
-		"EN": "Arcanine"		
+		"EN": "Arcanine",
+		"PT-BR": "Arcanine"
 	},
 	"machamp" : {
 		"NL": "Machamp",
 		"DE": "Machomei",
-		"EN": "Machamp"		
+		"EN": "Machamp",
+		"PT-BR": "Machamp"
 	},
 	"alakazam" : {
 		"NL": "Alakazam",
 		"DE": "Simsala",
-		"EN": "Alakazam"		
+		"EN": "Alakazam",
+		"PT-BR": "Alakazam"
 	},
 	"scyther" : {
 		"NL": "Scyther",
 		"DE": "Sichlor",
-		"EN": "Scyther"		
+		"EN": "Scyther",
+		"PT-BR": "Schyther"
 	},
 	"omastar" : {
 		"NL": "Omastar",
 		"DE": "Amoroso",
-		"EN": "Omastar"		
+		"EN": "Omastar",
+		"PT-BR": "Omastar"
 	},
 	"ninetails" : {
 		"NL": "Ninetails",
 		"DE": "Vulnona",
-		"EN": "Ninetails"		
+		"EN": "Ninetails",
+		"PT-BR": "Ninetails"
 	},
 	"forest" : {
 		"NL": "Ergens in het bos",
 		"DE": "Irgendwo im Wald",
-		"EN": "Somewhere in the forest"		
+		"EN": "Somewhere in the forest",
+		"PT-BR": "Em algum lugar na floresta"
 	},
 	"select_gym_first_letter" : {
 		"NL": "Selecteer alstublieft de eerste letter van de gym:",
 		"DE": "Bitte Anfangsbuchstabe der Arena auswählen:",
-		"EN": "Please select the first letter of the gym:"		
+		"EN": "Please select the first letter of the gym:",
+		"PT-BR": "Por favor escolha a primeira letra do ginásio:"
 	},
 	"select_gym" : {
 		"NL": "Beginletter geselecteerd.",
 		"DE": "Anfangsbuchstabe ausgewählt.",
-		"EN": "First letter selected."		
+		"EN": "First letter selected.",
+		"PT-BR": "Primeira letra escolhida.:"
 	},
 	"raid_creation_started_at" : {
 		"NL": "Raid aanmaak is gestart om",
 		"DE": "Das Raid wird angelegt seit",
-		"EN": "Raid creation was started at"
+		"EN": "Raid creation was started at",
+		"PT-BR": "Criação da raid em"
 	},
 	"raid_being_created_by_other_user" : {
 		"NL": "Een andere gebruiker is een raid voor deze gym aan het maken:",
 		"DE": "Ein Raid für diese Arena wird gerade angelegt von:",
-		"EN": "Another user is currently creating a raid for this gym:"
+		"EN": "Another user is currently creating a raid for this gym:",
+		"PT-BR": "Outro usuário está criando uma raid para este ginásio:"
 	},
 	"raid_already_exists" : {
 		"NL": "Raid bestaat al!",
 		"DE": "Raid existiert bereits!",
-		"EN": "Raid already exists!"
+		"EN": "Raid already exists!",
+		"PT-BR": "A raid já existe!"
 	},
 	"create_raid" : {
 		"NL": "Begin Raid in",
 		"DE": "Erstelle Raid in",
-		"EN": "Create Raid in"		
+		"EN": "Create Raid in",
+		"PT-BR": "Criar raid em"
 	},
 	"raid_creation_in_progress_warning" : {
 		"NL": "Je kan een raid aanmaken, maar de huidig aangemaakte raid zal worden overscheven. Deze wijziging kunnen niet ongedaan gemaakt worden dit is NIET AAN TE RADEN!",
 		"DE": "Das Raid kann weiter angelegt werden, aber dies wird das Raid welches gerade zeitgleich erstellt wird überschreiben und ist daher definitiv NICHT EMPFOHLEN!",
-		"EN": "You can continue with the raid creation, but this will overwrite the raid which is concurrently being created and is definitely NOT RECOMMENDED!"		
+		"EN": "You can continue with the raid creation, but this will overwrite the raid which is concurrently being created and is definitely NOT RECOMMENDED!",		
+		"PT-BR": "Você pode continuar a criar a raid, mas você substituirá outra raid que está sendo criada e isso NÃO É RECOMENDADO!"
 	},
 	"raid_creation_in_progress" : {
 		"NL": "Raid wordt momenteel aangemaakt",
 		"DE": "Raid wird gerade erstellt",
-		"EN": "Raid creation in progress"		
+		"EN": "Raid creation in progress",
+		"PT-BR": "Criação da raid em andamento"
 	},
 	"select_raid_level_to_continue" : {
 		"NL": "Om echt door te gaan, selecteer een raid level",
 		"DE": "Um wirklich fortzufahren, bitte Raid Level auswählen",
-		"EN": "To really continue, please select raid level"		
+		"EN": "To really continue, please select raid level",
+		"PT-BR": "Para continuar, escolha o nível da raid"
 	},
 	"select_raid_level" : {
 		"NL": "Selecteer Raid level",
 		"DE": "Bitte Raid Level auswählen",
-		"EN": "Select raid level"		
+		"EN": "Select raid level",
+		"PT-BR": "Escolha o nível da raid"
 	},
 	"gym" : {
 		"NL": "Gym",
 		"DE": "Arena",
-		"EN": "Gym"		
+		"EN": "Gym",
+		"PT-BR": "Ginásio"
 	},
 	"gym_saved" : {
 		"NL": "Gym opgeslagen.",
 		"DE": "Arena gespeichert.",
-		"EN": "Gym saved."		
+		"EN": "Gym saved.",
+		"PT-BR": "Ginásio salvo."
 	},
 	"select_raid_boss" : {
 		"NL": "Selecteer Raid baas",
 		"DE": "Raid Boss auswählen",
-		"EN": "Select Raid boss"		
+		"EN": "Select Raid boss",
+		"PT-BR": "Escolha o Pokémon chefe da raid"
 	},
 	"select_pokemon" : {
 		"NL": "Selecteer Pokemon",
 		"DE": "Pokemon auswählen",
-		"EN": "Select Pokemon"		
+		"EN": "Select Pokemon",
+		"PT-BR": "Escolha o Pokémon"
 	},
 	"raid_saved" : {
 		"NL": "Raid opgeslagen:",
 		"DE": "Raid gespeichert:",
-		"EN": "Raid saved:"		
+		"EN": "Raid saved:",
+		"PT-BR": "Raid salva:"
+		
 	},
 	"raid_boss" : {
 		"NL": "Raid baas",
 		"DE": "Raid-Boss",
-		"EN": "Raid boss"		
+		"EN": "Raid boss",
+		"PT-BR": "Chefe da raid"
 	},
 	"raid_boss_saved" : {
 		"NL": "Raid baas opgeslagen!",
 		"DE": "Raid-Boss gespeichert!",
-		"EN": "Raid boss saved!"		
+		"EN": "Raid boss saved!",
+		"PT-BR": "Chefe da raid salvo!"
 	},
 	"not_supported" : {
 		"NL": "Niet ondersteund",
 		"DE": "Nicht unterstützt",
-		"EN": "Not supported"		
+		"EN": "Not supported",
+		"PT-BR": "Não compatível"
 	},
 	"share" : {
 		"NL": "Delen",
 		"DE": "Teilen",
-		"EN": "Share"		
+		"EN": "Share",
+		"PT-BR": "Compartilhar"
 	},
 	"share_with" : {
 		"NL": "Delen met",
 		"DE": "Teilen mit",
-		"EN": "Share with"
+		"EN": "Share with",
+		"PT-BR": "Compartilhar com"
 	},
 	"set_gym_name_and_team" : {
 		"NL": "Optioneel - Gym naam and Gym Team:",
 		"DE": "Optional - Arena Name und Arena Team:",
-		"EN": "Optional - Gym name and Gym Team:"		
+		"EN": "Optional - Gym name and Gym Team:",
+		"PT-BR": "Opcional - Nome do gínasio e nome do time"
 	},
 	"set_gym_name_command" : {
 		"NL": "/gym <code>Naam van de Gym</code>",
 		"DE": "/gym <code>Name der Arena</code>",
-		"EN": "/gym <code>Name of the Gym</code>"		
+		"EN": "/gym <code>Name of the Gym</code>",
+		"PT-BR": "/gym <code>Nome do ginásio</code>"
 	},
 	"set_gym_team" : {
 		"NL": "Optioneel - zet Gym en Team",
 		"DE": "Optional - Arena Team setzen",
-		"EN": "Optional - set Gym and Team"		
+		"EN": "Optional - set Gym and Team",
+		"PT-BR": "Opcional - escolha o gínasio e time"
 	},
 	"set_gym_team_command" : {
 		"NL": "/team <code>Mystic/Valor/Instinct/Blauw/Rood/Geel</code>",
 		"DE": "/team <code>Mystic/Valor/Instinct/Blau/Rot/Gelb</code>",
-		"EN": "/team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>"		
+		"EN": "/team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>",
+		"PT-BR": "/team <code>Mystic/Valor/Instinct/Azul/Vermelho/Amarelo</code>"
 	},
 	"end_time" : {
 		"NL": "Eindtijd gezet op ",
 		"DE": "Ablaufzeit gesetzt auf ",
-		"EN": "Endtime set to "		
+		"EN": "Endtime set to ",
+		"PT-BR": "Hora de término determinada para "
+		
 	},
 	"minutes" : {
 		"NL": "minuten",
 		"DE": "Minuten",
-		"EN": "minutes"		
+		"EN": "minutes",
+		"PT-BR": "minutos"
 	},
 	"raid_starts_when" : {
 		"NL": "Wanneer gaat het Raid ei <b>open</b>?",
 		"DE": "Wann <b>beginnt</b> der Raid?",
-		"EN": "When will the Raid <b>begin</b>?"		
+		"EN": "When will the Raid <b>begin</b>?",
+		"PT-BR": "Quando a raid irá <b>começar</b>?"
 	},
 	"raid_starts_when_minutes" : {
 		"NL": "Wanneer <b>begint</b> de Raid?",
 		"DE": "In wie viel Minuten <b>beginnt</b> der Raid?",
-		"EN": "In how many minutes does the raid <b>begin</b>?"		
+		"EN": "In how many minutes does the raid <b>begin</b>?",
+		"PT-BR": "Em quantos minutos a raid irá <b>começar</b>?"
 	},
 	"raid_starts_when_clocktime_view" : {
 		"NL": "klok",
 		"DE": "Uhrzeit-Ansicht",
-		"EN": "Clock time view"
+		"EN": "Clock time view",
+		"PT-BR": "Ver horário"
 	},
 	"raid_starts_when_minutes_view" : {
 		"NL": "Minuten",
 		"DE": "Minuten-Ansicht",
-		"EN": "Minutes view"
+		"EN": "Minutes view",
+		"PT-BR": "Ver minutos"
 	},
 	"raid_starts_when_view_changed" : {
 		"NL": "Overzicht verandert!",
 		"DE": "Ansicht geändert!",
-		"EN": "View changed!"
+		"EN": "View changed!",
+		"PT-BR": "Visualização mudou!"
 	},
 	"is_raid_active" : {
 		"NL": "Raid is al actief!",
 		"DE": "Raid läuft schon!",
-		"EN": "Raid is already active!"		
+		"EN": "Raid is already active!",
+		"PT-BR": "A raid já está ativa!"
 	},
 	"raid_access_denied" : {
 		"NL": "Je hebt geen rechten om deze raid aan te passen!",
 		"DE": "Sie haben keine Berechtigung dieses Raid zu bearbeiten!",
-		"EN": "You are not allowed to edit this raid!"		
+		"EN": "You are not allowed to edit this raid!",
+		"PT-BR": "Você não tem permissão para editar esta raid!"
 	},
 	"no_active_raids_found" : {
 		"NL": "Geen actieve raids gevonden!",
 		"DE": "Aktuell sind keine laufenden Raids im System!",
-		"EN": "No active raids found in the system!"		
+		"EN": "No active raids found in the system!",
+		"PT-BR": "Nenhuma raid ativa encontrada no sistema!"
 	},
 	"no_active_raids_shared" : {
 		"NL": "Geen van de actieve raid is gedeeld!",
 		"DE": "Keines der aktiven Raids wurde geteilt!",
-		"EN": "None of the active raids was shared!"
+		"EN": "None of the active raids was shared!",
+		"PT-BR": "Nenhuma das raids ativas foi compartilhada!"
 	},
 	"no_active_raids" : {
 		"NL": "Geen actieve raids!",
 		"DE": "Aktuell gibt es keine Raids!",
-		"EN": "No active raids currently!"
+		"EN": "No active raids currently!",
+		"PT-BR": "Nenhuma raid ativa no momento!"
 	},
 	"expand" : {
 		"NL": "Uitklappen",
 		"DE": "Ausklappen",
-		"EN": "Expand"		
+		"EN": "Expand",
+		"PT-BR": "Expandir"
 	},
 	"pokemon_saved" : {
 		"NL": "Pokemon opgeslagen: ",
 		"DE": "Pokemon gespeichert: ",
-		"EN": "Pokemon saved: "		
+		"EN": "Pokemon saved: ",
+		"PT-BR": "Pokemon salvo "
 	},
 	"how_long_raid" : {
 		"NL": "Hoe lang <b>duurt</b> de Raid?",
 		"DE": "Wie lange <b>dauert</b> der Raid?",
-		"EN": "How long will the raid <b>last</b>?"		
+		"EN": "How long will the raid <b>last</b>?",
+		"PT-BR": "Quanto tempo a raid vai <b>durar</b>"
 	},
 	"lead_time_set_to" : {
 		"NL": "Doorlooptijd ingesteld op",
 		"DE": "Vorlaufzeit gesetzt auf",
-		"EN": "Lead time set to"		
+		"EN": "Lead time set to",
+		"PT-BR": "Tempo principal configurado para"
 	},
 	"select_gym_name" : {
 		"NL": "Selecteer Gym:",
 		"DE": "Bitte Arena auswählen:",
-		"EN": "Select Gym:"		
+		"EN": "Select Gym:",
+		"PT-BR": "Escolha o ginásio:"
 	},
 	"here_we_go" : {
 		"NL": "Hier gaan we!",
 		"DE": "Los gehts!",
-		"EN": "Here we go!"		
+		"EN": "Here we go!",
+		"PT-BR": "Bora arrasar!"
 	},
 	"create_a_raid" : {
 		"NL": "Maak een Raid",
 		"DE": "Raid anlegen",
-		"EN": "Create a Raid"		
+		"EN": "Create a Raid",
+		"PT-BR": "Criar a raid"
 	},
 	"coordination_succes" : {
 		"NL": "Coördinatie geslaagd!",
 		"DE": "Koordinaten erfolgreich übermittelt!",
-		"EN": "Coordinates successfully submitted!"		
+		"EN": "Coordinates successfully submitted!",
+		"PT-BR": "Coordenadas enviadas com sucesso!"
 	},
 	"update_pokemon" : {
 		"NL": "Pokemon vernieuwen",
 		"DE": "Pokemon aktualisieren",
-		"EN": "Update Pokemon"		
+		"EN": "Update Pokemon",
+		"PT-BR": "Atualizar Pokemon"
 	},
 	"send_location" : {
 		"NL": "Stuur me alsjeblieft eerst een locatie.",
 		"DE": "Bitte sende mir zuerst einen Standort.",
-		"EN": "Please send me a location first."		
+		"EN": "Please send me a location first.",
+		"PT-BR": "Por favor, antes me envie a localização."
 	},
 	"raid_by_gym" : {
 		"NL": "Of maak een raid door een Gym te selecteren:",
 		"DE": "Oder lege ein Raid per Arena-Auswahl an:",
-		"EN": "Or make a raid per gym selection:"		
+		"EN": "Or make a raid per gym selection:",
+		"PT-BR": "Ou escolha uma raid por ginásio:" 
 	},
 	"red" : {
 		"NL": "rood",
 		"DE": "rot",
-		"EN": "red"		
+		"EN": "red",
+		"PT-BR": "vermelho"
 	},
 	"yellow" : {
 		"NL": "geel",
 		"DE": "gelb",
-		"EN": "yellow"		
+		"EN": "yellow",
+		"PT-BR": "amarelo"
 	},
 	"blue" : {
 		"NL": "blauw",
 		"DE": "blau",
-		"EN": "blue"		
+		"EN": "blue",
+		"PT-BR": "azul"
 	},
 	"gym_team_set_to" : {
 		"NL": "Gym Team gezet op:",
 		"DE": "Arena Team gesetzt auf:",
-		"EN": "Gym Team set to:"		
+		"EN": "Gym Team set to:",
+		"PT-BR": "Time do ginásio escolhido para"
 	},
 	"invalid_team" : {
 		"NL": "Ongeldige team naam: schrijf: Mystic, Valor, Instinct or Blauw, Rood, Geel ",
 		"DE": "Ungültiger Team Name - schreibe: Mystic, Valor, Instinct oder Blau, Rot, Gelb",
-		"EN": "Invalid team name - write: Mystic, Valor, Instinct or Blue, Red, Yellow "		
+		"EN": "Invalid team name - write: Mystic, Valor, Instinct or Blue, Red, Yellow ",
+		"PT-BR": "Nome de time inválido - escreva: Mystic, Valor, Instinct ou Blue, Red, Yellow"
 	},
 	"gym_name_updated" : {
 		"NL": "Gym naam aangepast.",
 		"DE": "Der Arena Name wurde aktualisiert.",
-		"EN": "Gym name updated."		
+		"EN": "Gym name updated.",
+		"PT-BR": "Nome do ginásio atualizado."
 	},
 	"mods_details" : {
 		"NL": "Selecteer moderator voor meer informatie:",
 		"DE": "Für Details Moderator auswählen:",
-		"EN": "Select moderator for details:"
+		"EN": "Select moderator for details:",
+		"PT-BR": "Escolha moderador para detalhes:"
 	},
 	"mods_add_new" : {
 		"NL": "Nieuwe moderator toevoegen:",
 		"DE": "Neuen Moderator hinzufügen:",
-		"EN": "Add new moderator:"
+		"EN": "Add new moderator:",
+		"PT-BR": "Adicionar novo moderador:"
 	},
 	"mods_delete" : {
 		"NL": "Moderator verwijderen:",
 		"DE": "Moderator löschen:",
-		"EN": "Delete moderator:"
+		"EN": "Delete moderator:",
+		"PT-BR": "Excluir moderador:"
 	},
 	"mods_list_of_all" : {
 		"NL": "Lijst met alle moderators.",
 		"DE": "Liste aller Moderatoren.",
-		"EN": "List of all moderators."
+		"EN": "List of all moderators.",
+		"PT-BR": "Lista de todos os moderadores."
 	},
 	"mods_list_add_delete" : {
 		"NL": "Lijst, toevoegen of verwijderen van moderators",
 		"DE": "Moderatoren anzeigen, hinzufügen oder löschen",
-		"EN": "List, add or remove moderators"		
+		"EN": "List, add or remove moderators",
+		"PT-BR": "Listar, adicionar ou remover moderadores"
 	},
 	"mods_not_found" : {
 		"NL": "Error! Geen Moderator of gebruiker gevonden!",
 		"DE": "Fehler! Keine Moderatoren oder Benutzer gefunden!",
-		"EN": "Error! No moderators or users found!"
+		"EN": "Error! No moderators or users found!",
+		"PT-BR": "Erro! Nenhum moderador ou usuário encontrado!"
 	},
 	"mods_saved_mod" : {
 		"NL": "Moderator opgeslagen!",
 		"DE": "Moderator gespeichert!",
-		"EN": "Moderator saved!"
+		"EN": "Moderator saved!",
+		"PT-BR": "Moderador salvo!"
 	},
 	"mods_delete_mod" : {
 		"NL": "Moderator verwijderd!",
 		"DE": "Moderator gelöscht!",
-		"EN": "Moderator deleted!"
+		"EN": "Moderator deleted!",
+		"PT-BR": "Moderador excluído!"
 	},
 	"mods_info_about_mod" : {
 		"NL": "Informatie over deze moderator:",
 		"DE": "Infos zum diesem Moderator:",
-		"EN": "Info about this moderator:"
+		"EN": "Info about this moderator:",
+		"PT-BR": "Informações sobre esse moderador:"
 	},
 	"overview_share" : {
 		"NL": "Overzicht delen",
 		"DE": "Übersicht teilen",
-		"EN": "Share overview"
+		"EN": "Share overview",
+		"PT-BR": "Detalhes de compartilhamento"
 	},
 	"overview_delete" : {
 		"NL": "Vewijder overzicht",
 		"DE": "Übersicht löschen",
-		"EN": "Delete overview"
+		"EN": "Delete overview",
+		"PT-BR": "Deletar detalhes"
 	},
 	"raids_list_share_overview" : {
 		"NL": "Geef de actieve raid weer als een lijst of deel / verwijder het raid overzicht",
 		"DE": "Aktive Raids als Liste anzeigen oder die Raid-Übersicht pro Chat teilen / löschen",
-		"EN": "Show active raids as list or share / delete the raid overview per chat"
+		"EN": "Show active raids as list or share / delete the raid overview per chat",
+		"PT-BR": "Mostrar raids ativas como lista ou compartilhar / deletar detalhes de raid por chat"
 	},
 	"list_all_active_raids" : {
 		"NL": "Alle actieve raids",
 		"DE": "Alle aktiven Raids",
-		"EN": "All active raids"
+		"EN": "All active raids",
+		"PT-BR": "Todas as raids ativas"
 	},
 	"list_all_overviews" : {
 		"NL": "Totaal raid overzicht",
 		"DE": "Alle Raid-Übersichten",
-		"EN": "All raid overviews"
+		"EN": "All raid overviews",
+		"PT-BR": "Todos os detalhes de raid"
 	},
 	"delete_raid_overview_for_chat" : {
 		"NL": "Verwijder raid overzicht voor",
 		"DE": "Raid-Übersicht löschen für",
-		"EN": "Delete raid overview for"
+		"EN": "Delete raid overview for",
+		"PT-BR": "Deletar detalhe de raid para"
 	},
 	"no_overviews_found" : {
 		"NL": "Geen raid overzicht gevonden in het systeem!",
 		"DE": "Keine Raid-Übersichten im System gefunden!",
-		"EN": "No raid overviews found in the system!"
+		"EN": "No raid overviews found in the system!",
+		"PT-BR": "Nenhum detalhe de raid encontrado no sistema!"
 	},
 	"overview_successfully_deleted" : {
 		"NL": "Raid overzicht is succesvol verwijderd!",
 		"DE": "Raid-Übersicht wurde erfolgreich gelöscht!",
-		"EN": "Raid overview was successfully deleted!"
+		"EN": "Raid overview was successfully deleted!",
+		"PT-BR": "Detalhe de raid deletado com sucesso!"
 	},
 	"overview_deletion_was_canceled" : {
 		"NL": "Het verwijderen van het raid overzicht is gestopt!",
 		"DE": "Löschung der Raid-Übersicht wurde abgebrochen!",
-		"EN": "Deletion of the raid overview was canceled!"
+		"EN": "Deletion of the raid overview was canceled!",
+		"PT-BR": "O deletamento dos detalhes da raid foi cancelado!"
 	},
 	"raid_overview_for_chat" : {
 		"NL": "Raid overzicht voor",
 		"DE": "Raid-Übersicht für",
-		"EN": "Overview of raids for"
+		"EN": "Overview of raids for",
+		"PT-BR": "Detalhes de raids para"
 	},
 	"successfully_shared" : {
 		"NL": "Succesvol gedeeld!",
 		"DE": "Erfolgreich geteilt!",
-		"EN": "Successfully shared!"
+		"EN": "Successfully shared!",
+		"PT-BR": "Compartilhado com sucesso!"
 	},
 	"yes" : {
 		"NL": "Ja",
 		"DE": "Ja",
-		"EN": "Yes"
+		"EN": "Yes",
+		"PT-BR": "Sim"
 	},
 	"no" : {
 		"NL": "Nee",
 		"DE": "Nein",
-		"EN": "No"
+		"EN": "No",
+		"PT-BR": "Não"
 	},
 	"list" : {
 		"NL": "Lijst",
 		"DE": "Anzeigen",
-		"EN": "List"
+		"EN": "List",
+		"PT-BR": "Lista"
 	},
 	"add" : {
 		"NL": "Toevoegen",
 		"DE": "Hinzufügen",
-		"EN": "Add"		
+		"EN": "Add",
+		"PT-BR": "Adicionar"
 	},
 	"delete" : {
 		"NL": "Verwijder",
 		"DE": "Löschen",
-		"EN": "Delete"		
+		"EN": "Delete",
+		"PT-BR": "Deletar"
 	}
 }
