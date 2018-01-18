@@ -792,13 +792,40 @@ function run_cleanup ($telegram = 2, $database = 2) {
 
     // Start cleanup when at least one parameter is set to trigger cleanup
     if ($telegram == 1 || $database == 1) {
-        // Get cleanup info.
-        $rs = my_query(
-            "
-            SELECT    * 
-                    FROM      cleanup
-            "
-        );
+        // Query for telegram cleanup without database cleanup
+        if ($telegram == 1 && $database == 0) {
+            // Get cleanup info.
+            $rs = my_query(
+                "
+                SELECT    * 
+                FROM      cleanup
+                  WHERE   chat_id <> 0
+                  ORDER BY id DESC
+                  LIMIT 0, 100     
+                "
+            );
+        // Query for database cleanup without telegram cleanup
+        } else if ($telegram == 0 && $database == 1) {
+            // Get cleanup info.
+            $rs = my_query(
+                "
+                SELECT    * 
+                FROM      cleanup
+                  WHERE   chat_id = 0
+                  LIMIT 0, 100
+                "
+            );
+        // Query for telegram and database cleanup
+        } else {
+            // Get cleanup info.
+            $rs = my_query(
+                "
+                SELECT    * 
+                FROM      cleanup
+                  LIMIT 0, 100
+                "
+            );
+        }
 
         // Init empty cleanup jobs array.
         $cleanup_jobs = array();
@@ -1484,8 +1511,11 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
                     editMessageText($message_id, $msg, $keys, $previous, ['disable_web_page_preview' => 'true']);
                 }
 
-                // Answer the callback.
-                answerCallbackQuery($update['callback_query']['id'], 'OK');
+                // Triggered from user or cronjob?
+                if (!empty($update['callback_query']['id'])) {
+                    // Answer the callback.
+                    answerCallbackQuery($update['callback_query']['id'], 'OK');
+                }
             }
         }
 
@@ -1662,6 +1692,43 @@ function weekday_number2name ($weekdaynumber)
     }
     // Return the weekday
     return $weekday;
+}
+
+/**
+ * Delete raid.
+ * @param $raid_id
+ */
+function delete_raid($raid_id)
+{
+    global $db;
+
+    // Delete raid from cleanup table!
+    debug_log('Deleting raid ' . $raid_id ' from the cleanup table:');
+    $rs_cleanup = my_query(
+        "
+        DELETE FROM   raids 
+        WHERE   raid_id = '{$raid_id}' 
+           OR   cleaned = '{$raid_id}'
+        "
+    );
+
+    // Delete raid from attendance table!
+    debug_log('Deleting raid ' . $raid_id ' from the attendance table:');
+    $rs_attendance = my_query(
+        "
+        DELETE FROM   attendance 
+        WHERE  raid_id = '{$raid_id}'
+        "
+    );
+
+    // Delete raid from raid table!
+    debug_log('Deleting raid ' . $raid_id ' from the raid table:');
+    $rs_raid = my_query(
+        "
+        DELETE FROM   raids 
+        WHERE   id = '{$raid_id}'
+        "
+    );
 }
 
 /**
