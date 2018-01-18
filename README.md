@@ -18,17 +18,12 @@ Edit config.php and set `CONFIG_LOGFILE`
 
 Start chat with https://t.me/BotFather and create bot token.
 
-Bot Settings: Enable Inline mode, Allow Groups, Group Privacy off
+Bot Settings: 
+ - Enable Inline mode
+ - Allow Groups
+   - Group Privacy off
 
 Use https://www.miniwebtool.com/sha512-hash-generator/ and set `CONFIG_HASH` to hashed value of your token (make sure it is lowecase)
-
-## Bot access
-
-Set `BOT_ACCESS` to the name (@Bot_Access_Groupname) or id (-100123456789) of one or multiple by comma separated groups, supergroups or channels. All administrators (not members!) will gain access to the bot.
-
-When no group, supergroup or channel is specified, the bot will allow everyone to use it (public access).
-
-Example for multiple access groups: `define('BOT_ACCESS', '@Bot_Access_Groupname,@Another_Bot_Access_Group,@Superadmins_Bot_Groups');`
 
 ## Raid times
 
@@ -82,7 +77,23 @@ https://console.developers.google.com/apis/library/timezone-backend.googleapis.c
 
 https://console.developers.google.com/apis/library/geocoding-backend.googleapis.com
 
-Finally check the dashboard again and make sure Google Maps Geocoding API and Google Maps Time Zone API are listed as enabled services. 
+Finally check the dashboard again and make sure Google Maps Geocoding API and Google Maps Time Zone API are listed as enabled services.
+
+## Raid overview
+
+The bot allows you to list all raids which got shared with one or more chats as a single raid overview message to quickly get an overview of all raids which are currently running and got shared in each chat. You can view and share raid overviews via the /list command - but only if some raids are currently active and if these active raids got shared to any chats!
+
+To keep this raid overview always up to date when you have it e.g. pinned inside your raid channel, you can setup a cronjob that updates the message by calling the overview_refresh module.
+
+You can either refresh all shared raid overview messages by calling
+
+`curl -k -d '{"callback_query":{"data":"0:overview_refresh:0"}}' https://localhost/bot_subdirectory/index.php?apikey=111111111:AABBccddEEFFggHHiijjKKLLmmnnOOPPqq`
+
+or just refresh the raid overview message you've shared with a specific chat (e.g. -100112233445):
+
+`curl -k -d '{"callback_query":{"data":"0:overview_refresh:-100112233445"}}' https://localhost/bot_subdirectory/index.php?apikey=111111111:AABBccddEEFFggHHiijjKKLLmmnnOOPPqq`
+
+To delete a shared raid overview message you can use the /list command too.
 
 ## Cleanup
 
@@ -124,13 +135,32 @@ OR
 
 # Access permissions
 
+## Public access
+
+When no telegram id, group, supergroup or channel is specified in `BOT_ADMINS` and/or `BOT_ACCESS`, the bot will allow everyone to use it (public access).
+
+Example for public access: `define('BOT_ACCESS', '');`
+
+## Restricted access
+
 With BOT_ADMINS and BOT_ACCESS being used to restrict access, there are several access roles / types. When you do not configure BOT_ACCESS, everyone will have access to your bot (public access).  
 
-With your MAINTAINER_ID and as a member of BOT_ADMINS you have the permissions to do anything. **For performance improvements, it's recommended to add the MAINTAINER and all members of BOT_ADMINS as moderator via /mods command!** 
+Set `BOT_ADMINS` and `BOT_ACCESS` to the name (@Telegram_Groupname) or id (-100123456789) of one or multiple by comma separated individual telegram chat names/ids, groups, supergroups or channels.
 
-As a member of BOT_ACCESS you can create raid polls, update your own raid polls' pokemon and change the gym team of your last raid poll. BOT_ACCESS members who are moderators can change the gym name and update raid polls' pokemon of others.
+Please note, when you're setting groups, supergroups or channels only administrators (not members!) from these chats will gain access to the bot! So make sure this requirement is fulfilled or add their individual telegram usernames/ids instead.
 
-Telegram Users can only vote on raid polls, but have no access to other bot functions.
+Example for restricted access:  
+`define('BOT_ADMINS', '@YOUR_USERNAME,111222333');`
+
+`define('BOT_ACCESS', '111222333,@Bot_Access_Groupname,-100112233445,@Superadmins_Bot_Groups');`
+
+## Access overview
+
+With your `MAINTAINER_ID` and as a member of `BOT_ADMINS` you have the permissions to do anything. **For performance improvements, it's recommended to add the MAINTAINER and all members of BOT_ADMINS as moderator via /mods command!** 
+
+As a member of `BOT_ACCESS` you can create raid polls, update your own raid polls' pokemon and change the gym team of your last raid poll. `BOT_ACCESS` members who are moderators too, can also change the gym name and update pokemon from other users raid polls.
+
+Telegram Users can only vote on raid polls, but have no access to other bot functions (unless you configured it for public access).
 
 
 | Access        | Database  | Raid poll |                                      |                  | Pokemon                       |                               | Gym             |                  | Moderators       |                 |                    | Help             |
@@ -138,9 +168,15 @@ Telegram Users can only vote on raid polls, but have no access to other bot func
 |               |           | **Vote**  | **Create** `/start`, `/raid`, `/new` | **List** `/list` | **All raid polls** `/pokemon` | **Own raid polls** `/pokemon` | **Name** `/gym` | **Team** `/team` | **List** `/mods` | **Add** `/mods` | **Delete** `/mods` | **Show** `/help` |
 | MAINTAINER_ID |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
 | BOT_ADMINS    |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
-| BOT_ACCESS    | Moderator | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              |                  |                 |                    | Yes              |
-| BOT_ACCESS    | User      | Yes       | Yes                                  | Yes              |                               | Yes                           |                 | Yes              |                  |                 |                    | Yes              |
+| BOT_ACCESS    | Moderator | Yes       | Yes                                  |                  | Yes                           | Yes                           | Yes             | Yes              |                  |                 |                    | Yes              |
+| BOT_ACCESS    | User      | Yes       | Yes                                  |                  |                               | Yes                           |                 | Yes              |                  |                 |                    | Yes              |
 | Telegram      | User      | Yes       |                                      |                  |                               |                               |                 |                  |                  |                 |                    |                  |
+
+# Updates
+
+Currently constantly new features, bug fixes and improvements are added to the bot. Since we do not have an update mechanism yet, when updating the bot, please always do the following:
+ - Add new config variables which got added to the config.php.example to your own config.php!
+ - If new tables and/or columns got added or changed inside raid-pokemon-bot.sql, please add/alter these tables/columns at your existing installation!
 
 # Usage
 
@@ -194,7 +230,7 @@ Example input: `/new 52.514545,13.350095`
 
 #### Command: /list 
 
-The bot will send you a list of the last 20 active raids.
+The bot will allow you to via a list of the last 20 active raids, share and delete all raids which got shared to channels as a raid overview.
 
 
 #### Command: /team
