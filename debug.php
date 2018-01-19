@@ -15,16 +15,24 @@ function my_insert_id()
  * @param $query
  * @return bool|mysqli_result
  */
-function my_query($query)
+function my_query($query, $cleanup_query = false)
 {
     global $db;
 
-    debug_log($query, '?');
+    if ($cleanup_query == true) {
+        debug_log($query, '?', true);
+    } else {
+        debug_log($query, '?');
+    }
 
     $res = $db->query($query);
 
     if ($db->error) {
-        debug_log($db->error, '!');
+        if ($cleanup_query == true) {
+            debug_log($db->error, '!', true);
+        } else {
+            debug_log($db->error, '!');
+        }
     }
 
     return $res;
