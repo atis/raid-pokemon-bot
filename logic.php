@@ -1703,7 +1703,7 @@ function delete_raid($raid_id)
     global $db;
 
     // Delete raid from cleanup table!
-    debug_log('Deleting raid ' . $raid_id ' from the cleanup table:');
+    debug_log('Deleting raid ' . $raid_id . ' from the cleanup table:');
     $rs_cleanup = my_query(
         "
         DELETE FROM   raids 
@@ -1713,7 +1713,7 @@ function delete_raid($raid_id)
     );
 
     // Delete raid from attendance table!
-    debug_log('Deleting raid ' . $raid_id ' from the attendance table:');
+    debug_log('Deleting raid ' . $raid_id . ' from the attendance table:');
     $rs_attendance = my_query(
         "
         DELETE FROM   attendance 
@@ -1722,7 +1722,7 @@ function delete_raid($raid_id)
     );
 
     // Delete raid from raid table!
-    debug_log('Deleting raid ' . $raid_id ' from the raid table:');
+    debug_log('Deleting raid ' . $raid_id . ' from the raid table:');
     $rs_raid = my_query(
         "
         DELETE FROM   raids 
