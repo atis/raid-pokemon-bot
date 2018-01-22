@@ -94,8 +94,17 @@ function bot_access_check($update, $access_type = BOT_ACCESS, $return_result = f
 	    return $allow_access;
         } else {
             debug_log("Denying access to the bot for user:" . CR . $msg);
-            $response_msg = '<b>You are not allowed to use this command or bot!</b>';
-	    sendMessage($update['message']['chat']['id'], $response_msg);
+            $response_msg = '<b>' . getTranslation('bot_access_denied') . '</b>';
+            // Edit message or send new message based on value of $update_type
+            if ($update_type == 'callback_query') {
+                $keys = [];
+                // Edit message.
+                edit_message($update, $response_msg, $keys);
+                // Answer the callback.
+                answerCallbackQuery($update[$update_type]['id'], getTranslation('bot_access_denied'));
+            } else {
+	        sendMessage($update[$update_type]['from']['id'], $response_msg);
+            }
             exit;
         }
     } else {
@@ -532,7 +541,7 @@ function raid_edit_start_keys($id)
                 'callback_data' => $id . ':edit:2'
             ],
             [
-                'text'          => getTranslation('5stars'),
+                'text'          => getTranslation('1stars'),
                 'callback_data' => $id . ':edit:1'
             ]
 */        ]
@@ -1702,7 +1711,33 @@ function delete_raid($raid_id)
 {
     global $db;
 
-    // Delete raid from cleanup table!
+    // Delete telegram messages for raid.
+    $rs = my_query(
+        "
+        SELECT    *
+            FROM      cleanup
+            WHERE     raid_id = '{$raid_id}'
+              AND     chat_id <> 0
+        "
+    );
+
+    // Counter
+    $counter = 0;
+
+    // Delete every telegram message
+    while ($row = $rs->fetch_assoc()) {
+        // Delete telegram message.
+        debug_log('Deleting telegram message ' . $row['message_id'] . ' from chat ' . $row['chat_id'] . ' for raid ' . $row['raid_id']);
+        delete_message($row['chat_id'], $row['message_id']);
+        $counter = $counter + 1;
+    }
+
+    // Nothing to delete on telegram.
+    if ($counter == 0) {
+        debug_log('Raid with ID ' . $raid_id . ' was not found in the cleanup table! Skipping deletion of telegram messages!');
+    }
+
+    // Delete raid from cleanup table.
     debug_log('Deleting raid ' . $raid_id . ' from the cleanup table:');
     $rs_cleanup = my_query(
         "
@@ -1712,7 +1747,7 @@ function delete_raid($raid_id)
         "
     );
 
-    // Delete raid from attendance table!
+    // Delete raid from attendance table.
     debug_log('Deleting raid ' . $raid_id . ' from the attendance table:');
     $rs_attendance = my_query(
         "
@@ -1721,7 +1756,7 @@ function delete_raid($raid_id)
         "
     );
 
-    // Delete raid from raid table!
+    // Delete raid from raid table.
     debug_log('Deleting raid ' . $raid_id . ' from the raid table:');
     $rs_raid = my_query(
         "
