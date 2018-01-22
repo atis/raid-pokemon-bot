@@ -792,13 +792,40 @@ function run_cleanup ($telegram = 2, $database = 2) {
 
     // Start cleanup when at least one parameter is set to trigger cleanup
     if ($telegram == 1 || $database == 1) {
-        // Get cleanup info.
-        $rs = my_query(
-            "
-            SELECT    * 
-                    FROM      cleanup
-            "
-        );
+        // Query for telegram cleanup without database cleanup
+        if ($telegram == 1 && $database == 0) {
+            // Get cleanup info.
+            $rs = my_query(
+                "
+                SELECT    * 
+                FROM      cleanup
+                  WHERE   chat_id <> 0
+                  ORDER BY id DESC
+                  LIMIT 0, 100     
+                ", true
+            );
+        // Query for database cleanup without telegram cleanup
+        } else if ($telegram == 0 && $database == 1) {
+            // Get cleanup info.
+            $rs = my_query(
+                "
+                SELECT    * 
+                FROM      cleanup
+                  WHERE   chat_id = 0
+                  LIMIT 0, 100
+                ", true
+            );
+        // Query for telegram and database cleanup
+        } else {
+            // Get cleanup info.
+            $rs = my_query(
+                "
+                SELECT    * 
+                FROM      cleanup
+                  LIMIT 0, 100
+                ", true
+            );
+        }
 
         // Init empty cleanup jobs array.
         $cleanup_jobs = array();
@@ -836,7 +863,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                             UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
                     FROM    raids
                       WHERE id = {$current_raid_id}
-                    "
+                    ", true
                 );
 
                 // Fetch raid data.
@@ -878,7 +905,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
     		        SET       chat_id = 0, 
     		                  message_id = 0 
       		        WHERE   id = {$row['id']}
-		    "
+		    ", true
 		    );
 	        } else {
 		    if ($telegram == 1) {
@@ -902,7 +929,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     "
                         DELETE FROM    attendance
                         WHERE   id = {$row['raid_id']}
-                    "
+                    ", true
                     );
 
 		    // Set database value of raid_id to 0 so we know attendance info was deleted already
@@ -914,7 +941,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                         SET       raid_id = 0, 
 				  cleaned = {$row['raid_id']}
                         WHERE   raid_id = {$row['raid_id']}
-                    "
+                    ", true
                     );
 	        } else {
 		    if ($database == 1) {
@@ -933,7 +960,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     "
                         DELETE FROM    raids
                         WHERE   id = {$row['cleaned']}
-                    "
+                    ", true
                     );
 		    
 		    // Get all cleanup jobs which will be deleted now.
@@ -943,7 +970,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                         SELECT *
 			FROM    cleanup
                         WHERE   cleaned = {$row['cleaned']}
-                    "
+                    ", true
 		    );
 
 		    // Log each cleanup ID which will be deleted.
@@ -956,7 +983,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     "
                         DELETE FROM    cleanup
                         WHERE   cleaned = {$row['cleaned']}
-                    "
+                    ", true
                     );
 		} else {
 		    if ($prev_raid_id != $current_raid_id) {
@@ -1484,8 +1511,11 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
                     editMessageText($message_id, $msg, $keys, $previous, ['disable_web_page_preview' => 'true']);
                 }
 
-                // Answer the callback.
-                answerCallbackQuery($update['callback_query']['id'], 'OK');
+                // Triggered from user or cronjob?
+                if (!empty($update['callback_query']['id'])) {
+                    // Answer the callback.
+                    answerCallbackQuery($update['callback_query']['id'], 'OK');
+                }
             }
         }
 
@@ -1539,15 +1569,15 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
             $weekday_start = date('N', $start_time);
             $raid_day = weekday_number2name ($weekday_start);
             if ($weekday_now == $weekday_start) {
-                $msg .= getTranslation('raid_egg_opens') . ' ' . unix2tz($start_time, $tz) . CR . CR;
+                $msg .= getTranslation('raid_egg_opens') . ' ' . unix2tz($start_time, $tz) . CR;
             } else {
-                $msg .= getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . ' ' . unix2tz($start_time, $tz) . CR . CR;
+                $msg .= getTranslation('raid_egg_opens_day') . ' ' .  $raid_day . ' ' . getTranslation('raid_egg_opens_at') . ' ' . unix2tz($start_time, $tz) . CR;
             }
 
         // Raid has started already
         } else {
             // Add time left message.
-            $msg .= $pokemon . ' — <b>' . getTranslation('still') . ' ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>' . CR . CR;
+            $msg .= $pokemon . ' — <b>' . getTranslation('still') . ' ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>' . CR;
         }
 
         // Build query to add attendances to message.
@@ -1662,6 +1692,43 @@ function weekday_number2name ($weekdaynumber)
     }
     // Return the weekday
     return $weekday;
+}
+
+/**
+ * Delete raid.
+ * @param $raid_id
+ */
+function delete_raid($raid_id)
+{
+    global $db;
+
+    // Delete raid from cleanup table!
+    debug_log('Deleting raid ' . $raid_id . ' from the cleanup table:');
+    $rs_cleanup = my_query(
+        "
+        DELETE FROM   raids 
+        WHERE   raid_id = '{$raid_id}' 
+           OR   cleaned = '{$raid_id}'
+        "
+    );
+
+    // Delete raid from attendance table!
+    debug_log('Deleting raid ' . $raid_id . ' from the attendance table:');
+    $rs_attendance = my_query(
+        "
+        DELETE FROM   attendance 
+        WHERE  raid_id = '{$raid_id}'
+        "
+    );
+
+    // Delete raid from raid table!
+    debug_log('Deleting raid ' . $raid_id . ' from the raid table:');
+    $rs_raid = my_query(
+        "
+        DELETE FROM   raids 
+        WHERE   id = '{$raid_id}'
+        "
+    );
 }
 
 /**
