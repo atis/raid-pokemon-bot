@@ -3,6 +3,9 @@
 debug_log('OVERVIEW_SHARE');
 debug_log($data);
 
+// Check access.
+bot_access_check($update, BOT_ADMINS);
+
 // Get chat ID from data
 $chat_id = 0;
 $chat_id = $data['arg'];

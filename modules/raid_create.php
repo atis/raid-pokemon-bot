@@ -152,6 +152,12 @@ if ($raid_id != 0) {
             ],
             [
                 [
+                    'text'          => getTranslation('delete'),
+                    'callback_data' => $raid['id'] . ':raids_delete:0'
+                ]
+            ],
+            [
+                [
                     'text'                => getTranslation('share'),
                     'switch_inline_query' => strval($raid['id'])
                 ]

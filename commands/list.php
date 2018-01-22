@@ -2,8 +2,8 @@
 // Write to log.
 debug_log('LIST');
 
-// Check access - user must be admin!
-bot_access_check($update, BOT_ADMINS);
+// Check access.
+bot_access_check($update, BOT_ACCESS);
 
 // Get the userid and chattype
 $userid = $update['message']['from']['id'];
@@ -17,7 +17,7 @@ $keys = [
     [
         [
             'text'          => getTranslation('list'),
-            'callback_data' => $userid . ',' . $chattype . ':list_raids:0'
+            'callback_data' => $userid . ',' . $chattype . ':raids_list:0'
         ]
     ],
     [

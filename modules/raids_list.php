@@ -1,9 +1,6 @@
 <?php
 // Write to log.
-debug_log('POKEMON');
-
-// Check access.
-bot_access_check($update, BOT_ACCESS);
+debug_log('RAIDS_LIST');
 
 // Build query.
 $rs = my_query(
@@ -13,7 +10,7 @@ $rs = my_query(
       WHERE   id = (
                   SELECT    raid_id
                   FROM      attendance
-                    WHERE   user_id = {$update['message']['from']['id']}
+                    WHERE   user_id = {$update['callback_query']['from']['id']}
                   ORDER BY  id DESC LIMIT 1
               )
     "
@@ -35,8 +32,8 @@ if (!$row) {
 $request = my_query(
     "
     SELECT    *,
-              UNIX_TIMESTAMP(start_time)                      AS ts_start,
               UNIX_TIMESTAMP(end_time)                        AS ts_end,
+              UNIX_TIMESTAMP(start_time)                      AS ts_start,
               UNIX_TIMESTAMP(NOW())                           AS ts_now,
               UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
     FROM      raids
@@ -49,34 +46,59 @@ $request = my_query(
 // Count results.
 $count = 0;
 
+// Get raids.
 while ($raid = $request->fetch_assoc()) {
+
+    // Counter++
+    $count = $count + 1;
+
     // Create keys array.
     $keys = [
+        [
+            [
+                'text'          => getTranslation('expand'),
+                'callback_data' => $raid['id'] . ':vote_refresh:0',
+            ]
+        ],
         [
             [
                 'text'          => getTranslation('update_pokemon'),
                 'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
             ]
+        ],
+        [
+            [
+                'text'          => getTranslation('delete'),
+                'callback_data' => $raid['id'] . ':raids_delete:0'
+            ]
         ]
     ];
-
-    // Counter++
-    $count = $count + 1;
 
     // Get message.
     $msg = show_raid_poll_small($raid);
 
     // Send message.
-    send_message($update['message']['from']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
+    send_message($update['callback_query']['from']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
 }
-
-// Send message if no active raids were found.
+    
+// Set message.
 if($count == 0) {
-    // Set message.
+    //sendMessage($update['callback_query']['from']['id'], '<b>' . getTranslation('no_active_raids_found') . '</b>');
     $msg = '<b>' . getTranslation('no_active_raids_found') . '</b>';
-
-    // Send message.
-    sendMessage($update['message']['from']['id'], $msg);
+} else {
+    $msg = '<b>' . getTranslation('list_all_active_raids') . ':</b>';
 }
+
+// Set message.
+$keys = [];
+
+// Edit message.
+edit_message($update, $msg, $keys, false);
+
+// Build callback message string.
+$callback_response = 'OK';
+
+// Answer callback.
+answerCallbackQuery($update['callback_query']['id'], $callback_response);
 
 exit;
