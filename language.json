@@ -608,7 +608,7 @@
 		"PT-BR": "A raid já está ativa!"
 	},
 	"bot_access_denied" : {
-		"NL": "Je hebt geen toegang tot deze functie!",
+		"NL": "Je hebt geen toegang tot deze functie of bot!",
 		"DE": "Sie haben keine Berechtigung diesen Befehl oder Bot zu nutzen!",
 		"EN": "You are not allowed to use this command or bot!",
 		"PT-BR": "Você não tem permissão para utilizar esse comando ou bot!"
