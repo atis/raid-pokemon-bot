@@ -532,7 +532,7 @@ function raid_edit_start_keys($id)
                 'callback_data' => $id . ':edit:2'
             ],
             [
-                'text'          => getTranslation('5stars'),
+                'text'          => getTranslation('1stars'),
                 'callback_data' => $id . ':edit:1'
             ]
 */        ]
