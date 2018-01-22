@@ -163,14 +163,28 @@ As a member of `BOT_ACCESS` you can create raid polls, update your own raid poll
 Telegram Users can only vote on raid polls, but have no access to other bot functions (unless you configured it for public access).
 
 
-| Access        | Database  | Raid poll |                                      |                  | Pokemon                       |                               | Gym             |                  | Moderators       |                 |                    | Help             |
-|---------------|-----------|-----------|--------------------------------------|------------------|-------------------------------|-------------------------------|-----------------|------------------|------------------|-----------------|--------------------|------------------|
-|               |           | **Vote**  | **Create** `/start`, `/raid`, `/new` | **List** `/list` | **All raid polls** `/pokemon` | **Own raid polls** `/pokemon` | **Name** `/gym` | **Team** `/team` | **List** `/mods` | **Add** `/mods` | **Delete** `/mods` | **Show** `/help` |
-| MAINTAINER_ID |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
-| BOT_ADMINS    |           | Yes       | Yes                                  | Yes              | Yes                           | Yes                           | Yes             | Yes              | Yes              | Yes             | Yes                | Yes              |
-| BOT_ACCESS    | Moderator | Yes       | Yes                                  |                  | Yes                           | Yes                           | Yes             | Yes              |                  |                 |                    | Yes              |
-| BOT_ACCESS    | User      | Yes       | Yes                                  |                  |                               | Yes                           |                 | Yes              |                  |                 |                    | Yes              |
-| Telegram      | User      | Yes       |                                      |                  |                               |                               |                 |                  |                  |                 |                    |                  |
+| Access:    |            |                                  | MAINTAINER_ID | BOT_ADMINS | BOT_ACCESS | BOT_ACCESS | Telegram |
+|-----------|------------|----------------------------------|---------------|------------|------------|------------|----------|
+| Database: |            |                                  |               |            | Moderator  | User       | User     |
+|           | **Area**   | **Action and /command**          |               |            |            |            |          |
+|           | Raid poll  | Vote                             | Yes           | Yes        | Yes        | Yes        | Yes      |
+|           |            | Create `/start`, `/raid`, `/new` | Yes           | Yes        | Yes        | Yes        |          |
+|           |            | List `/list`                     | Yes           | Yes        | Yes        | Yes        |          |
+|           |            | Overview `/list`                 | Yes           | Yes        |            |            |          |
+|           |            | Delete ALL raid polls `/delete`  | Yes           | Yes        | Yes        |            |          |
+|           |            | Delete OWN raid polls `/delete`  | Yes           | Yes        | Yes        | Yes        |          |
+|           |            |                                  |               |            |            |            |          |
+|           | Pokemon    | ALL raid polls `/pokemon`        | Yes           | Yes        | Yes        |            |          |
+|           |            | OWN raid polls `/pokemon`        | Yes           | Yes        | Yes        | Yes        |          |
+|           |            |                                  |               |            |            |            |          |
+|           | Gym        | Name `/gym`                      | Yes           | Yes        | Yes        |            |          |
+|           |            | Team `/team`                     | Yes           | Yes        | Yes        | Yes        |          |
+|           |            |                                  |               |            |            |            |          |
+|           | Moderators | List `/mods`                     | Yes           | Yes        |            |            |          |
+|           |            | Add `/mods`                      | Yes           | Yes        |            |            |          |
+|           |            | Delete `/mods`                   | Yes           | Yes        |            |            |          |
+|           |            |                                  |               |            |            |            |          |
+|           | Help       | Show `/help`                     | Yes           | Yes        | Yes        | Yes        |          |
 
 # Updates
 
@@ -216,7 +230,7 @@ Example input: `/raid Entei,52.514545,13.350095,60,Mystic,Siegessäule,Großer S
 
 Update pokemon of an existing raid poll. With this command you can change the pokemon raid boss from e.g. "Level 5 Egg" to "Lugia" once the egg has hatched.
 
-You can only change the pokemon raid boss of raid polls you created yourself. You cannot modify the pokemon of raid polls from other bot users.
+Based on your access to the bot, you may can only change the pokemon raid boss of raid polls you created yourself and cannot modify the pokemon of raid polls from other bot users.
 
 
 #### Command: /new
@@ -231,6 +245,13 @@ Example input: `/new 52.514545,13.350095`
 #### Command: /list 
 
 The bot will allow you to via a list of the last 20 active raids, share and delete all raids which got shared to channels as a raid overview.
+
+
+#### Command: /delete
+
+Delete an existing raid poll. With this command you can delete a raid poll from telegram and the database. Use with care!
+
+Based on your access to the bot, you may can only delete raid polls you created yourself and cannot delete raid polls from other bot users.
 
 
 #### Command: /team
@@ -253,5 +274,4 @@ Check your bot logfile and other related log files, e.g. apache/httpd log, php l
 
 * New gyms: Adding gyms to database without creating a raid via /raid
 * Preferred pokemon raid boss: When multiple level 5 raids are available, e.g. Lugia and Zapdos, add buttons to tell that you're coming a) only if Lugia, b) only if Zapdos, c) independently of the pokemon
-* Delete raids: Allow BOT_ADMINS to delete raids
 * Delete incomplete raids automatically: When a bot user starts to create a raid via /start, but does not finish the raid creation, incomplete raid data is stored in the raids table. A method to automatically delete them without interfering with raids just being created would be nice.
