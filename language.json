@@ -877,6 +877,12 @@
 		"EN": "Raid was successfully deleted!",
 		"PT-BR": "Raid deletado com sucesso!"
 	},
+	"action_aborted" : {
+		"NL": "Het proces is afgebroken!",
+		"DE": "Der Vorgang wurde abgebrochen!",
+		"EN": "The process was aborted!",
+		"PT-BR": "O processo foi abortado!"
+	},
 	"yes" : {
 		"NL": "Ja",
 		"DE": "Ja",
@@ -888,6 +894,12 @@
 		"DE": "Nein",
 		"EN": "No",
 		"PT-BR": "Não"
+	},
+	"abort" : {
+		"NL": "Afbreken",
+		"DE": "Abbrechen",
+		"EN": "Abort",
+		"PT-BR": "Abortar"
 	},
 	"list" : {
 		"NL": "Lijst",
