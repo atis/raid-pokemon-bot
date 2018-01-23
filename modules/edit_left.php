@@ -10,25 +10,36 @@ debug_log($data);
 // Set the id.
 $id = $data['id'];
 
+// Set the user id.
+$userid = $update['callback_query']['from']['id'];
+
 // Build query.
 my_query(
     "
     UPDATE    raids
-    SET       end_time = DATE_ADD(start_time, INTERVAL {$data['arg']} MINUTE)
+    SET       user_id = {$userid},
+              end_time = DATE_ADD(start_time, INTERVAL {$data['arg']} MINUTE)
       WHERE   id = {$id}
     "
 );
 
 if ($update['message']['chat']['type'] == 'private' || $update['callback_query']['message']['chat']['type'] == 'private') {
-    // Set the keys.
+    // Init keys.
+    $keys = array();
+
+    // Add delete to keys.
     $keys = [
         [
             [
-                'text'                => getTranslation('share'),
-                'switch_inline_query' => strval($id)
+                'text'          => getTranslation('delete'),
+                'callback_data' => $id . ':raids_delete:0'
             ]
         ]
     ];
+
+    // Add keys to share.
+    $keys_share = share_keys($id, $userid);
+    $keys = array_merge($keys, $keys_share);
 
     // Get raid times.
     $rs = my_query(
