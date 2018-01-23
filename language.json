@@ -607,6 +607,12 @@
 		"EN": "Raid is already active!",
 		"PT-BR": "A raid já está ativa!"
 	},
+	"bot_access_denied" : {
+		"NL": "Je hebt geen toegang tot deze functie of bot!",
+		"DE": "Sie haben keine Berechtigung diesen Befehl oder Bot zu nutzen!",
+		"EN": "You are not allowed to use this command or bot!",
+		"PT-BR": "Você não tem permissão para utilizar esse comando ou bot!"
+	},
 	"raid_access_denied" : {
 		"NL": "Je hebt geen rechten om deze raid aan te passen!",
 		"DE": "Sie haben keine Berechtigung dieses Raid zu bearbeiten!",
@@ -852,6 +858,24 @@
 		"DE": "Erfolgreich geteilt!",
 		"EN": "Successfully shared!",
 		"PT-BR": "Compartilhado com sucesso!"
+	},
+	"delete_this_raid" : {
+		"NL": "Verwijder deze raid?",
+		"DE": "Dieses Raid wirklich löschen?",
+		"EN": "Really delete this raid?",
+		"PT-BR": "Realmente deletar esta raid?"
+	},
+	"raid_deletion_was_canceled" : {
+		"NL": "Het verwijderen van het raid is gestopt!",
+		"DE": "Löschung des Raids wurde abgebrochen!",
+		"EN": "Deletion of the raid was canceled!",
+		"PT-BR": "O deletamento da raid foi cancelado!"
+	},
+	"raid_successfully_deleted" : {
+		"NL": "Raid is succesvol verwijderd!",
+		"DE": "Raid wurde erfolgreich gelöscht!",
+		"EN": "Raid was successfully deleted!",
+		"PT-BR": "Raid deletado com sucesso!"
 	},
 	"yes" : {
 		"NL": "Ja",

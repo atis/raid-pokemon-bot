@@ -1,6 +1,6 @@
 <?php
 // Write to log.
-debug_log('LIST_RAIDS');
+debug_log('RAIDS_LIST');
 
 // Build query.
 $rs = my_query(
@@ -58,6 +58,18 @@ while ($raid = $request->fetch_assoc()) {
             [
                 'text'          => getTranslation('expand'),
                 'callback_data' => $raid['id'] . ':vote_refresh:0',
+            ]
+        ],
+        [
+            [
+                'text'          => getTranslation('update_pokemon'),
+                'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
+            ]
+        ],
+        [
+            [
+                'text'          => getTranslation('delete'),
+                'callback_data' => $raid['id'] . ':raids_delete:0'
             ]
         ]
     ];

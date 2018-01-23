@@ -7,6 +7,9 @@ debug_log($data);
 $chat_id = 0;
 $chat_id = $data['arg'];
 
+// Check access.
+bot_access_check($update, BOT_ADMINS);
+
 // Get all or specific overview
 if ($chat_id == 0) {
     $request_overviews = my_query(

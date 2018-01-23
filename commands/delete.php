@@ -1,6 +1,6 @@
 <?php
 // Write to log.
-debug_log('POKEMON');
+debug_log('DELETE');
 
 // Check access.
 bot_access_check($update, BOT_ACCESS);
@@ -35,8 +35,8 @@ if (!$row) {
 $request = my_query(
     "
     SELECT    *,
-              UNIX_TIMESTAMP(start_time)                      AS ts_start,
               UNIX_TIMESTAMP(end_time)                        AS ts_end,
+              UNIX_TIMESTAMP(start_time)                      AS ts_start,
               UNIX_TIMESTAMP(NOW())                           AS ts_now,
               UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(NOW())  AS t_left
     FROM      raids
@@ -49,19 +49,21 @@ $request = my_query(
 // Count results.
 $count = 0;
 
+// Get raids.
 while ($raid = $request->fetch_assoc()) {
+
+    // Counter++
+    $count = $count + 1;
+
     // Create keys array.
     $keys = [
         [
             [
-                'text'          => getTranslation('update_pokemon'),
-                'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
+                'text'          => getTranslation('delete'),
+                'callback_data' => $raid['id'] . ':raids_delete:0'
             ]
         ]
     ];
-
-    // Counter++
-    $count = $count + 1;
 
     // Get message.
     $msg = show_raid_poll_small($raid);
@@ -69,12 +71,12 @@ while ($raid = $request->fetch_assoc()) {
     // Send message.
     send_message($update['message']['from']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
 }
-
+    
 // Send message if no active raids were found.
 if($count == 0) {
     // Set message.
     $msg = '<b>' . getTranslation('no_active_raids_found') . '</b>';
-
+    
     // Send message.
     sendMessage($update['message']['from']['id'], $msg);
 }
