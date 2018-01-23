@@ -27,7 +27,7 @@ Use https://www.miniwebtool.com/sha512-hash-generator/ and set `CONFIG_HASH` to 
 
 ## Sharing raids
 
-You can share raid polls wth any chat in Telegram via a share button.
+You can share raid polls with any chat in Telegram via a share button.
 
 Sharing raid polls can be restricted, so only moderators or users or both can be allowed to share a raid poll.
 
