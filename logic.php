@@ -696,6 +696,68 @@ function next_key($keys, $id, $action, $arg)
 }
 
 /**
+ * Share keys.
+ * @param $raid_id
+ * @param $user_id
+ * @return array
+ */
+function share_keys($raid_id, $user_id) 
+{
+    // Moderator or not?
+    debug_log("Checking if user is moderator: " . $user_id);
+    $rs = my_query(
+        "
+        SELECT    moderator
+        FROM      users
+          WHERE   user_id = {$user_id}
+        "
+    );
+
+    // Fetch user data.
+    $user = $rs->fetch_assoc();
+
+    // Check moderator status.
+    $mod = $user['moderator'];
+    debug_log('User is ' . (($mod == 1) ? '' : 'not ') . 'a moderator: ' . $user_id);
+
+    // Add share button if not restricted.
+    if ((SHARE_MODERATORS == true && $mod == 1) || SHARE_USERS == true) {
+        debug_log('Adding general share key to inline keys');
+        // Set the keys.
+        $keys[] = [
+            [
+                'text'                => getTranslation('share'),
+                'switch_inline_query' => strval($raid_id)
+            ]
+        ];
+    }
+        
+    // Add buttons for predefined sharing chats.
+    if (!empty(SHARE_CHATS)) {
+        // Add keys for each chat.
+        $chats = explode(',', SHARE_CHATS);
+        foreach($chats as $chat) {
+            // Get chat object 
+            debug_log("Getting chat object for '" . $chat . "'");
+            $chat_obj = get_chat($chat);
+            
+            // Check chat object for proper response.
+            if ($chat_obj['ok'] == true) {
+                debug_log('Proper chat object received, continuing to add key for this chat: ' . $chat_obj['result']['title']);
+                $keys[] = [
+                    [
+                        'text'          => getTranslation('share_with') . ' ' . $chat_obj['result']['title'],
+                        'callback_data' => $raid_id . ':raid_share:' . $chat
+                    ]
+                ];
+            }
+        }
+    }
+
+    return $keys;
+}
+
+/**
  * Insert cleanup info to database.
  * @param $chat_id
  * @param $message_id
