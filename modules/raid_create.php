@@ -142,14 +142,11 @@ if ($raid_id != 0) {
     // Create the keys.
     if ($raid_status == "end") {
 	$msg = getTranslation('raid_already_exists') . CR . show_raid_poll_small($raid);
-	// Update pokemon or share raid?
+        // Init keys.
+        $keys = array();
+
+	// Update pokemon and delete raid
         $keys = [
-            [
-                [
-                    'text'          => getTranslation('update_pokemon'),
-                    'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
-                ]
-            ],
             [
                 [
                     'text'          => getTranslation('delete'),
@@ -158,14 +155,19 @@ if ($raid_id != 0) {
             ],
             [
                 [
-                    'text'                => getTranslation('share'),
-                    'switch_inline_query' => strval($raid['id'])
+                    'text'          => getTranslation('update_pokemon'),
+                    'callback_data' => $raid['id'] . ':raid_edit_poke:' . $raid['pokemon'],
                 ]
             ]
         ];
+
+        // Add keys to share.
+        $keys_share = share_keys($raid['id'], $userid);
+        $keys = array_merge($keys, $keys_share);
     } else {
 	// Set message string
-	$msg_main = getTranslation('raid_being_created_by_other_user') . CR . get_user($raid['user_id']);
+	$msg_main = getTranslation('raid_being_created_by_other_user') . CR;
+        $msg_main .= getTranslation('gym') . ': ' . $raid['gym_name'] . CR . get_user($raid['user_id']);
 	$msg_main .= getTranslation('raid_creation_started_at') . " " . unix2tz($raid['ts_start'], $raid['timezone']) . '.';
 	$access_msg_header = '';
 	$access_msg_footer = '';
@@ -177,8 +179,7 @@ if ($raid_id != 0) {
             $rs = my_query(
                 "
                     UPDATE        raids
-                    SET           user_id = {$userid},
-                                  start_time = NOW()
+                    SET           start_time = NOW()
                 "
             );
 
@@ -187,6 +188,15 @@ if ($raid_id != 0) {
 	    $access_msg_header .= CR . "<b>" . getTranslation('raid_creation_in_progress_warning') . "</b>" . CR . CR;
 	    $access_msg_footer .= CR . CR . getTranslation('select_raid_level_to_continue') . ':';
 	    $keys = raid_edit_start_keys($raid['id']);
+            $key_exit = [
+                [
+                    [
+                        'text'          => getTranslation('abort'),
+                        'callback_data' => '0:exit:0'
+                    ]
+                ]
+            ];
+            $keys = array_merge($keys, $key_exit);
 	} else {
             $keys = [];
 	}
