@@ -19,6 +19,10 @@ define('BOT_NAME',          '@RaidPokemonBot');
 define('BOT_ADMINS',        ''); // optional
 define('BOT_ACCESS',        ''); // optional
 
+define('SHARE_MODERATORS',  true);
+define('SHARE_USERS',       true);
+define('SHARE_CHATS',       '');
+
 define('RAID_LOCATION',     false); // send location as message in addition to raid poll message
 define('RAID_SLOTS',        '15'); // minutes
 define('RAID_LAST_START',   '10'); // minutes before RAID ends
