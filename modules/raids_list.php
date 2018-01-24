@@ -74,6 +74,10 @@ while ($raid = $request->fetch_assoc()) {
         ]
     ];
 
+    // Add keys to share.
+    $keys_share = share_keys($raid['id'], $update['callback_query']['from']['id']);
+    $keys = array_merge($keys, $keys_share);
+
     // Get message.
     $msg = show_raid_poll_small($raid);
 
