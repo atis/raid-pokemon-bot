@@ -250,7 +250,7 @@ if ($update['message']['chat']['type'] == 'private' || $update['callback_query']
     ];
 
     // Send the message.
-    send_message($update['message']['chat']['id'], $text, $keys);
+    send_message($update['message']['chat']['id'], $text, $keys, ['disable_web_page_preview' => 'true']);
 
 } else {
     // Set reply to.

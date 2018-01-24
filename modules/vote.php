@@ -31,7 +31,7 @@ $row = $rs->fetch_assoc();
 $extraPeople = intval($data['arg'] - 1);
 
 // Check if we found the users team.
-$team = !empty($row['team']) ? "'" . $row['team'] . "'" : NULL;
+$team = !empty($row['team']) ? "'" . $row['team'] . "'" : "NULL";
 
 // Write to log.
 debug_log($row);
