@@ -1745,7 +1745,7 @@ function weekday_number2name ($weekdaynumber)
 		$weekday = getTranslation('tuesday');
 		break;
 	    case 3: 
-		$weekday = getTranslation('wensday');
+		$weekday = getTranslation('wednesday');
 		break;
 	    case 4: 
 		$weekday = getTranslation('thursday');
@@ -1754,7 +1754,7 @@ function weekday_number2name ($weekdaynumber)
 		$weekday = getTranslation('friday');
 		break;
 	    case 6: 
-		$weekday = getTranslation('saterday');
+		$weekday = getTranslation('saturday');
 		break;
 	    case 7: 
 		$weekday = getTranslation('sunday');

@@ -90,7 +90,7 @@
 		"EN": "Tuesday",
 		"PT-BR": "Terça-feira"
 	},
-	"wensday" : {
+	"wednesday" : {
 		"NL": "Woensdag",
 		"DE": "Mittwoch",
 		"EN": "Wednesday",
@@ -108,7 +108,7 @@
 		"EN": "Friday",
 		"PT-BR": "Sexta-feira"
 	},
-	"saterday" : {
+	"saturday" : {
 		"NL": "Zaterdag",
 		"DE": "Samstag",
 		"EN": "Saturday",
@@ -322,6 +322,12 @@
 		"DE": "Absol",
 		"EN": "Absol",
 		"PT-BR": "Absol"
+	},
+	"aggron" : {
+		"NL": "Aggron",
+		"DE": "Stolloss",
+		"EN": "Aggron",
+		"PT-BR": "Aggron"
 	},
 	"tyranitar" : {
 		"NL": "Tyranitar",
