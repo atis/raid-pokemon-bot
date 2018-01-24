@@ -90,6 +90,8 @@ if (isset($update['cleanup']) && CLEANUP == true) {
         // Run cleanup
         cleanup_log('Calling cleanup process now!');
         run_cleanup($telegram, $database);
+    } else {
+        cleanup_log('Error! Wrong cleanup secret supplied!', '!');
     }
     // Exit after cleanup
     exit();

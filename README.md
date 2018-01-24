@@ -25,6 +25,32 @@ Bot Settings:
 
 Use https://www.miniwebtool.com/sha512-hash-generator/ and set `CONFIG_HASH` to hashed value of your token (make sure it is lowecase)
 
+## Sharing raids
+
+You can share raid polls with any chat in Telegram via a share button.
+
+Sharing raid polls can be restricted, so only moderators or users or both can be allowed to share a raid poll.
+
+Therefore it is possible, via a comma-separated list, to specify the chats the raid polls can be shared with.
+
+A few examples:
+
+#### Restrict sharing for moderators and users to chats -100111222333 and @RaidChat
+
+`define('SHARE_MODERATORS', false);`
+
+`define('SHARE_USERS', false);`
+
+`define('SHARE_CHATS', '-100111222333,@RaidChat');`
+
+#### Allow moderators to share with any chat, restrict sharing for users to chat @RaidChat
+
+`define('SHARE_MODERATORS', true);`
+
+`define('SHARE_USERS', false);`
+
+`define('SHARE_CHATS', '@RaidChat');`
+
 ## Raid times
 
 There are several options to configure the times related to the raid polls:
