@@ -476,7 +476,7 @@ function curl_json_request($json)
         debug_log('ERROR: ' . $json . "\n\n" . $json_response . "\n\n");
     } else {
 	// Result seems ok, get message_id and chat_id if supergroup or channel message
-	if ($response['result']['chat']['type'] == ("channel" || "supergroup")) {
+	if ($response['result']['chat']['type'] == "channel" || $response['result']['chat']['type'] == "supergroup") {
             // Init raid_id
             $raid_id = 0;
 
@@ -486,6 +486,10 @@ function curl_json_request($json)
 
             // Get raid id from $json
             $json_message = json_decode($json, true);
+
+            // Write to log that message was shared with channel or supergroup
+            debug_log('Message was shared with ' . $response['result']['chat']['type'] . ' ' . $response['result']['chat']['title']);
+            debug_log('Checking input for cleanup info now...');
 
 	    // Check if callback_data is present to get the raid_id and reply_to_message_id is set to filter only raid messages
             if (!empty($json_message['reply_markup']['inline_keyboard']['0']['0']['callback_data']) && !empty($json_message['reply_to_message_id'])) {
@@ -503,6 +507,8 @@ function curl_json_request($json)
 	        } else {
 		    debug_log('Missing input! Cannot call cleanup preparation!');
 		}
+            } else {
+                debug_log('No cleanup info found! Skipping cleanup preparation!');
             }
 
             // Check if text starts with getTranslation('raid_overview_for_chat') and inline keyboard is empty
