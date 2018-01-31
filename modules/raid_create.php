@@ -180,6 +180,7 @@ if ($raid_id != 0) {
                 "
                     UPDATE        raids
                     SET           start_time = NOW()
+                       WHERE id = {$raid_id}
                 "
             );
 
