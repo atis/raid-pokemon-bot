@@ -281,6 +281,54 @@
     		"EN": "Kyogre",
 		"PT-BR": "Kyogre"
   	},
+	"rayquaza" : {
+    		"NL": "Rayquaza",
+    		"DE": "Rayquaza",
+    		"EN": "Rayquaza",
+		"PT-BR": "Rayquaza"
+	},
+  	"latios" : {
+    		"NL": "Latios",
+    		"DE": "Latios",
+    		"EN": "Latios",
+		"PT-BR": "Latios"
+  	},
+  	"latias" : {
+    		"NL": "Latias",
+    		"DE": "Latias",
+    		"EN": "Latias",
+		"PT-BR": "Latias"
+  	},
+  	"deoxys" : {
+    		"NL": "Deoxys",
+    		"DE": "Deoxys",
+    		"EN": "Deoxys",
+		"PT-BR": "Deoxys"
+  	},
+  	"jirachi" : {
+    		"NL": "Jirachi",
+    		"DE": "Jirachi",
+    		"EN": "Jirachi",
+		"PT-BR": "Jirachi"
+  	},
+  	"regirock" : {
+    		"NL": "Regirock",
+    		"DE": "Regirock",
+    		"EN": "Regirock",
+		"PT-BR": "Regirock"
+  	},
+  	"regice" : {
+    		"NL": "Regice",
+    		"DE": "Regice",
+    		"EN": "Regice",
+		"PT-BR": "Regice"
+  	},
+  	"registeel" : {
+    		"NL": "Registeel",
+    		"DE": "Registeel",
+    		"EN": "Registeel",
+		"PT-BR": "Registeel"
+  	},
 	"egg_5" : {
 		"NL": "Level 5 Ei",
 		"DE": "Level 5 Ei",
@@ -511,7 +559,7 @@
 		
 	},
 	"raid_boss" : {
-		"NL": "Raid baas",
+		"NL": "#Raid baas",
 		"DE": "Raid-Boss",
 		"EN": "Raid boss",
 		"PT-BR": "Chefe da raid"
