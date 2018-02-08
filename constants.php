@@ -42,6 +42,7 @@ $pokemon = array(
         getTranslation('suicune'),
         getTranslation('groudon'),
         getTranslation('kyogre'),
+        getTranslation('rayquaza'),
         getTranslation('egg_5')
     ),
     '4' => array(
