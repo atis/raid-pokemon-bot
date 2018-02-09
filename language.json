@@ -937,6 +937,18 @@
 		"EN": "The process was aborted!",
 		"PT-BR": "O processo foi abortado!"
 	},
+	"any" : {
+		"NL": "Elk",
+		"DE": "Egal",
+		"EN": "Any",
+		"PT-BR": "Qualquer"
+	},
+	"any_pokemon" : {
+		"NL": "Elke raid baas",
+		"DE": "Jeder Raid-Boss",
+		"EN": "Any raid boss",
+		"PT-BR": "Qualquer chefe da raid"
+	},
 	"yes" : {
 		"NL": "Ja",
 		"DE": "Ja",
