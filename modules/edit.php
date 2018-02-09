@@ -36,6 +36,8 @@
 		]],[[
 				'text' => 'Kyogre', 'callback_data' => $id.':edit_poke:kyogre',
 			],[
+				'text' => 'Rayquaza', 'callback_data' => $id.':edit_poke:rayquaza',
+			],[
 				'text' => 'Legendary (unknown)', 'callback_data' => $id.':edit_poke:legendary',
 		]]];
 	
@@ -59,6 +61,8 @@
 				'text' => 'Poliwrath', 'callback_data' => $id.':edit_poke:poliwrath',
 			],[
 				'text' => 'NidoQueen', 'callback_data' => $id.':edit_poke:nidoqueen',
+		]],[[
+				'text' => 'Aggron', 'callback_data' => $id.':edit_poke:aggron',
 		]]];
 	} else if ($data['arg']=='type_3') {
 		$keys = 
