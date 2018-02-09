@@ -18,11 +18,28 @@
 	$tz = get_timezone($lat, $lon);
 	$addr = get_address($lat, $lon);
 
-	$end_time = 'DATE_ADD(first_seen, INTERVAL '.$data[3].' MINUTE)';
-	if (strpos($data[3],':')) {
+
+	if (preg_match('|([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2})(?:/([0-9]*))?|',$data[3],$match)) {
+		/* Start time */
+		$dt = new DateTime($match[1], new DateTimeZone($tz));
+		$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+		$first_seen = '"'.$dt->format('Y-m-d H:i:s').'"';
+
+		$duration = $match[2];
+		if (!$duration) $duration = 45;
+		$end_time = 'DATE_ADD('.$first_seen.', INTERVAL '.intval($duration).' MINUTE)';
+	} else if (strpos($data[3],':')) {
 		$dt = new DateTime($data[3]);
 		$dt->setTimeZone(new DateTimeZone($tz));
+		$first_seen = 'NOW()';
 		$end_time = '"'.$dt->format('Y-m-d H:i:s').'"';
+	} else if (intval($data[3])>0) {
+		$first_seen = 'NOW()';
+		$end_time = 'DATE_ADD(first_seen, INTERVAL '.intval($data[3]).' MINUTE)';
+	} else {
+		send_message('none',$update['message']['chat']['id'],'Time format must be either minutes left, or YYYY-MM-DD hh:mm',[]);
+		exit;
+
 	}
 
 	$q = 'INSERT INTO raids SET 
@@ -30,7 +47,7 @@
 		user_id='.$update['message']['from']['id'].', 
 		lat="'.$lat.'", 
 		lon="'.$lon.'",
-		first_seen=NOW(),
+		first_seen='.$first_seen.',
 		end_time='.$end_time.',
 		gym_name="'.$db->real_escape_string($data[4]).'"
 	';
