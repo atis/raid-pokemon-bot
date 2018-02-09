@@ -1217,19 +1217,23 @@ function keys_vote($raid)
             // Compare pokemon by pokemon to get raid level
             foreach($levelmons as $key => $pokemon) {
                 if(strtolower($raid_pokemon) == strtolower($pokemon)) {
-                    $level_found = true;
-                    $raid_level = $level;
-                    //debug_log("Found raid boss '" . $pokemon . "' in level " . $level . " raids");
-                    break 2;
+                    // Stop if pokemon is in level X too.
+                    if(in_array(strtolower($raid_pokemon), $ignore_X)) {
+                        break 2;
+                    } else {
+                        $level_found = true;
+                        $raid_level = $level;
+                        //debug_log("Found raid boss '" . $pokemon . "' in level " . $level . " raids");
+                        break 2;
+                    }
                 }
             }
         }
 
         // Add pokemon keys if we found the raid boss
         if ($level_found) {
-            // Init counter and cols 
+            // Init counter. 
             $count = 0;
-            $col_poke = 1;
 
             foreach($pokemonlist as $level => $levelmons) {
                 if($level == $raid_level) {
@@ -1237,13 +1241,6 @@ function keys_vote($raid)
                         // Ignore raid eggs and level X pokemon
                         if(strtolower($pokemon) == strtolower(getTranslation('egg_' . $level))) continue;
                         if(in_array(strtolower($pokemon), $ignore_X)) continue; 
-
-                        // Not too many pokemon in a row
-                        if ($col_poke++ >= 3) {
-                            $keys[] = $keys_poke;
-                            $keys_poke = [];
-                            $col_poke = 1;
-                        }
 
                         // Add pokemon to keys
                         $keys_poke[] = array(
@@ -1266,7 +1263,8 @@ function keys_vote($raid)
                 );
 
                 // Finally add pokemon to keys
-                $keys[] = $keys_poke;
+                $keys_poke = inline_key_array($keys_poke, 3);
+                $keys = array_merge($keys, $keys_poke);
             }
         }
     }
