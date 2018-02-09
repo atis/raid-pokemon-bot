@@ -28,6 +28,7 @@ CREATE TABLE `attendance` (
   `arrived` tinyint(1) unsigned DEFAULT 0,
   `raid_done` tinyint(1) unsigned DEFAULT 0,
   `cancel` tinyint(1) unsigned DEFAULT 0,
+  `pokemon` varchar(12) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
