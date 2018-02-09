@@ -1190,8 +1190,86 @@ function keys_vote($raid)
         }
 
         $keys[] = $keys_time;
-    }
 
+        // Init keys pokemon array.
+        $keys_poke = [];
+
+        // Get current pokemon
+        $raid_pokemon = $raid['pokemon'];
+
+        // Init raid level and level found
+        $raid_level = 0;
+        $level_found = false;
+
+        // Ignore level X raid bosses
+        $ignore_X = [];
+        $X_list = $GLOBALS['pokemon']['X'];
+        foreach($X_list as $pokemon) {
+            $ignore_X[] = strtolower($pokemon);
+            debug_log('Adding pokemon to keys ignore list: ' . $pokemon); 
+        }
+
+        // Iterate thru the pokemon list to get raid level
+        $pokemonlist = $GLOBALS['pokemon'];
+        foreach($pokemonlist as $level => $levelmons) {
+            if($level == "X") continue;
+            //debug_log("Searching raid boss '" . $raid_pokemon . "' in level " . $level . " raids");
+            // Compare pokemon by pokemon to get raid level
+            foreach($levelmons as $key => $pokemon) {
+                if(strtolower($raid_pokemon) == strtolower($pokemon)) {
+                    $level_found = true;
+                    $raid_level = $level;
+                    //debug_log("Found raid boss '" . $pokemon . "' in level " . $level . " raids");
+                    break 2;
+                }
+            }
+        }
+
+        // Add pokemon keys if we found the raid boss
+        if ($level_found) {
+            // Init counter and cols 
+            $count = 0;
+            $col_poke = 1;
+
+            foreach($pokemonlist as $level => $levelmons) {
+                if($level == $raid_level) {
+                    foreach($levelmons as $key => $pokemon) {
+                        // Ignore raid eggs and level X pokemon
+                        if(strtolower($pokemon) == strtolower(getTranslation('egg_' . $level))) continue;
+                        if(in_array(strtolower($pokemon), $ignore_X)) continue; 
+
+                        // Not too many pokemon in a row
+                        if ($col_poke++ >= 3) {
+                            $keys[] = $keys_poke;
+                            $keys_poke = [];
+                            $col_poke = 1;
+                        }
+
+                        // Add pokemon to keys
+                        $keys_poke[] = array(
+                            'text'          => $pokemon,
+                            'callback_data' => $raid['id'] . ':vote_pokemon:' . $pokemon
+                        );
+
+                        // Counter
+                        $count = $count + 1;
+                    }
+                }
+            }
+
+            // Add pokemon keys if we have two or more pokemon
+            if($count >= 2) {
+                // Add button if raid boss does not matter
+                $keys_poke[] = array(
+                    'text'          => getTranslation('any'),
+                    'callback_data' => $raid['id'] . ':vote_pokemon:0'
+                );
+
+                // Finally add pokemon to keys
+                $keys[] = $keys_poke;
+            }
+        }
+    }
 
     $keys[] = [
         [
@@ -2010,84 +2088,125 @@ function show_raid_poll($raid)
 	    $msg .= CR;
 	}
 
-        $user_rs = my_query(
+        // Get pokemon
+        $poke_rs = my_query(
             "
             SELECT        *
             FROM          attendance
-              WHERE       UNIX_TIMESTAMP(attend_time) = {$ts['ts_att']}
-                AND       raid_done != 1
-                AND       cancel != 1
-                AND       raid_id = {$raid['id']}
-                ORDER BY  team ASC, arrived ASC
+              WHERE       raid_id = {$raid['id']}
+                GROUP BY  pokemon
             "
         );
 
-        // Init empty attend users array.
-        $att_users = array();
+        // Init empty pokemon array.
+        $voted_poke = array();
+        $count_poke = 0;
 
-
-        while ($rowUsers = $user_rs->fetch_assoc()) {
-            $att_users[] = $rowUsers;
+        // Count pokemons which users voted for.
+        while ($rowPoke = $poke_rs->fetch_assoc()) {
+            $voted_poke[] = $rowPoke;
+            $count_poke = $count_poke + 1;
         }
 
-        // Write to log.
-        debug_log($att_users);
-
-        foreach ($att_users as $vv) {
-            // Write to log.
-            debug_log($vv['user_id']);
-
-            // Get user data.
-            $rs = my_query(
+        // Get users for each pokemon.
+        foreach ($voted_poke as $pp) {
+            // Get users.
+            $user_rs = my_query(
                 "
-                SELECT  *
-                FROM    users
-                WHERE   user_id = {$vv['user_id']}
+                SELECT        *
+                FROM          attendance
+                  WHERE       UNIX_TIMESTAMP(attend_time) = {$ts['ts_att']}
+                    AND       raid_done != 1
+                    AND       cancel != 1
+                    AND       raid_id = {$raid['id']}
+                    AND       pokemon = '{$pp['pokemon']}'
+                    ORDER BY  team ASC, arrived ASC
                 "
             );
 
-            // Get the row.
-            $row = $rs->fetch_assoc();
+            // Init empty attend users array and counter.
+            $att_users = array();
+            $cnt_users = 0;
 
-            // Always use name.
-            $name = '<a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
+            while ($rowUsers = $user_rs->fetch_assoc()) {
+                $att_users[] = $rowUsers;
+                $cnt_users = $cnt_users + 1;
+            }
 
-            // Unknown team.
-            if ($row['team'] === NULL) {
-                $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' ';
-
-            // Known team.
+            if($cnt_users == 0) {
+                // No users voted for this pokemon, continue
+                continue;
             } else {
-                $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ';
+                // Show any raid boss in message when we have more than 2 pokemon and pokemon is 0
+                if($count_poke >= 2 && $pp['pokemon'] == '0') {
+                        $msg .= '<b>' . getTranslation('any_pokemon') . '</b>' . CR;
+                // Show raid boss name in message when we have 1 or more pokemon and pokemon is NOT 0
+                } else if($count_poke >= 1 && $pp['pokemon'] != '0') {
+                        $msg .= '<b>' . $pp['pokemon'] . '</b>' . CR;
+                }
+                // Missing else since unnecessary: Hide raid boss name in message when we have just 1 pokemon which is 0
             }
 
-            // Add level.
-            if ($row['level'] != 0) {
-                $msg .= '<b>'.$row['level'].'</b>';
+            // Write to log.
+            debug_log($att_users);
+
+            foreach ($att_users as $vv) {
+
+                // Write to log.
+                debug_log($vv['user_id']);
+
+                // Get user data.
+                $rs = my_query(
+                    "
+                    SELECT  *
+                    FROM    users
+                    WHERE   user_id = {$vv['user_id']}
+                    "
+                );
+
+                // Get the row.
+                $row = $rs->fetch_assoc();
+
+                // Always use name.
+                $name = '<a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a>';
+
+                // Unknown team.
+                if ($row['team'] === NULL) {
+                    $msg .= ' └ ' . $GLOBALS['teams']['unknown'] . ' ';
+
+                // Known team.
+                } else {
+                    $msg .= ' └ ' . $GLOBALS['teams'][$row['team']] . ' ';
+                }
+
+                // Add level.
+                if ($row['level'] != 0) {
+                    $msg .= '<b>'.$row['level'].'</b>';
+                    $msg .= ' ';
+                }
+
+                // Add name.
+                $msg .= $name;
                 $msg .= ' ';
+
+                // Arrived.
+                if ($vv['arrived']) {
+		    // No time is displayed, but undefined_index error in log, so changed it:
+                    //$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
+                    $msg .= '[' . getTranslation('here') . '] ';
+
+                // Cancelled.
+                } else if ($vv['cancel']) {
+                    $msg .= '[' . getTranslation('cancel') . '] ';
+                }
+
+                // Add extra people.
+                if ($vv['extra_people']) {
+                    $msg .= '+' . $vv['extra_people'];
+                }
+
+                $msg .= CR;
             }
-
-            // Add name.
-            $msg .= $name;
-            $msg .= ' ';
-
-            // Arrived.
-            if ($vv['arrived']) {
-		// No time is displayed, but undefined_index error in log, so changed it:
-                //$msg .= '[Bin da' . unix2tz($vv['ts_att'], $raid['timezone']) . '] ';
-                $msg .= '[' . getTranslation('here') . '] ';
-
-            // Cancelled.
-            } else if ($vv['cancel']) {
-                $msg .= '[' . getTranslation('cancel') . '] ';
-            }
-
-            // Add extra people.
-            if ($vv['extra_people']) {
-                $msg .= '+' . $vv['extra_people'];
-            }
-
-            $msg .= CR;
         }
     }
 
