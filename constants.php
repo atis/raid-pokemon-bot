@@ -54,29 +54,25 @@ $pokemon = array(
     ),
     '4' => array(
         getTranslation('tyranitar'),
-        getTranslation('snorlax'),
         getTranslation('lapras'),
-        getTranslation('poliwrath'),
-        getTranslation('victreebel'),
-        getTranslation('nidoqueen'),
-        getTranslation('nidoking'),
-        getTranslation('rhydon'),
-        getTranslation('golem'),
+        getTranslation('snorlax'),
+        getTranslation('feraligatr'),
         getTranslation('absol'),
         getTranslation('aggron'),
         getTranslation('egg_4')
     ),
     '3' => array(
-        getTranslation('arcanine'),
         getTranslation('machamp'),
-        getTranslation('alakazam'),
-        getTranslation('gengar'),
-        getTranslation('scyther'),
-        getTranslation('porygon'),
-        getTranslation('omastar'),
-        getTranslation('ninetails'),
+        getTranslation('jynx'),
+        getTranslation('azumarill'),
+        getTranslation('piloswine'),
         getTranslation('egg_3')
+    ),
+    '2' => array(
+        getTranslation('egg_2')
+    ),
+    '1' => array(
+        getTranslation('egg_1')
     )
 );
-
 
