@@ -28,8 +28,8 @@
 		$duration = $match[2];
 		if (!$duration) $duration = 45;
 		$end_time = 'DATE_ADD('.$first_seen.', INTERVAL '.intval($duration).' MINUTE)';
-	} else if (strpos($data[3],':')) {
-		$dt = new DateTime($data[3]);
+	} else if (preg_match('|([0-9]{2}:[0-9]{2})|',$data[3],$match)) {
+		$dt = new DateTime($match[0]);
 		$dt->setTimeZone(new DateTimeZone($tz));
 		$first_seen = 'NOW()';
 		$end_time = '"'.$dt->format('Y-m-d H:i:s').'"';

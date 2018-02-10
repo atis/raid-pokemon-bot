@@ -26,65 +26,70 @@
 	$content = file_get_contents('php://input');
 
 	$update = json_decode($content, true);
-	if (!$update) { 
-		debug_log($content, '!');
-	} else { 
-		debug_log($update,'<');
-	}
-
-	$command = NULL;
-
-	$db = new mysqli('localhost',BOT_ID,BOT_KEY,BOT_ID);
-	if ($db->connect_errno) {
-		debug_log("Failed to connect to Database!".$db->connect_error(), '!');
-		sendMessage('none',$update['message']['chat']['id'],"Failed to connect to Database!\nPlease contact ".MAINTAINER." and forward this message...\n");
-	}
-
-	update_user($update);
-	if (isset($update['callback_query'])) {
-		if ($update['callback_query']['data']) {
-			$d = explode(':', $update['callback_query']['data']);
-			$data['id'] = $d[0];
-			$data['action'] = $d[1];
-			$data['arg'] = $d[2];
-		}
-		debug_log('DATA=');
-		debug_log($data);
-
-		$module = 'modules/'.basename($data['action']).'.php';
-		debug_log($module);
-		if (file_exists($module)) {
-			include_once($module);
-			exit;
-		} else {
-			debug_log('No action');
+	try {
+		if (!$update) { 
+			debug_log($content, '!');
+		} else { 
+			debug_log($update,'<');
 		}
 
+		$command = NULL;
 
-	} else if (isset($update['inline_query'])){
-		/* INLINE - LIST POLLS */
-		raid_list($update);
-		exit;
-	} else if (isset($update['message']['location'])) { 
-		include_once('modules/raid_create.php');
-		exit();
-		
-	} else if (isset($update['message']['new_chat_member'])) { 
-		include_once('modules/join.php');
-		exit();
-		
-	} else if (isset($update['message'])) {
-		if (substr($update['message']['text'],0,1) == '/') {
-			$command = strtolower(str_replace('/','',str_replace(BOT_NAME,'',explode(' ',$update['message']['text'])[0])));
-			$module = 'commands/'.basename($command).'.php';
+		$db = new mysqli('localhost',BOT_ID,BOT_KEY,BOT_ID);
+		if ($db->connect_errno) {
+			debug_log("Failed to connect to Database!".$db->connect_error(), '!');
+			sendMessage('none',$update['message']['chat']['id'],"Failed to connect to Database!\nPlease contact ".MAINTAINER." and forward this message...\n");
+		}
+
+		update_user($update);
+		if (isset($update['callback_query'])) {
+			if ($update['callback_query']['data']) {
+				$d = explode(':', $update['callback_query']['data']);
+				$data['id'] = $d[0];
+				$data['action'] = $d[1];
+				$data['arg'] = $d[2];
+			}
+			debug_log('DATA=');
+			debug_log($data);
+
+			$module = 'modules/'.basename($data['action']).'.php';
 			debug_log($module);
-
 			if (file_exists($module)) {
 				include_once($module);
 				exit;
+			} else {
+				debug_log('No action');
 			}
 
-			sendMessage('none',$update['message']['chat']['id'],'<b>Please send location to start Raid announce</b> ');
+
+		} else if (isset($update['inline_query'])){
+			/* INLINE - LIST POLLS */
+			raid_list($update);
+			exit;
+		} else if (isset($update['message']['location'])) { 
+			include_once('modules/raid_create.php');
+			exit();
+			
+		} else if (isset($update['message']['new_chat_member'])) { 
+			include_once('modules/join.php');
+			exit();
+		
+		} else if (isset($update['message'])) {
+			if (substr($update['message']['text'],0,1) == '/') {
+				$command = strtolower(str_replace('/','',str_replace(BOT_NAME,'',explode(' ',$update['message']['text'])[0])));
+				$module = 'commands/'.basename($command).'.php';
+				debug_log($module);
+
+				if (file_exists($module)) {
+					include_once($module);
+					exit;
+				}
+
+				sendMessage('none',$update['message']['chat']['id'],'<b>Please send location to start Raid announce</b> ');
+			}
 		}
+	} catch (Exception $e) {
+		sendMessage('none',$update['message']['chat']['id'],"Error has occured.\n<code>".$e->getMessage()."</code>\nPlease contact ".MAINTAINER." and forward this message...\n");
+		exit;
 	}
 
