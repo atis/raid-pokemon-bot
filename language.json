@@ -329,6 +329,48 @@
     		"EN": "Registeel",
 		"PT-BR": "Registeel"
   	},
+  	  	"jynx" : {
+    		"NL": "Jynx",
+    		"DE": "Jynx",
+    		"EN": "Jynx",
+		"PT-BR": "Jynx"
+  	},
+  	"azumarill" : {
+    		"NL": "Azumarill",
+    		"DE": "Azumarill",
+    		"EN": "Azumarill",
+		"PT-BR": "Azumarill"
+  	},
+  	"piloswine" : {
+    		"NL": "Piloswine",
+    		"DE": "Piloswine",
+    		"EN": "Piloswine",
+		"PT-BR": "Piloswine"
+  	},
+  	  	"salamence" : {
+    		"NL": "Salamence",
+    		"DE": "Salamence",
+    		"EN": "Salamence",
+		"PT-BR": "Salamence"
+  	},
+  	"feraligatr" : {
+    		"NL": "Feraligatr",
+    		"DE": "Feraligatr",
+    		"EN": "Feraligatr",
+		"PT-BR": "Feraligatr"
+  	},
+  	  	"meganium" : {
+    		"NL": "Meganium",
+    		"DE": "Meganium",
+    		"EN": "Meganium",
+		"PT-BR": "Meganium"
+  	},
+  	"typhlosion" : {
+    		"NL": "Typhlosion",
+    		"DE": "Typhlosion",
+    		"EN": "Typhlosion",
+		"PT-BR": "Typhlosion"
+  	},
 	"egg_5" : {
 		"NL": "Level 5 Ei",
 		"DE": "Level 5 Ei",
@@ -346,6 +388,18 @@
 		"DE": "Level 3 Ei",
 		"EN": "Level 3 Egg",
 		"PT-BR": "Ovo de Nível 3"
+	},
+	"egg_2" : {
+		"NL": "Level 2 Ei",
+		"DE": "Level 2 Ei",
+		"EN": "Level 2 Egg",
+		"PT-BR": "Ovo de Nível 2"
+	},
+	"egg_1" : {
+		"NL": "Level 1 Ei",
+		"DE": "Level 1 Ei",
+		"EN": "Level 1 Egg",
+		"PT-BR": "Ovo de Nível 1"
 	},
 	"lapras" : {
 		"NL": "Lapras",
