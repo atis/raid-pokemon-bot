@@ -331,7 +331,7 @@
   	},
   	  	"jynx" : {
     		"NL": "Jynx",
-    		"DE": "Jynx",
+    		"DE": "Rossana",
     		"EN": "Jynx",
 		"PT-BR": "Jynx"
   	},
@@ -341,33 +341,33 @@
     		"EN": "Azumarill",
 		"PT-BR": "Azumarill"
   	},
-  	"piloswine" : {
+	"piloswine" : {
     		"NL": "Piloswine",
-    		"DE": "Piloswine",
+    		"DE": "Keifel",
     		"EN": "Piloswine",
 		"PT-BR": "Piloswine"
   	},
-  	  	"salamence" : {
+  	"salamence" : {
     		"NL": "Salamence",
-    		"DE": "Salamence",
+    		"DE": "Brutalanda",
     		"EN": "Salamence",
 		"PT-BR": "Salamence"
   	},
   	"feraligatr" : {
     		"NL": "Feraligatr",
-    		"DE": "Feraligatr",
+    		"DE": "Impergator",
     		"EN": "Feraligatr",
 		"PT-BR": "Feraligatr"
   	},
-  	  	"meganium" : {
+  	"meganium" : {
     		"NL": "Meganium",
-    		"DE": "Meganium",
+    		"DE": "Meganie",
     		"EN": "Meganium",
 		"PT-BR": "Meganium"
   	},
   	"typhlosion" : {
     		"NL": "Typhlosion",
-    		"DE": "Typhlosion",
+    		"DE": "Tornupto",
     		"EN": "Typhlosion",
 		"PT-BR": "Typhlosion"
   	},
