@@ -1230,8 +1230,47 @@ function keys_vote($raid)
             }
         }
 
+        // Get participants
+        $rs = my_query(
+            "
+            SELECT    count(attend_time)                  AS count,
+                      sum(pokemon = '0')                  AS count_any_pokemon,
+                      sum(pokemon = '{$raid_pokemon}')    AS count_raid_pokemon
+            FROM      attendance
+              WHERE   raid_id = {$raid['id']}
+              AND     attend_time IS NOT NULL
+              AND     raid_done != 1
+              AND     cancel != 1
+             "
+        );
+
+        $row = $rs->fetch_assoc();
+
+        // Count participants and participants by pokemon
+        $count_pp = $row['count'];
+        $count_any_pokemon = $row['count_any_pokemon'];
+        $count_raid_pokemon = $row['count_raid_pokemon'];
+
+        // Write to log.
+        debug_log('Participants for raid with ID ' . $raid['id'] . ': ' . $count_pp);
+        debug_log('Participants who voted for any pokemon: ' . $count_any_pokemon);
+        debug_log('Participants who voted for ' . $raid_pokemon . ': ' . $count_raid_pokemon);
+
+        // Hide keys for specific cases
+        $show_keys = true;
+        // Make sure raid boss is not an egg
+        if (strtolower($raid_pokemon) != strtolower(getTranslation('egg_' . $level))) {
+            // Make sure we either have no participants
+            // OR all participants voted for "any" raid boss
+            // OR all participants voted for the hatched raid boss 
+            // OR all participants voted for "any" or the hatched raid boss
+            if($count_pp == 0 || $count_pp == $count_any_pokemon || $count_pp == $count_raid_pokemon || $count_pp == ($count_any_pokemon + $count_raid_pokemon)) {
+                $show_keys = false;
+            }
+        }
+
         // Add pokemon keys if we found the raid boss
-        if ($level_found) {
+        if ($level_found && $show_keys) {
             // Init counter. 
             $count = 0;
 
@@ -1727,50 +1766,33 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
             $msg .= $pokemon . ' — <b>' . getTranslation('still') . ' ' . floor($time_left / 60) . ':' . str_pad($time_left % 60, 2, '0', STR_PAD_LEFT) . 'h</b>' . CR;
         }
 
-        // Build query to add attendances to message.
-        $rs = my_query(
+        // Count attendances
+        $rs_att = my_query(
             "
-            SELECT      team,
-                        COUNT(*)                            AS cnt,
-                        SUM(extra_people)                   AS extra
-            FROM        attendance
-              WHERE     raid_id = {$raid_id}
-                AND     (cancel = 0 OR cancel IS NULL)
-                AND     (raid_done = 0 OR raid_done IS NULL)
-              GROUP BY  team
+            SELECT          count(attend_time)          AS count,
+                            sum(team = 'mystic')        AS count_mystic,
+                            sum(team = 'valor')         AS count_valor,
+                            sum(team = 'instinct')      AS count_instinct,
+                            sum(team IS NULL)           AS count_no_team,
+                            sum(extra_people)           AS extra
+            FROM            attendance
+              WHERE         raid_id = {$raid_id}
+                AND         attend_time IS NOT NULL
+                AND         raid_done != 1
+                AND         cancel != 1
             "
         );
 
-        $total = 0;
-        $total_extra = 0;
-        $sep = '';
-        $msg_teams = '';
+        $att = $rs_att->fetch_assoc();
 
-        // Get attendances for each team and unknown
-        while ($row_att = $rs->fetch_assoc()) {
-            $sum = $row_att['cnt'];
-
-            if ($sum == 0) continue;
-
-            // Add to message.
-            $msg_teams .= $sep . $GLOBALS['teams'][$row_att['team']] . $sum;
-            $sep = '  ';
-            $total += $sum;
-
-            if ($row_att['extra'] > 0) {
-                $total_extra += $row_att['extra'];
-                $total += $row_att['extra'];
-            }
-        }
-
-        // Add team unknown count
-        if ($total_extra > 0) {
-            $msg_teams .= $sep . TEAM_UNKNOWN . $total_extra;
-        }
-
-        // Add attendances to message if there are some
-        if ($total > 0) {
-            $msg .= EMOJI_GROUP . '<b> ' . $total . '</b> — ' . $msg_teams . CR;
+        // Add to message.
+        if ($att['count'] > 0) {
+            $msg .= EMOJI_GROUP . '<b> ' . ($att['count'] + $att['extra']) . '</b> — ';
+            $msg .= (($att['count_mystic'] > 0) ? TEAM_B . $att['count_mystic'] . '  ' : '');
+            $msg .= (($att['count_valor'] > 0) ? TEAM_R . $att['count_valor'] . '  ' : '');
+            $msg .= (($att['count_instinct'] > 0) ? TEAM_Y . $att['count_instinct'] . '  ' : '');
+            $msg .= ((($att['count_no_team'] + $att['extra']) > 0) ? TEAM_UNKNOWN . ($att['count_no_team'] + $att['extra']) : '');
+            $msg .= CR;
         }
 
         // Add CR to message now since we don't know if attendances got added or not
@@ -2052,6 +2074,8 @@ function show_raid_poll($raid)
                         sum(team = 'instinct')      AS count_instinct,
                         sum(team IS NULL)           AS count_no_team,
                         sum(extra_people)           AS extra,
+                        sum(pokemon = '0')          AS count_any_pokemon,
+                        sum(pokemon = '{$raid['pokemon']}') AS count_raid_pokemon,
 			attend_time
         FROM            attendance
           WHERE         raid_id = {$raid['id']}
@@ -2098,12 +2122,10 @@ function show_raid_poll($raid)
 
         // Init empty pokemon array.
         $voted_poke = array();
-        $count_poke = 0;
 
         // Count pokemons which users voted for.
         while ($rowPoke = $poke_rs->fetch_assoc()) {
             $voted_poke[] = $rowPoke;
-            $count_poke = $count_poke + 1;
         }
 
         // Get users for each pokemon.
@@ -2122,27 +2144,60 @@ function show_raid_poll($raid)
                 "
             );
 
-            // Init empty attend users array and counter.
+            // Init empty attend users array.
             $att_users = array();
-            $cnt_users = 0;
 
             while ($rowUsers = $user_rs->fetch_assoc()) {
                 $att_users[] = $rowUsers;
-                $cnt_users = $cnt_users + 1;
             }
 
-            if($cnt_users == 0) {
+            // Get participants for voted time and pokemon.
+            $participants_rs = my_query(
+                "
+                SELECT        count(attend_time)          AS count,
+                              sum(team = 'mystic')        AS count_mystic,
+                              sum(team = 'valor')         AS count_valor,
+                              sum(team = 'instinct')      AS count_instinct,
+                              sum(team IS NULL)           AS count_no_team,
+                              sum(extra_people)           AS extra,
+                              attend_time
+                FROM          attendance
+                  WHERE       UNIX_TIMESTAMP(attend_time) = {$ts['ts_att']}
+                    AND       raid_done != 1
+                    AND       cancel != 1
+                    AND       raid_id = {$raid['id']}
+                    AND       pokemon = '{$pp['pokemon']}'
+                "
+            );
+
+            $row_pp = $participants_rs->fetch_assoc();
+
+            if($row_pp['count'] == 0) {
                 // No users voted for this pokemon, continue
                 continue;
             } else {
-                // Show any raid boss in message when we have more than 2 pokemon and pokemon is 0
-                if($count_poke >= 2 && $pp['pokemon'] == '0') {
-                        $msg .= '<b>' . getTranslation('any_pokemon') . '</b>' . CR;
-                // Show raid boss name in message when we have 1 or more pokemon and pokemon is NOT 0
-                } else if($count_poke >= 1 && $pp['pokemon'] != '0') {
-                        $msg .= '<b>' . $pp['pokemon'] . '</b>' . CR;
+                // Count all attendances, attendances for "any" pokemon and attendances for the raid boss
+                $count_pp = $ts['count'];
+                $count_any_pokemon = $ts['count_any_pokemon'];
+                $count_raid_pokemon = $ts['count_raid_pokemon'];
+
+                // Write to log.
+                debug_log('Summary for timeslot: ' . unix2tz($ts['ts_att'], $raid['timezone']));
+                debug_log('Participants for raid with ID ' . $raid['id'] . ': ' . $count_pp);
+                debug_log('Participants who voted for any pokemon: ' . $count_any_pokemon);
+                debug_log('Participants who voted for ' . $raid['pokemon'] . ': ' . $count_raid_pokemon);
+
+                // Show attendances when multiple pokemon are selected, unless all attending users voted for the raid boss + any pokemon
+                if($count_pp != ($count_any_pokemon + $count_raid_pokemon)) {
+                    // Add participants message.
+                    $msg .= $pp['pokemon'] == '0' ? '<b>' . getTranslation('any_pokemon') . '</b>' : '<b>' . $pp['pokemon'] . '</b>';
+                    $msg .= ' [' . ($row_pp['count'] + $row_pp['extra']) . '] — ';
+                    $msg .= (($row_pp['count_mystic'] > 0) ? TEAM_B . $row_pp['count_mystic'] . '  ' : '');
+                    $msg .= (($row_pp['count_valor'] > 0) ? TEAM_R . $row_pp['count_valor'] . '  ' : '');
+                    $msg .= (($row_pp['count_instinct'] > 0) ? TEAM_Y . $row_pp['count_instinct'] . '  ' : '');
+                    $msg .= ((($row_pp['count_no_team'] + $row_pp['extra']) > 0) ? TEAM_UNKNOWN . ($row_pp['count_no_team'] + $row_pp['extra']) : '');
+                    $msg .= CR;
                 }
-                // Missing else since unnecessary: Hide raid boss name in message when we have just 1 pokemon which is 0
             }
 
             // Write to log.
@@ -2340,48 +2395,35 @@ function show_raid_poll_small($raid)
         $msg .= '<i>' . $raid['address'] . '</i>' . CR2;
     }
 
-    // Build query.
+    // Count attendances
     $rs = my_query(
         "
-        SELECT      team,
-                    COUNT(*)                            AS cnt,
-                    SUM(extra_people)                   AS extra
-        FROM        attendance
-          WHERE     raid_id = {$raid['id']}
-            AND     (cancel = 0 OR cancel IS NULL)
-            AND     (raid_done = 0 OR raid_done IS NULL)
-          GROUP BY  team
+        SELECT          count(attend_time)          AS count,
+                        sum(team = 'mystic')        AS count_mystic,
+                        sum(team = 'valor')         AS count_valor,
+                        sum(team = 'instinct')      AS count_instinct,
+                        sum(team IS NULL)           AS count_no_team,
+                        sum(extra_people)           AS extra
+        FROM            attendance
+          WHERE         raid_id = {$raid['id']}
+            AND         attend_time IS NOT NULL
+            AND         raid_done != 1
+            AND         cancel != 1
         "
     );
 
-    $total = 0;
-    $total_extra = 0;
-    $sep = '';
-    $msg_teams = '';
+    $row = $rs->fetch_assoc();
 
-    while ($row = $rs->fetch_assoc()) {
-        $sum = $row['cnt'];
-
-        if ($sum == 0) continue;
-
-        // Add to message.
-        $msg_teams .= $sep . $GLOBALS['teams'][$row['team']] . ' ' . $sum;
-        $sep = '   ';
-        $total += $sum;
-    
-        if ($row['extra'] > 0) {
-	    $total_extra += $row['extra'];
-            $total += $row['extra'];
-        }
-    }
-    if ($total_extra > 0) {
-        $msg_teams .= $sep . TEAM_UNKNOWN . ' ' . $total_extra;
-    }
-
-    if (!$total) {
-        $msg .= getTranslation('no_participants') . CR;
+    // Add to message.
+    if ($row['count'] > 0) {
+        $msg .= EMOJI_GROUP . '<b> ' . ($row['count'] + $row['extra']) . '</b> — ';
+        $msg .= (($row['count_mystic'] > 0) ? TEAM_B . $row['count_mystic'] . '  ' : '');
+        $msg .= (($row['count_valor'] > 0) ? TEAM_R . $row['count_valor'] . '  ' : '');
+        $msg .= (($row['count_instinct'] > 0) ? TEAM_Y . $row['count_instinct'] . '  ' : '');
+        $msg .= ((($row['count_no_team'] + $row['extra']) > 0) ? TEAM_UNKNOWN . ($row['count_no_team'] + $row['extra']) : '');
+        $msg .= CR;
     } else {
-        $msg .= EMOJI_GROUP . '<b> ' . $total . '</b> — ' . $msg_teams;
+        $msg .= getTranslation('no_participants') . CR;
     }
 
     return $msg;
