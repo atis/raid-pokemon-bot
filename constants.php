@@ -42,7 +42,7 @@ $pokemon = array(
 //        getTranslation('suicune'),
 //        getTranslation('groudon'),
         getTranslation('rayquaza'),
-        getTranslation('kyogre'),
+//        getTranslation('kyogre'),
 //        getTranslation('latios'),
 //        getTranslation('latias'),
 //        getTranslation('deoxys'),
