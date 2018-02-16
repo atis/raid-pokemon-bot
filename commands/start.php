@@ -17,7 +17,7 @@ $keys = [
 	];
 
 // Set message.
-$msg = '<b>' . getTranslation('raid_by_gym') . '</b>' . CR2 . CR . '<b>' . getTranslation('send_location') . '</b>';
+$msg = '<b>' . getTranslation('raid_by_gym') . '</b>' . CR2 . CR .  getTranslation('send_location') ;
 
 // Send message.
 send_message($update['message']['chat']['id'], $msg, $keys, ['reply_markup' => ['selective' => true, 'one_time_keyboard' => true]]);
