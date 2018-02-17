@@ -800,17 +800,17 @@
 		"PT-BR": "Atualizar Pokemon"
 	},
 	"send_location" : {
-		"NL": "Stuur me alsjeblieft eerst een locatie.",
-		"DE": "Bitte sende mir zuerst einen Standort.",
-		"EN": "Please send me a location first.",
-		"PT-BR": "Por favor, antes me envie a localização."
-	},
-	"raid_by_gym" : {
-		"NL": "Of maak een raid door een Gym te selecteren:",
-		"DE": "Oder lege ein Raid per Arena-Auswahl an:",
-		"EN": "Or make a raid per gym selection:",
-		"PT-BR": "Ou escolha uma raid por ginásio:" 
-	},
+ 		"NL": "Of stuur me alsjeblieft een locatie:",
+    		"DE": "Oder sende mir einen Standort:",
+    		"EN": "Or send me a location:",
+    		"PT-BR": "Por favor, antes me envie a localização:"
+  	},
+  	"raid_by_gym" : {
+    		"NL": "Maak een raid door een Gym te selecteren.",
+    		"DE": "Lege ein Raid per Arena-Auswahl an.",
+    		"EN": "Make a raid per gym selection.",
+    		"PT-BR": "Ou escolha uma raid por ginásio." 
+  	},
 	"red" : {
 		"NL": "rood",
 		"DE": "rot",
