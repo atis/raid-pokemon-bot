@@ -28,7 +28,8 @@ if (!empty($answer)) {
     );
 
 // User has not voted before.
-} else {
+// Do nothing to avoid that the same person appears twice in raid attendances when quickly pressing a team and a voting time button
+/*} else {
     // Create attendance.
     my_query(
         "
@@ -38,6 +39,7 @@ if (!empty($answer)) {
                       team = '{$data['arg']}'
         "
     );
+*/
 }
 
 // Update users team.
