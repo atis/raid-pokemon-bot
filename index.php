@@ -55,6 +55,7 @@ $command = NULL;
 
 // Establish mysql connection.
 $db = new mysqli('localhost', DB_USER, DB_PASSWORD, DB_NAME);
+$db->set_charset('utf8');
 
 // Error connecting to db.
 if ($db->connect_errno) {
