@@ -9,6 +9,7 @@ define('DEBUG',             true);
 define('CONFIG_LOGFILE',    '/var/log/tg-bots/dev-raid-bot.log');
 define('CONFIG_HASH',       ' = hash(sha_512,tg_bot_key) ');
 
+define('DB_HOST',           'localhost');
 define('DB_NAME',           'your_database_name');
 define('DB_USER',           'your_database_user');
 define('DB_PASSWORD',       'your_database_password');
