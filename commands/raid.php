@@ -227,7 +227,8 @@ $raid = $rs->fetch_assoc();
 
 if (RAID_LOCATION == true) {
     // Send location.
-    $loc = send_location($update['message']['chat']['id'], $raid['lat'], $raid['lon']);
+    //$loc = send_location($update['message']['chat']['id'], $raid['lat'], $raid['lon']);
+    $loc = send_venue($update['message']['chat']['id'], $raid['lat'], $raid['lon'], "", !empty($raid['address']) ? $raid['address'] . ', ID = ' . $raid['id'] : $raid['pokemon'] . ', ' . $raid['id']); // DO NOT REMOVE " ID = " --> NEEDED FOR CLEANUP PREPARATION!
 
     // Write to log.
     debug_log('location:');
