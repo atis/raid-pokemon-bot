@@ -36,6 +36,16 @@ $keys = keys_vote($raid);
 // Send the message.
 send_message($chat, $text, $keys, ['reply_to_message_id' => $chat, 'disable_web_page_preview' => 'true']);
 
+// Send location.
+if (RAID_LOCATION == true) {
+    // Send location.
+    $loc = send_venue($chat, $raid['lat'], $raid['lon'], "", !empty($raid['address']) ? $raid['address'] . ', ID = ' . $raid['id'] : $raid['pokemon'] . ', ' . $raid['id']); // DO NOT REMOVE " ID = " --> NEEDED FOR CLEANUP PREPARATION!
+
+    // Write to log.
+    debug_log('location:');
+    debug_log($loc);
+}
+
 // Set callback keys and message
 $callback_msg = getTranslation('successfully_shared');
 
