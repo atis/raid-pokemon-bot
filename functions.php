@@ -113,6 +113,49 @@ function send_location($chat_id, $lat, $lon, $inline_keyboard = false)
 }
 
 /**
+ * Send venue.
+ * @param $chat_id
+ * @param $lat
+ * @param $lon
+ * @param $title
+ * @param $address
+ * @param bool $inline_keyboard
+ * @return mixed
+ */
+function send_venue($chat_id, $lat, $lon, $title, $address, $inline_keyboard = false)
+{
+    // Create reply content array.
+    $reply_content = [
+        'method'    => 'sendVenue',
+        'chat_id'   => $chat_id,
+        'latitude'  => $lat,
+        'longitude' => $lon,
+        'title'     => $title,
+        'address'   => $address
+    ];
+
+    // Write to log.
+    debug_log('KEYS');
+    debug_log($inline_keyboard);
+
+    if (is_array($inline_keyboard)) {
+        $reply_content['reply_markup'] = ['inline_keyboard' => $inline_keyboard];
+    }
+
+    // Encode data to json.
+    $reply_json = json_encode($reply_content);
+
+    // Set header to json.
+    header('Content-Type: application/json');
+
+    // Write to log.
+    debug_log($reply_json, '>');
+
+    // Send request to telegram api and return response.
+    return curl_json_request($reply_json);
+}
+
+/**
  * Echo message.
  * @param $chat_id
  * @param $text
@@ -495,7 +538,16 @@ function curl_json_request($json)
             if (!empty($json_message['reply_markup']['inline_keyboard']['0']['0']['callback_data']) && !empty($json_message['reply_to_message_id'])) {
                 $split_callback_data = explode(':', $json_message['reply_markup']['inline_keyboard']['0']['0']['callback_data']);
                 $raid_id = $split_callback_data[0];
-                debug_log('Found Raid_ID for cleanup preparation from callback_data!');
+
+            // Check if it's a venue and get raid id
+            } else if (!empty($response['result']['venue']['address'])) {
+                // Get raid_id from address.
+                $raid_id = substr(strrchr($response['result']['venue']['address'], "ID = "), 5);
+            }
+
+            // Trigger Cleanup when raid_id was found
+            if ($raid_id != 0) {
+                debug_log('Found Raid_ID for cleanup preparation from callback_data or venue!');
                 debug_log('Raid_ID: ' . $raid_id);
                 debug_log('Chat_ID: ' . $chat_id);
                 debug_log('Message_ID: ' . $message_id);
