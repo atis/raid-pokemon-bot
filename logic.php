@@ -517,6 +517,24 @@ function inline_key_array($buttons, $columns)
  */
 function raid_edit_start_keys($id)
 {
+    // Init empty keys array.
+    $keys = array();
+
+    // Create start keys based on levels in constants
+    $pokemonlist = $GLOBALS['pokemon'];
+    foreach($pokemonlist as $level => $levelmons) {
+        if($level == "X") continue;
+            $keys[] = array(
+                'text'          => getTranslation($level . 'stars'),
+                'callback_data' => $id . ':edit:' . $level
+            );
+    }
+
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 3);
+
+// OLD, static code:
+/*
     $keys = [
         [
             [
@@ -533,8 +551,7 @@ function raid_edit_start_keys($id)
                 'text'          => getTranslation('3stars'),
                 'callback_data' => $id . ':edit:3'
             ]
-// No raids for level 2 or 1
-/*        ],
+        ],
         [
             [
                 'text'          => getTranslation('2stars'),
@@ -544,8 +561,9 @@ function raid_edit_start_keys($id)
                 'text'          => getTranslation('1stars'),
                 'callback_data' => $id . ':edit:1'
             ]
-*/        ]
+        ]
     ];
+*/
 
     return $keys;
 }
