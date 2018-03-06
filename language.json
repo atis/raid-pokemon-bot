@@ -485,12 +485,36 @@
 		"EN": "Arcanine",
 		"PT-BR": "Arcanine"
 	},
-	"machamp" : {
+	"starmie" : {
+		"NL": "Starmie",
+		"DE": "Starmie",
+		"EN": "Starmie",
+		"PT-BR": "Starmie"
+	},
+  "charizard" : {
+		"NL": "Charizard",
+		"DE": "Glurak",
+		"EN": "Charizard",
+		"PT-BR": "Charizard"
+    },
+    "aerodactyl" : {
+		"NL": "Aerodactyl",
+		"DE": "Aerodactyl",
+		"EN": "Aerodactyl",
+		"PT-BR": "Aerodactyl"
+    },
+        "claydol" : {
+		"NL": "Claydol",
+		"DE": "Lepumentas",
+		"EN": "Claydol",
+		"PT-BR": "Claydol"
+    },
+  "machamp" : {
 		"NL": "Machamp",
 		"DE": "Machomei",
 		"EN": "Machamp",
 		"PT-BR": "Machamp"
-	},
+    },
 	"alakazam" : {
 		"NL": "Alakazam",
 		"DE": "Simsala",

@@ -40,9 +40,9 @@ $pokemon = array(
 //        getTranslation('raikou'),
 //        getTranslation('entei'),
 //        getTranslation('suicune'),
-        getTranslation('groudon'),
+//        getTranslation('groudon'),
         getTranslation('rayquaza'),
-        getTranslation('kyogre'),
+//        getTranslation('kyogre'),
 //        getTranslation('latios'),
 //        getTranslation('latias'),
 //        getTranslation('deoxys'),
@@ -59,6 +59,7 @@ $pokemon = array(
         getTranslation('feraligatr'),
         getTranslation('absol'),
         getTranslation('aggron'),
+        getTranslation('charizard'),
         getTranslation('egg_4')
     ),
     '3' => array(
@@ -66,6 +67,10 @@ $pokemon = array(
         getTranslation('jynx'),
         getTranslation('azumarill'),
         getTranslation('piloswine'),
+        getTranslation('starmie'),
+        getTranslation('aerodactyl'),
+        getTranslation('claydol'),
+        getTranslation('alakazam'),
         getTranslation('egg_3')
     ),
     '2' => array(
