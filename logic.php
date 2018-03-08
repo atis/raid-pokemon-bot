@@ -940,6 +940,33 @@ function run_cleanup ($telegram = 2, $database = 2) {
             cleanup_log("Message ID: " . $row['message_id']);
             cleanup_log("Raid ID: " . $row['raid_id']);
 
+            // Make sure raid exists
+            $rs = my_query(
+                "
+                SELECT  UNIX_TIMESTAMP(end_time)      AS ts_end
+                FROM    raids
+                  WHERE id = {$current_raid_id}
+                ", true
+            );
+            $rr = $rs->fetch_row();
+
+            // No raid found - set cleanup to 0 and continue with next raid
+            if (empty($rr['0'])) {
+                cleanup_log('No raid found with ID: ' . $current_raid_id, '!');
+                cleanup_log('Updating cleanup information.');
+                my_query(
+                "
+                    UPDATE    cleanup
+                    SET       chat_id = 0, 
+                              message_id = 0 
+                    WHERE   id = {$row['id']}
+                ", true
+                );
+
+                // Continue with next raid
+                continue;
+            }
+
 	    // Get raid data only when raid_id changed compared to previous run
 	    if ($prev_raid_id != $current_raid_id) {
                 // Get the raid data by id.
@@ -987,7 +1014,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     cleanup_log('Deleting telegram message ' . $row['message_id'] . ' from chat ' . $row['chat_id'] . ' for raid ' . $row['raid_id']);
                     delete_message($row['chat_id'], $row['message_id']);
 		    // Set database values of chat_id and message_id to 0 so we know telegram message was deleted already.
-                    cleanup_log('Updating telegram cleanup inforamtion.');
+                    cleanup_log('Updating telegram cleanup information.');
 		    my_query(
     		    "
     		        UPDATE    cleanup
@@ -1023,7 +1050,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
 
 		    // Set database value of raid_id to 0 so we know attendance info was deleted already
 		    // Use raid_id in where clause since the same raid_id can in cleanup more than once
-                    cleanup_log('Updating database cleanup inforamtion.');
+                    cleanup_log('Updating database cleanup information.');
                     my_query(
                     "
                         UPDATE    cleanup
@@ -1919,7 +1946,7 @@ function delete_raid($raid_id)
     debug_log('Deleting raid ' . $raid_id . ' from the cleanup table:');
     $rs_cleanup = my_query(
         "
-        DELETE FROM   raids 
+        DELETE FROM   cleanup 
         WHERE   raid_id = '{$raid_id}' 
            OR   cleaned = '{$raid_id}'
         "
