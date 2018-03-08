@@ -13,17 +13,57 @@ $id = $data['id'];
 // Get the argument.
 $arg = $data['arg'];
 
-if (true || $arg == "minutes" || $arg == "clocktime") {
-    if ($arg != "minutes" && $arg != "clocktime") {
-        // Update pokemon in the raid table.
-        my_query(
-            "
-            UPDATE    raids
-                SET       pokemon = '{$data['arg']}'
-              WHERE   id = {$id}
-            "
-        );
+// Update pokemon in the raid table.
+if ($arg != "minutes" && $arg != "clocktime") {
+    my_query(
+        "
+        UPDATE    raids
+            SET       pokemon = '{$data['arg']}'
+          WHERE   id = {$id}
+        "
+    );
+}
 
+// Get pokemon of level X
+$X_pokemons = [];
+$X_list = $GLOBALS['pokemon']['X'];
+foreach($X_list as $pokemon) {
+    $X_pokemons[] = strtolower($pokemon);
+    debug_log('Adding pokemon to list of ex-raid pokemon: ' . $pokemon);
+}
+
+// Pokemon in level X?
+if(in_array(strtolower($arg), $X_pokemons)) {
+    // Init empty keys array.
+    $keys = array();
+
+    // Not sure if necessary, leaving as comment
+    // Timezone - maybe there's a more elegant solution as date_default_timezone_set?!
+    //$tz = TIMEZONE;
+    //date_default_timezone_set($tz);
+
+    // Current and next month
+    $current_month = date('Y-m', strtotime('now'));
+    $current_month_name = date('F', strtotime('now'));
+    $next_month = date('Y-m', strtotime('first day of +1 months'));
+    $next_month_name = date('F', strtotime('first day of +1 months'));
+
+    // Buttons for current and next month
+    $keys[] = array(
+        'text'          => $current_month_name . ' (' . $current_month . ')',
+        'callback_data' => $id . ':edit_date:' . $current_month
+    );
+
+    $keys[] = array(
+        'text'          => $next_month_name . ' (' . $next_month . ')',
+        'callback_data' => $id . ':edit_date:' . $next_month
+    );
+    // Get the inline key array.
+    $keys = inline_key_array($keys, 2);
+
+// Pokemon not in level X?
+} else if (true || $arg == "minutes" || $arg == "clocktime") {
+    if ($arg != "minutes" && $arg != "clocktime") {
 	// Get default raid duration style from config
 	if (RAID_DURATION_CLOCK_STYLE == true) {
 	    $arg = "clocktime";
