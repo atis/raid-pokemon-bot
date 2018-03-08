@@ -690,12 +690,35 @@
 		"EN": "/team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>",
 		"PT-BR": "/team <code>Mystic/Valor/Instinct/Azul/Vermelho/Amarelo</code>"
 	},
+	"start_date_time" : {
+		"NL": "Starttijd gezet op",
+		"DE": "Startzeit gesetzt auf",
+		"EN": "Starttime set to",
+		"PT-BR": "Hora de começar determinada para"
+	},
 	"end_time" : {
 		"NL": "Eindtijd gezet op ",
 		"DE": "Ablaufzeit gesetzt auf ",
 		"EN": "Endtime set to ",
 		"PT-BR": "Hora de término determinada para "
-		
+	},
+	"raid_select_date" : {
+		"NL": "Selecteer de <b>datum</b> van de raid:",
+		"DE": "<b>Datum</b> des Raids auswählen:",
+		"EN": "Select the <b>date</b> of the raid:",
+		"PT-BR": "Select the <b>date</b> of the raid:"
+	},
+	"raid_select_hour" : {
+		"NL": "Selecteer het <b>uur</b> van de raid:",
+		"DE": "<b>Stunde</b> des Raids auswählen:",
+		"EN": "Select the <b>hour</b> of the raid:",
+		"PT-BR": "Select the <b>hour</b> of the raid:"
+	},
+	"raid_select_start_time" : {
+		"NL": "Selecteer de <b>start tijd</b> van de raid:",
+		"DE": "<b>Startzeit</b> des Raids auswählen:",
+		"EN": "Select the <b>start time</b> of the raid:",
+		"PT-BR": "Select the <b>start time</b> of the raid:"
 	},
 	"minutes" : {
 		"NL": "minuten",
