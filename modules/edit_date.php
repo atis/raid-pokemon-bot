@@ -32,7 +32,7 @@ if(substr_count($arg, '-') == 1) {
     debug_log('Generating buttons for each day in the given year and month: ' . $arg);
 
     // Formatting stuff.
-    $month = date('M', strtotime($arg)) . '.';
+    $month = substr($arg, -2);
     $year = substr($arg, 0, 4);
 
     // Buttons for each day in the given month
@@ -40,7 +40,7 @@ if(substr_count($arg, '-') == 1) {
         // Create the keys.
         $keys[] = array(
             //'text'          => $arg . '-' . str_pad($i, 2, '0', STR_PAD_LEFT),
-            'text'          => str_pad($i, 2, '0', STR_PAD_LEFT) . ' ' . $month . ' ' . $year,
+            'text'          => str_pad($i, 2, '0', STR_PAD_LEFT) . ' ' . getTranslation('month_' . $month) . ' ' . $year,
             'callback_data' => $id . ':edit_date:' . $arg . '-' . str_pad($i, 2, '0', STR_PAD_LEFT)
         );
     }
@@ -105,7 +105,7 @@ if(substr_count($arg, '-') == 1) {
     );
 
     // Set message.
-    $msg = getTranslation('start_date_time') . ': <b>' . $start_date_time . '</b>';
+    $msg = getTranslation('start_date_time') . ':' . CR .'<b>' . $start_date_time . '</b>';
 }
 
 // Get the inline key array.

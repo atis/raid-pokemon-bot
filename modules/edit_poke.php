@@ -42,20 +42,28 @@ if(in_array(strtolower($arg), $X_pokemons)) {
     //$tz = TIMEZONE;
     //date_default_timezone_set($tz);
 
-    // Current and next month
+    // Current month
     $current_month = date('Y-m', strtotime('now'));
-    $current_month_name = date('F', strtotime('now'));
+    //$current_month_name = date('F', strtotime('now'));
+    $current_month_name = getTranslation('month_' . substr($current_month, -2));
+    $year_of_current_month_name = substr($current_month, 0, 4);
+
+    // Next month
     $next_month = date('Y-m', strtotime('first day of +1 months'));
-    $next_month_name = date('F', strtotime('first day of +1 months'));
+    //$next_month_name = date('F', strtotime('first day of +1 months'));
+    $next_month_name = getTranslation('month_' . substr($next_month, -2));
+    $year_of_next_month_name = substr($next_month, 0, 4);
 
     // Buttons for current and next month
     $keys[] = array(
-        'text'          => $current_month_name . ' (' . $current_month . ')',
+        //'text'          => $current_month_name . ' (' . $current_month . ')',
+        'text'          => $current_month_name . ' ' . $year_of_current_month_name,
         'callback_data' => $id . ':edit_date:' . $current_month
     );
 
     $keys[] = array(
-        'text'          => $next_month_name . ' (' . $next_month . ')',
+        //'text'          => $next_month_name . ' (' . $next_month . ')',
+        'text'          => $next_month_name . ' ' . $year_of_next_month_name,
         'callback_data' => $id . ':edit_date:' . $next_month
     );
     // Get the inline key array.
