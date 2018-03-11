@@ -21,9 +21,12 @@
 
 	define('EMOJI_REFRESH', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F504)));
 //	define('EMOJI_EGG', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F95A))); // not showing on TG web
-	define('EMOJI_EGG', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F373)));
+	define('EMOJI_EGG', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F423)));
+	define('EMOJI_EGG2', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F373)));
 	define('EMOJI_FEET', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F463)));
 	define('EMOJI_FACE', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F466)));
+
+	define('RAID_TIME', 45*60);
 
 $teams = array(
 	'mystic' => TEAM_B,
