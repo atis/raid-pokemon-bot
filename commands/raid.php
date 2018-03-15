@@ -17,6 +17,11 @@
 		
 	$tz = get_timezone($lat, $lon);
 	$addr = get_address($lat, $lon);
+	
+	if (!$tz) {
+		send_message('none',$update['message']['chat']['id'],'Invalid input',[]);
+		exit;
+	}
 
 
 	if (preg_match('|([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2})(?:/([0-9]*))?|',$data[3],$match)) {
