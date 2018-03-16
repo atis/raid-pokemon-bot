@@ -30,7 +30,7 @@ $pokemon = array(
     ),
     '5' => array(
 //        getTranslation('articuno'),
-//        getTranslation('lugia'),
+        getTranslation('lugia'),
 //        getTranslation('moltres'),
 //        getTranslation('zapdos'),
 //        getTranslation('mew'),
@@ -41,7 +41,7 @@ $pokemon = array(
 //        getTranslation('entei'),
 //        getTranslation('suicune'),
 //        getTranslation('groudon'),
-        getTranslation('rayquaza'),
+//        getTranslation('rayquaza'),
 //        getTranslation('kyogre'),
 //        getTranslation('latios'),
 //        getTranslation('latias'),
