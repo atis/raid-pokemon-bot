@@ -22,8 +22,8 @@ if (strpos($arg, ',') !== false)
     debug_log('Received argument and start_time in minutes: ' . $arg . ', ' . $slot_switch);
 }
 
-if (true || $arg == "more-options") {
-    if ($arg != "more-options") {
+if (true || $arg == "more-options" || $arg == "ex-raid") {
+    if ($arg != "more-options" && $arg !="ex-raid") {
         // Build query.
         my_query(
             "

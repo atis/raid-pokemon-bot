@@ -120,6 +120,78 @@
 		"EN": "Sunday",
 		"PT-BR": "Domingo"
 	},
+	"month_01" : {
+		"NL": "Januari",
+		"DE": "Januar",
+		"EN": "January",
+		"PT-BR": "Janeiro"
+	},
+	"month_02" : {
+		"NL": "Februari",
+		"DE": "Februar",
+		"EN": "February",
+		"PT-BR": "Fevereiro"
+	},
+	"month_03" : {
+		"NL": "Maart",
+		"DE": "März",
+		"EN": "March",
+		"PT-BR": "Março"
+	},
+	"month_04" : {
+		"NL": "April",
+		"DE": "April",
+		"EN": "April",
+		"PT-BR": "Abril"
+	},
+	"month_05" : {
+		"NL": "Meer",
+		"DE": "Mai",
+		"EN": "May",
+		"PT-BR": "Mais"
+	},
+	"month_06" : {
+		"NL": "Juni",
+		"DE": "Juni",
+		"EN": "June",
+		"PT-BR": "Junho"
+	},
+	"month_07" : {
+		"NL": "Juli",
+		"DE": "Juli",
+		"EN": "July",
+		"PT-BR": "Julho"
+	},
+	"month_08" : {
+		"NL": "Augustus",
+		"DE": "August",
+		"EN": "August",
+		"PT-BR": "Agosto"
+	},
+	"month_09" : {
+		"NL": "September",
+		"DE": "September",
+		"EN": "September",
+		"PT-BR": "Setembro"
+	},
+	"month_10" : {
+		"NL": "Oktober",
+		"DE": "Oktober",
+		"EN": "October",
+		"PT-BR": "Outubro"
+	},
+	"month_11" : {
+		"NL": "November",
+		"DE": "November",
+		"EN": "November",
+		"PT-BR": "Novembro"
+	},
+	"month_12" : {
+		"NL": "December",
+		"DE": "Dezember",
+		"EN": "December",
+		"PT-BR": "Dezembro"
+	},
 	"still" : {
 		"NL": "nog",
 		"DE": "noch",
@@ -690,12 +762,35 @@
 		"EN": "/team <code>Mystic/Valor/Instinct/Blue/Red/Yellow</code>",
 		"PT-BR": "/team <code>Mystic/Valor/Instinct/Azul/Vermelho/Amarelo</code>"
 	},
+	"start_date_time" : {
+		"NL": "Starttijd gezet op",
+		"DE": "Startzeit gesetzt auf",
+		"EN": "Starttime set to",
+		"PT-BR": "Hora de começar determinada para"
+	},
 	"end_time" : {
 		"NL": "Eindtijd gezet op ",
 		"DE": "Ablaufzeit gesetzt auf ",
 		"EN": "Endtime set to ",
 		"PT-BR": "Hora de término determinada para "
-		
+	},
+	"raid_select_date" : {
+		"NL": "Selecteer de <b>datum</b> van de raid:",
+		"DE": "<b>Datum</b> des Raids auswählen:",
+		"EN": "Select the <b>date</b> of the raid:",
+		"PT-BR": "Select the <b>date</b> of the raid:"
+	},
+	"raid_select_hour" : {
+		"NL": "Selecteer het <b>uur</b> van de raid:",
+		"DE": "<b>Stunde</b> des Raids auswählen:",
+		"EN": "Select the <b>hour</b> of the raid:",
+		"PT-BR": "Select the <b>hour</b> of the raid:"
+	},
+	"raid_select_start_time" : {
+		"NL": "Selecteer de <b>start tijd</b> van de raid:",
+		"DE": "<b>Startzeit</b> des Raids auswählen:",
+		"EN": "Select the <b>start time</b> of the raid:",
+		"PT-BR": "Select the <b>start time</b> of the raid:"
 	},
 	"minutes" : {
 		"NL": "minuten",
@@ -824,16 +919,16 @@
 		"PT-BR": "Atualizar Pokemon"
 	},
 	"send_location" : {
- 		"NL": "Of stuur me alsjeblieft een locatie:",
-    		"DE": "Oder sende mir einen Standort:",
-    		"EN": "Or send me a location:",
-    		"PT-BR": "Por favor, antes me envie a localização:"
+ 		"NL": "Of stuur me alsjeblieft een locatie.",
+    		"DE": "Oder sende mir einen Standort.",
+    		"EN": "Or send me a location.",
+    		"PT-BR": "Por favor, antes me envie a localização."
   	},
   	"raid_by_gym" : {
-    		"NL": "Maak een raid door een Gym te selecteren.",
-    		"DE": "Lege ein Raid per Arena-Auswahl an.",
-    		"EN": "Make a raid per gym selection.",
-    		"PT-BR": "Ou escolha uma raid por ginásio." 
+    		"NL": "Maak een raid door een Gym te selecteren:",
+    		"DE": "Lege ein Raid per Arena-Auswahl an:",
+    		"EN": "Make a raid per gym selection:",
+    		"PT-BR": "Ou escolha uma raid por ginásio:" 
   	},
 	"red" : {
 		"NL": "rood",
