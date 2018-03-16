@@ -41,7 +41,7 @@ $pokemon = array(
 //        getTranslation('entei'),
 //        getTranslation('suicune'),
 //        getTranslation('groudon'),
-        getTranslation('rayquaza'),
+//        getTranslation('rayquaza'),
 //        getTranslation('kyogre'),
 //        getTranslation('latios'),
 //        getTranslation('latias'),
