@@ -443,6 +443,12 @@
     		"EN": "Typhlosion",
 		"PT-BR": "Typhlosion"
   	},
+  	"jolteon" : {
+    		"NL": "Jolteon",
+    		"DE": "Blitza",
+    		"EN": "Jolteon",
+		"PT-BR": "Jolteon"
+  	},
 	"egg_5" : {
 		"NL": "Level 5 Ei",
 		"DE": "Level 5 Ei",
