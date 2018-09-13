@@ -199,7 +199,7 @@ function unix2tz($unix, $tz, $format = 'H:i') {
 function show_raid_poll($raid) {
 	$time_left = floor($raid['t_left']/60);
 	$time_left = floor($time_left/60).':'.str_pad($time_left%60,2,'0',STR_PAD_LEFT).' left';
-	$hatch_time = $raid['ts_end']-RAID_TIME;
+	$hatch_time = $raid['ts_end']-RAID_TIME*60;
 	if ($hatch_time>time()) {
 		$hatch_time = ' (hatch '.unix2tz($hatch_time,$raid['timezone']).')';
 	} else {
@@ -289,7 +289,7 @@ function show_raid_poll($raid) {
 function show_raid_poll_small($raid) {
 	$time_left = floor($raid['t_left']/60);
 	$time_left = floor($time_left/60).':'.str_pad($time_left%60,2,'0',STR_PAD_LEFT).' left';
-	$hatch_time = $raid['ts_end']-RAID_TIME;
+	$hatch_time = $raid['ts_end']-RAID_TIME*60;
 	if ($hatch_time>time()) {
 		$hatch_time = ' (hatch '.unix2tz($hatch_time,$raid['timezone']).')';
 		$time_left .= $hatch_time;

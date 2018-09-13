@@ -14,10 +14,10 @@
 		my_query($q);
 
 		$keys = array();
-		$hatch_time = 60;
-		$raid_time = 45;
-		$disallow_end = 25;
-		$submit_intervals = 5;
+		$hatch_time = HATCH_TIME;
+		$raid_time = RAID_TIME;
+		$disallow_end = DISALLOW_END;
+		$submit_intervals = SUBMIT_INTERVALS;
 		
 		for ($i=($hatch_time+$raid_time); $i>=$disallow_end; $i=$i-$submit_intervals) {
 			$after_hatch = $i;

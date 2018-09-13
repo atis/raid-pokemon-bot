@@ -38,6 +38,16 @@
 			],[
 				'text' => 'Rayquaza', 'callback_data' => $id.':edit_poke:rayquaza',
 			],[
+				'text' => 'Latias', 'callback_data' => $id.':edit_poke:latias',
+			],[
+				'text' => 'Latios', 'callback_data' => $id.':edit_poke:latios',
+		]],[[
+				'text' => 'Regice', 'callback_data' => $id.':edit_poke:regice',
+			],[
+				'text' => 'Registeel', 'callback_data' => $id.':edit_poke:registeel',
+			],[
+				'text' => 'Regirock', 'callback_data' => $id.':edit_poke:regirock',
+		]],[[
 				'text' => 'Legendary (unknown)', 'callback_data' => $id.':edit_poke:legendary',
 		]]];
 	
@@ -63,11 +73,19 @@
 				'text' => 'NidoQueen', 'callback_data' => $id.':edit_poke:nidoqueen',
 		]],[[
 				'text' => 'Aggron', 'callback_data' => $id.':edit_poke:aggron',
+			],[
+				'text' => 'Houndoom', 'callback_data' => $id.':edit_poke:houndoom',
+			],[
+				'text' => 'Marowak Alola', 'callback_data' => $id.':edit_poke:marowak-alola',
 		]]];
 	} else if ($data['arg']=='type_3') {
 		$keys = 
 		[[[
 				'text' => 'Machamp', 'callback_data' => $id.':edit_poke:machamp',
+			],[
+				'text' => 'Aerodactyl', 'callback_data' => $id.':edit_poke:aerodactyl',
+			],[
+				'text' => 'Raichu Alola', 'callback_data' => $id.':edit_poke:raichu-alola',
 		]],[[
 				'text' => 'Gengar', 'callback_data' => $id.':edit_poke:gengar',
 			],[
@@ -80,6 +98,16 @@
 				'text' => 'Scyther', 'callback_data' => $id.':edit_poke:scyther',
 			],[
 				'text' => 'Omastar', 'callback_data' => $id.':edit_poke:Omastar',
+		]],[[
+				'text' => 'Shuckle', 'callback_data' => $id.':edit_poke:shuckle',
+			],[
+				'text' => 'Solrock', 'callback_data' => $id.':edit_poke:solrock',
+			],[
+				'text' => 'Lunatone', 'callback_data' => $id.':edit_poke:lunatone',
+		]],[[
+				'text' => 'Donphan', 'callback_data' => $id.':edit_poke:donphan',
+			],[
+				'text' => 'Flareon', 'callback_data' => $id.':edit_poke:flareon',
 		]]];
 	} else if ($data['arg']=='type_2') {
 		$keys = 
@@ -89,7 +117,9 @@
 		],[
 				'text' => 'Muk', 'callback_data' => $id.':edit_poke:muk',
 */
-		],[
+    		],[
+				'text' => 'Lileep', 'callback_data' => $id.':edit_poke:lileep',
+    		],[
 				'text' => 'Mawile', 'callback_data' => $id.':edit_poke:mawile',
 		]],[[
 				'text' => 'Marowak', 'callback_data' => $id.':edit_poke:marowak',
@@ -103,9 +133,34 @@
 				'text' => 'Weezing', 'callback_data' => $id.':edit_poke:weezing',
 			],[
 				'text' => 'Magneton', 'callback_data' => $id.':edit_poke:magneton',
+		]],[[
+				'text' => 'Kabuto', 'callback_data' => $id.':edit_poke:kabuto',
+			],[
+				'text' => 'Omanyte', 'callback_data' => $id.':edit_poke:omanyte',
+			],[
+				'text' => 'Anorith', 'callback_data' => $id.':edit_poke:anorith',
+		]],[[
+				'text' => 'Exegutor Alola', 'callback_data' => $id.':edit_poke:exeggutor-alola',
+			],[
+				'text' => 'Kirlia', 'callback_data' => $id.':edit_poke:kirlia',
+			],[
+				'text' => 'Magmar', 'callback_data' => $id.':edit_poke:magmar',
 		]]];
 	} else if ($data['arg']=='type_1') {
-		$keys = [[[ 'text' => 'Not supported', 'callback_data' => 'edit:not_supported' ]]];
+		$keys = 
+		[[[
+				'text' => 'Charmander', 'callback_data' => $id.':edit_poke:charmander',
+			],[
+				'text' => 'Makuhita', 'callback_data' => $id.':edit_poke:makuhita',
+			],[
+				'text' => 'Meditite', 'callback_data' => $id.':edit_poke:meditite',
+		]],[[
+				'text' => 'Omanyte', 'callback_data' => $id.':edit_poke:omanyte',
+			],[
+				'text' => 'Wailmer', 'callback_data' => $id.':edit_poke:wailmer',
+			],[
+				'text' => 'Magikarp', 'callback_data' => $id.':edit_poke:magikarp',
+		]]];
 	} else {
 		/* Edit pokemon */
 		$keys = raid_edit_start_keys();
