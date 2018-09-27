@@ -260,9 +260,10 @@ function show_raid_poll($raid) {
 			$query = 'SELECT * FROM users WHERE user_id='.$vv['user_id'];
 			$rs = my_query($query);
 			$row = $rs->fetch_assoc();
+			
 			$name = '@'.$row['nick'];
-			if ($name=='@') $name = $row['name'];
-			if ($name=='') $name = $vv['user_id'];
+			if ($name=='@') $name = '<a href="tg://user?id='.$row['user_id'].'">'.$row['name'].'</a>';
+			if ($name=='') $name = '<a href="tg://user?id='.$row['user_id'].'">'.$row['user_id'].'</a>';
 			$msg .= ' - '.$name.' ';
 			if ($vv['arrived']) {
 				$msg .= '[arrived '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';

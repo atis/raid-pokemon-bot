@@ -26,9 +26,9 @@
 	define('EMOJI_FEET', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F463)));
 	define('EMOJI_FACE', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F466)));
 
-	define('RAID_TIME', 90); /* Minutes */
-	define('HATCH_TIME', 15); /* Minutes */
-	define('DISALLOW_END', 25); /* Minutes */
+	define('RAID_TIME', 45); /* Minutes */
+	define('HATCH_TIME', 60); /* Minutes */
+	define('DISALLOW_END', 20); /* Minutes */
 	define('SUBMIT_INTERVALS', 5); /* Minutes */
 
 $teams = array(
