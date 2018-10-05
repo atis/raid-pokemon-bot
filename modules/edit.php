@@ -108,6 +108,12 @@
 				'text' => 'Donphan', 'callback_data' => $id.':edit_poke:donphan',
 			],[
 				'text' => 'Flareon', 'callback_data' => $id.':edit_poke:flareon',
+			],[
+				'text' => 'Claydol', 'callback_data' => $id.':edit_poke:claydol',
+		]],[[
+				'text' => 'Jynx', 'callback_data' => $id.':edit_poke:jynx',
+			],[
+				'text' => 'Starmie', 'callback_data' => $id.':edit_poke:starmie',
 		]]];
 	} else if ($data['arg']=='type_2') {
 		$keys = 
@@ -158,8 +164,10 @@
 				'text' => 'Omanyte', 'callback_data' => $id.':edit_poke:omanyte',
 			],[
 				'text' => 'Wailmer', 'callback_data' => $id.':edit_poke:wailmer',
-			],[
+		]],[[
 				'text' => 'Magikarp', 'callback_data' => $id.':edit_poke:magikarp',
+			],[
+				'text' => 'Drowzee', 'callback_data' => $id.':edit_poke:drowzee',
 		]]];
 	} else {
 		/* Edit pokemon */
