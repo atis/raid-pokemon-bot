@@ -25,6 +25,7 @@
 	define('EMOJI_EGG2', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F373)));
 	define('EMOJI_FEET', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F463)));
 	define('EMOJI_FACE', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F466)));
+	define('EMOJI_PAPERCLIP', iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F4CE)));
 
 	define('RAID_TIME', 45); /* Minutes */
 	define('HATCH_TIME', 60); /* Minutes */

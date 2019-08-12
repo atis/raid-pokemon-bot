@@ -24,7 +24,7 @@
 		]]];
 		/* Ignore Ex raids */
 		//if ($raid['pokemon']=='mewtwo') continue;
-		if ($raid['pokemon']=='deoxys') continue;
+		if (strtolower($raid['pokemon'])=='deoxys') continue;
 		$msg = show_raid_poll_small($raid);
 		send_message('none',$update['message']['from']['id'],$msg, $keys, 
 			['reply_markup' => ['selective'=>true, 'one_time_keyboard'=>true]]
