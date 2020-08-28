@@ -55,10 +55,34 @@
 				'text' => 'Mesprit', 'callback_data' => $id.':edit_poke:mesprit',
 			],[
 				'text' => 'Uxie', 'callback_data' => $id.':edit_poke:uxie',
+			],[
+				'text' => 'Darkrai', 'callback_data' => $id.':edit_poke:darkrai',
 		]],[[
 				'text' => 'Palkia', 'callback_data' => $id.':edit_poke:palkia',
 			],[
 				'text' => 'Dialga', 'callback_data' => $id.':edit_poke:dialga',
+			],[
+				'text' => 'Cobalion', 'callback_data' => $id.':edit_poke:cobalion',
+			],[
+				'text' => 'Terrakion', 'callback_data' => $id.':edit_poke:terrakion',
+		]],[[
+				'text' => 'Virizion', 'callback_data' => $id.':edit_poke:virizion',
+			],[
+				'text' => 'Tornadus', 'callback_data' => $id.':edit_poke:tornadus',
+			],[
+				'text' => 'Thundurus', 'callback_data' => $id.':edit_poke:thundurus',
+			],[
+				'text' => 'Landorus', 'callback_data' => $id.':edit_poke:landorus',
+		]],[[
+				'text' => 'Reshiram', 'callback_data' => $id.':edit_poke:reshiram',
+			],[
+				'text' => 'Zekrom', 'callback_data' => $id.':edit_poke:zekrom',
+			],[
+				'text' => 'Kyurem', 'callback_data' => $id.':edit_poke:kyurem',
+			],[
+				'text' => 'Deoxys', 'callback_data' => $id.':edit_poke:deoxys',
+		]],[[
+				'text' => 'Genesect', 'callback_data' => $id.':edit_poke:genesect',
 			],[
 				'text' => 'Legendary (unknown)', 'callback_data' => $id.':edit_poke:legendary',
 		]]];
@@ -82,15 +106,15 @@
 			],[
 				'text' => 'NidoKing', 'callback_data' => $id.':edit_poke:nidoking',
 		]],[[
-				'text' => 'Victrebell', 'callback_data' => $id.':edit_poke:victrebell',
+				'text' => 'Venusaur', 'callback_data' => $id.':edit_poke:venusaur',
 			],[
-				'text' => 'Poliwrath', 'callback_data' => $id.':edit_poke:poliwrath',
+				'text' => 'Charizard', 'callback_data' => $id.':edit_poke:charizard',
 			],[
-				'text' => 'NidoQueen', 'callback_data' => $id.':edit_poke:nidoqueen',
+				'text' => 'Blastoise', 'callback_data' => $id.':edit_poke:blastoise',
+			],[
+				'text' => 'Excadrill', 'callback_data' => $id.':edit_poke:excadrill',
 		]],[[
-				'text' => 'Aggron', 'callback_data' => $id.':edit_poke:aggron',
-			],[
-				'text' => 'Houndoom', 'callback_data' => $id.':edit_poke:houndoom',
+				'text' => 'Weezing Galar', 'callback_data' => $id.':edit_poke:weezing-galar',
 			],[
 				'text' => 'Marowak Alola', 'callback_data' => $id.':edit_poke:marowak-alola',
 			],[
@@ -117,8 +141,6 @@
 			],[
 				'text' => 'Scyther', 'callback_data' => $id.':edit_poke:scyther',
 			],[
-				'text' => 'Omastar', 'callback_data' => $id.':edit_poke:omastar',
-			],[
 				'text' => 'Granbull', 'callback_data' => $id.':edit_poke:granbull',
 		]],[[
 				'text' => 'Shuckle', 'callback_data' => $id.':edit_poke:shuckle',
@@ -126,6 +148,8 @@
 				'text' => 'Solrock', 'callback_data' => $id.':edit_poke:solrock',
 			],[
 				'text' => 'Lunatone', 'callback_data' => $id.':edit_poke:lunatone',
+			],[
+				'text' => 'Feroseed', 'callback_data' => $id.':edit_poke:feroseed',
 		]],[[
 				'text' => 'Donphan', 'callback_data' => $id.':edit_poke:donphan',
 			],[
@@ -139,10 +163,6 @@
 		$keys = 
 		[[[
 				'text' => 'Sableye', 'callback_data' => $id.':edit_poke:sableye',
-/* Removed
-		],[
-				'text' => 'Muk', 'callback_data' => $id.':edit_poke:muk',
-*/
     		],[
 				'text' => 'Lileep', 'callback_data' => $id.':edit_poke:lileep',
     		],[
@@ -150,62 +170,50 @@
     		],[
 				'text' => 'Sneasel', 'callback_data' => $id.':edit_poke:sneasel',
 		]],[[
-				'text' => 'Marowak', 'callback_data' => $id.':edit_poke:marowak',
-			],[
-				'text' => 'Cloyster', 'callback_data' => $id.':edit_poke:cloyster',
-			],[
-				'text' => 'Tentacruel', 'callback_data' => $id.':edit_poke:tentacruel',
-		]],[[
-				'text' => 'Sandslash', 'callback_data' => $id.':edit_poke:sandslash',
-			],[
-				'text' => 'Weezing', 'callback_data' => $id.':edit_poke:weezing',
-			],[
-				'text' => 'Magneton', 'callback_data' => $id.':edit_poke:magneton',
-		]],[[
 				'text' => 'Kabuto', 'callback_data' => $id.':edit_poke:kabuto',
 			],[
 				'text' => 'Anorith', 'callback_data' => $id.':edit_poke:anorith',
 			],[
 				'text' => 'Misdreavous', 'callback_data' => $id.':edit_poke:misdreavous',
 		]],[[
-				'text' => 'Kirlia', 'callback_data' => $id.':edit_poke:kirlia',
-			],[
 				'text' => 'Magmar', 'callback_data' => $id.':edit_poke:magmar',
+			],[
+				'text' => 'Unown-U', 'callback_data' => $id.':edit_poke:unown-u',
+			],[
+				'text' => 'Unown-L', 'callback_data' => $id.':edit_poke:unown-l',
 		]],[[
-				'text' => 'Electabuzz', 'callback_data' => $id.':edit_poke:electabuzz',
+				'text' => 'Unown-T', 'callback_data' => $id.':edit_poke:unown-t',
 			],[
-				'text' => 'Lanturn', 'callback_data' => $id.':edit_poke:lanturn',
+				'text' => 'Unown-R', 'callback_data' => $id.':edit_poke:unown-r',
 			],[
-				'text' => 'Manectric', 'callback_data' => $id.':edit_poke:manectric',
+				'text' => 'Unown-A', 'callback_data' => $id.':edit_poke:unown-a',
 		]]];
 	} else if ($data['arg']=='type_1') {
 		$keys = 
 		[[[
-				'text' => 'Charmander', 'callback_data' => $id.':edit_poke:charmander',
-			],[
 				'text' => 'Makuhita', 'callback_data' => $id.':edit_poke:makuhita',
 			],[
 				'text' => 'Meditite', 'callback_data' => $id.':edit_poke:meditite',
+			],[
+				'text' => 'Wailmer', 'callback_data' => $id.':edit_poke:wailmer',
 		]],[[
 				'text' => 'Omanyte', 'callback_data' => $id.':edit_poke:omanyte',
 			],[
-				'text' => 'Wailmer', 'callback_data' => $id.':edit_poke:wailmer',
-			],[
 				'text' => 'Magikarp', 'callback_data' => $id.':edit_poke:magikarp',
+			],[
+				'text' => 'Snorunt', 'callback_data' => $id.':edit_poke:snorunt',
 		]],[[
 				'text' => 'Duskull', 'callback_data' => $id.':edit_poke:duskull',
 			],[
-				'text' => 'Snorunt', 'callback_data' => $id.':edit_poke:snorunt',
-			],[
 				'text' => 'Shuppet', 'callback_data' => $id.':edit_poke:shuppet',
 			],[
-				'text' => 'Shinx', 'callback_data' => $id.':edit_poke:shinx',
-		]],[[
-				'text' => 'Buizel', 'callback_data' => $id.':edit_poke:buizel',
-			],[
-				'text' => 'Mareep', 'callback_data' => $id.':edit_poke:mareep',
-			],[
 				'text' => 'Magnemite', 'callback_data' => $id.':edit_poke:magnemite',
+		]],[[
+				'text' => 'Shinx', 'callback_data' => $id.':edit_poke:shinx',
+			],[
+				'text' => 'Gibble', 'callback_data' => $id.':edit_poke:gibble',
+			],[
+				'text' => 'Timburr', 'callback_data' => $id.':edit_poke:timburr',
 		]]];
 	} else {
 		/* Edit pokemon */

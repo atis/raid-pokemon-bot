@@ -29,6 +29,7 @@
 
 	define('RAID_TIME', 45); /* Minutes */
 	define('HATCH_TIME', 60); /* Minutes */
+	//define('HATCH_TIME', 60); /* Minutes */
 	define('DISALLOW_END', 20); /* Minutes */
 	define('SUBMIT_INTERVALS', 5); /* Minutes */
 
