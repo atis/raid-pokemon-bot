@@ -22,7 +22,7 @@
 		$rs = my_query($q);
 		$id = my_insert_id();
 		debug_log('ID='.$id);
-
+		
 		$keys = raid_edit_start_keys($id);
 
 		$msg = 'Create Raid at <i>'.$addr.'</i>';

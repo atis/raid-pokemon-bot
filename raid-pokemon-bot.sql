@@ -2,7 +2,7 @@
 SQLyog Community v8.8 Beta2
 MySQL - 5.7.19-0ubuntu0.16.04.1-log : Database - 437562092
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -79,3 +79,8 @@ CREATE TABLE `users` (
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+delete from raids where first_seen<"2020-08-27";
+alter table raids change pokemon pokemon varchar(15);
+

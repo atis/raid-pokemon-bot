@@ -35,7 +35,9 @@
 				$keys[] = array('text' => $hours.':'.$minutes, 'callback_data' => $id.':edit_left:'.$i);
 			}
 		}
+		
 
+		$keys[] = array('text' => '<<', 'callback_data' => $id.':edit_level');
 		$keys = inline_key_array($keys,4);
 		debug_log($keys);
 

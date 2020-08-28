@@ -1,5 +1,7 @@
 <?php 
 
+require_once(__DIR__.'/raidboss.php');
+
 function raid_access_check($update, $data) {
 	$rs = my_query('SELECT * FROM raids WHERE id='.$data['id'].'');
 	$raid = $rs->fetch_assoc();
@@ -34,18 +36,44 @@ function inline_key_array($buttons, $columns) {
 function raid_edit_start_keys($id) {
 		$keys = 
 		[[[
-				'text' => 'Legendary Raid *****','callback_data' => $id.':edit:type_5',
-		]],[[
-				'text' => '4 Star Raid ****', 'callback_data' => $id.':edit:type_4',
+				'text' => 'Legendary','callback_data' => $id.':edit:type_5',
 			],[
-				'text' => '3 Star Raid ***', 'callback_data' => $id.':edit:type_3',
+				'text' => 'Mega', 'callback_data' => $id.':edit:type_m',
 		]],[[
-				'text' => '2 Star Raid **', 'callback_data' => $id.':edit:type_2',
+				'text' => '3 Star ***', 'callback_data' => $id.':edit:type_3',
 			],[
-				'text' => '1 Star Raid *', 'callback_data' => $id.':edit:type_1',
+				'text' => '1 Star *', 'callback_data' => $id.':edit:type_1',
 		]]];
 		return $keys;
 }
+
+function raidboss_keys($prefix, $data, $back = false) {
+		$result = array();
+		
+		$row = array();
+		$len = '';
+		foreach ($data as $k=>$v) {
+			$data = str_replace(' ','_', strtolower($v));
+			$len = $len.' '.$v;
+			$row[] = array('text' => $v, 'callback_data' => $prefix.$data);
+			
+			if (count($row)>=3 || strlen($len)>40) {
+				$len = '';
+				$result[] = $row;
+				$row = array();
+				$cnt = 0;
+			}
+		}
+		if ($back) {
+			$row[] = $back;
+		}
+		
+		if (count($row)) {
+			$result[] = $row;
+		}
+		return $result;
+}
+
 
 function keys_raid_people($data) {
 		if (!is_array($data)) $data=array('id'=>$data);
@@ -218,7 +246,7 @@ function show_raid_poll($raid) {
 		$addr = implode(',',$addr);
 		$msg .= '<i>'.$addr.'</i>'.CR2;
 	}
-	$msg .= '#Raid <b>'.ucfirst($raid['pokemon']).'</b>'.CR2;
+	$msg .= '#Raid <b>'.ucwords(str_replace('_',' ',$raid['pokemon'])).'</b>'.CR2;
 	//$msg .= CR;
 	if ($time_left<0) {
 		$msg .= 'Raid Finished'.CR2;
