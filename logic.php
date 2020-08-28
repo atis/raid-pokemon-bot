@@ -199,6 +199,12 @@ function unix2tz($unix, $tz, $format = 'H:i') {
 function show_raid_poll($raid) {
 	$time_left = floor($raid['t_left']/60);
 	$time_left = floor($time_left/60).':'.str_pad($time_left%60,2,'0',STR_PAD_LEFT).' left';
+	$hatch_time = $raid['ts_end']-RAID_TIME*60;
+	if ($hatch_time>time()) {
+		$hatch_time = ' (hatch '.unix2tz($hatch_time,$raid['timezone']).')';
+	} else {
+		$hatch_time = ' (hatched)';
+	}
 
 	$msg = '';
 	if ($raid['gym_name'] || $raid['gym_team']) {
@@ -218,7 +224,7 @@ function show_raid_poll($raid) {
 		$msg .= 'Raid Finished'.CR2;
 	} else {
 		//$msg .= '<i>'.$time_left.'</i> until '.substr($raid['end_time'],11,5)."\n\n";
-		$msg .= '<i>'.$time_left.'</i> until '.unix2tz($raid['ts_end'],$raid['timezone'])."\n\n";
+		$msg .= '<i>'.$time_left.'</i> until '.unix2tz($raid['ts_end'],$raid['timezone']).$hatch_time."\n\n";
 	}
 	$msg .= 'Location: https://maps.google.com/?q='.$raid['lat'].','.$raid['lon'].CR;
 	
@@ -254,9 +260,10 @@ function show_raid_poll($raid) {
 			$query = 'SELECT * FROM users WHERE user_id='.$vv['user_id'];
 			$rs = my_query($query);
 			$row = $rs->fetch_assoc();
+			
 			$name = '@'.$row['nick'];
-			if ($name=='@') $name = $row['name'];
-			if ($name=='') $name = $vv['user_id'];
+			if ($name=='@') $name = '<a href="tg://user?id='.$row['user_id'].'">'.$row['name'].'</a>';
+			if ($name=='') $name = '<a href="tg://user?id='.$row['user_id'].'">'.$row['user_id'].'</a>';
 			$msg .= ' - '.$name.' ';
 			if ($vv['arrived']) {
 				$msg .= '[arrived '.unix2tz($vv['ts_att'],$raid['timezone']).'] ';
@@ -283,6 +290,11 @@ function show_raid_poll($raid) {
 function show_raid_poll_small($raid) {
 	$time_left = floor($raid['t_left']/60);
 	$time_left = floor($time_left/60).':'.str_pad($time_left%60,2,'0',STR_PAD_LEFT).' left';
+	$hatch_time = $raid['ts_end']-RAID_TIME*60;
+	if ($hatch_time>time()) {
+		$hatch_time = ' (hatch '.unix2tz($hatch_time,$raid['timezone']).')';
+		$time_left .= $hatch_time;
+	}
 
 	$msg = '<b>'.ucfirst($raid['pokemon']).'</b> '.$time_left.' <b>'.$raid['gym_name'].'</b>'.CR;
 	if ($raid['address']) {
