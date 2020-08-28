@@ -38,7 +38,7 @@
 		
 
 		$keys[] = array('text' => '<<', 'callback_data' => $id.':edit_level');
-		$keys = inline_key_array($keys,4);
+		$keys = inline_key_array($keys,3);
 		debug_log($keys);
 
 	} else {
